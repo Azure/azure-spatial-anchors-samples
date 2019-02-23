@@ -1,0 +1,128 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+        flatDir {
+            dirs 'libs'
+        }
+
+        maven {
+            url 'https://microsoft.bintray.com/AzureSpatialAnchors'
+        }
+    }
+}
+
+apply plugin: 'com.android.application'
+
+def azureSpatialAnchorsSdkVersion = '1.0.1'
+
+/*
+The ARCore aar library contains the native shared libraries.  These are
+extracted before building to a temporary directory.
+ */
+def natives_libpath = "${buildDir}/natives"
+
+// Create a configuration to mark which aars to extract .so files from
+configurations { natives }
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+**DEPS**
+    // Azure Spatial Anchors
+    implementation ("com.microsoft.azure.spatialanchors:spatialanchors_ndk:[${azureSpatialAnchorsSdkVersion}]") {
+        exclude group: 'com.google.ar'
+    }
+    natives "com.microsoft.azure.spatialanchors:spatialanchors_ndk:[${azureSpatialAnchorsSdkVersion}]"
+    implementation ("com.microsoft.azure.spatialanchors:spatialanchors_java:[${azureSpatialAnchorsSdkVersion}]") {
+        exclude group: 'com.google.ar'
+    }
+}
+
+android {
+    compileSdkVersion **APIVERSION**
+    buildToolsVersion '**BUILDTOOLS**'
+
+    defaultConfig {
+        applicationId '**APPLICATIONID**'
+
+        minSdkVersion **MINSDKVERSION**
+        targetSdkVersion **TARGETSDKVERSION**
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14", "-Wall"
+                arguments "-DANDROID_STL=c++_static",
+                        "-DNATIVE_LIBPATH=${natives_libpath}/jni",
+                        "-DNATIVE_INCLUDE=${project.rootDir}/libraries/include"
+            }
+        }
+
+        ndk {
+            abiFilters **ABIFILTERS**
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress '.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**
+    }**SIGN**
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled **MINIFY_DEBUG**
+            useProguard **PROGUARD_DEBUG**
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD**
+            jniDebuggable true
+        }
+        release {
+            minifyEnabled **MINIFY_RELEASE**
+            useProguard **PROGUARD_RELEASE**
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD****SIGNCONFIG**
+        }
+    }**PACKAGING_OPTIONS****SPLITS**
+**BUILT_APK_LOCATION**
+}**SPLITS_VERSION_CODE****SOURCE_BUILD_SETUP**
+
+// Extracts the shared libraries from aars in the natives configuration.
+// This is done so that NDK builds can access these libraries.
+task extractNativeLibraries() {
+    // Always extract, this insures the native libs are updated if the version changes.
+    outputs.upToDateWhen { false }
+    doFirst {
+        configurations.natives.files.each { f ->
+            copy {
+                from zipTree(f)
+                into natives_libpath
+                include "jni/**/*"
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded {
+    task-> if (task.name.contains("external") && !task.name.contains("Clean")) {
+        task.dependsOn(extractNativeLibraries)
+    }
+}

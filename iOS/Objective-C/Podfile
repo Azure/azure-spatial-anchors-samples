@@ -1,0 +1,10 @@
+platform :ios, '11.0'
+use_frameworks!
+
+target 'SampleObjC' do
+
+  # Pods for SampleObjC
+  pod 'AzureSpatialAnchors', '1.0.1'
+
+  pod 'ADAL', :git => 'https://github.com/AzureAD/azure-activedirectory-library-for-objc', :tag => '2.7.7', :submodules => true
+end

@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleHoloLens", "SampleHoloLens\SampleHoloLens.vcxproj", "{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM.ActiveCfg = Debug|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM.Build.0 = Debug|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM.Deploy.0 = Debug|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x64.ActiveCfg = Debug|x64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x64.Build.0 = Debug|x64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x64.Deploy.0 = Debug|x64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x86.ActiveCfg = Debug|Win32
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x86.Build.0 = Debug|Win32
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x86.Deploy.0 = Debug|Win32
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM.ActiveCfg = Release|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM.Build.0 = Release|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM.Deploy.0 = Release|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x64.ActiveCfg = Release|x64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x64.Build.0 = Release|x64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x64.Deploy.0 = Release|x64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x86.ActiveCfg = Release|Win32
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x86.Build.0 = Release|Win32
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x86.Deploy.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F57DDBE-4F29-4C4A-A86B-7CF2D912B0B2}
+	EndGlobalSection
+EndGlobal

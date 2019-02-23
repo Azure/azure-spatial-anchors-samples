@@ -1,0 +1,12 @@
+namespace SampleHoloLens
+{
+    [default_interface]
+    runtimeclass AnchorVisual 
+    {
+        AnchorVisual();
+
+        String Id;
+        Windows.Foundation.Numerics.Vector4 Color;
+        Windows.Perception.Spatial.SpatialAnchor Anchor;
+    }
+}
