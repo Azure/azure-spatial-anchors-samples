@@ -195,7 +195,7 @@ void ViewController::RemoveEventListeners()
 bool SampleHoloLens::ViewController::SanityCheckAccessInformation()
 {
 #ifdef USE_ANCHOR_EXCHANGE
-	return (SpatialAnchorsAccountId != L"" && SpatialAnchorsAccountKey != L"" && AnchorExchangeURL == L"");
+	return (SpatialAnchorsAccountId != L"" && SpatialAnchorsAccountKey != L"" && AnchorExchangeURL != L"");
 #else
 	return (SpatialAnchorsAccountId != L"" && SpatialAnchorsAccountKey != L"");
 #endif
