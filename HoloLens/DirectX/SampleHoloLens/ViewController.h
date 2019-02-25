@@ -27,7 +27,7 @@ namespace SampleHoloLens
         // Controller update called once per frame.
         void Update(winrt::Windows::Perception::Spatial::SpatialCoordinateSystem const& currentCoordinateSystem);
 
-        void InputRecieved(winrt::Windows::UI::Input::Spatial::SpatialPointerPose const& pose);
+        void InputReceived(winrt::Windows::UI::Input::Spatial::SpatialPointerPose const& pose);
 
         const std::wstring& GetTitleText() { return m_titleText; }
         const std::wstring& GetStatusText() { return m_statusText; }

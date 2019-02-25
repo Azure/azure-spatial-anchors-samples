@@ -33,10 +33,10 @@ constexpr float4 c_FoundColor = { 1.f, 1.f, 0.f, 1.f };
 constexpr float4 c_FailedColor = { 1.f, 0.f, 0.f, 1.f };
 
 // Set this string to the Spatial Anchors account ID provided for the Azure Spatial Service resource.
-const std::wstring SpatialAnchorsAccountId = L"Set me";
+const std::wstring SpatialAnchorsAccountId = L"";
 
 // Set this string to the Spatial Anchors account key provided for the Azure Spatial Service resource.
-const std::wstring SpatialAnchorsAccountKey = L"Set me";
+const std::wstring SpatialAnchorsAccountKey = L"";
 
 
 std::wstring FeedbackToString(SessionUserFeedback userFeedback)
@@ -195,9 +195,9 @@ void ViewController::RemoveEventListeners()
 bool SampleHoloLens::ViewController::SanityCheckAccessInformation()
 {
 #ifdef USE_ANCHOR_EXCHANGE
-    return (SpatialAnchorsAccountId == L"Set me" && SpatialAnchorsAccountKey == L"Set me" && AnchorExchangeURL == L"");
+	return (SpatialAnchorsAccountId != L"" && SpatialAnchorsAccountKey != L"" && AnchorExchangeURL == L"");
 #else
-    return (SpatialAnchorsAccountId == L"Set me" && SpatialAnchorsAccountKey == L"Set me");
+	return (SpatialAnchorsAccountId != L"" && SpatialAnchorsAccountKey != L"");
 #endif
 }
 
@@ -281,7 +281,7 @@ winrt::fire_and_forget ViewController::DeleteAnchor(DemoStep errorStep)
     co_return;
 }
 
-void ViewController::InputRecieved(SpatialPointerPose const& pose)
+void ViewController::InputReceived(SpatialPointerPose const& pose)
 {
     if (!SanityCheckAccessInformation() || m_asyncOpInProgress)
     {

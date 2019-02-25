@@ -217,7 +217,7 @@ HolographicFrame SampleHoloLensMain::Update()
     // When a Pressed gesture is detected, signal the ViewControler
     if (inputPose != nullptr)
     {
-        m_viewController->InputRecieved(inputPose);
+        m_viewController->InputReceived(inputPose);
     }
 
     m_textRenderer->RenderTextOffscreen(m_viewController->GetTitleText(), m_viewController->GetStatusText(), m_viewController->GetLogText());
