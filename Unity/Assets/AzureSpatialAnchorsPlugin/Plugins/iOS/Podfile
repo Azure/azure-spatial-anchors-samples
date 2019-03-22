@@ -4,5 +4,5 @@ use_frameworks!
 target 'Unity-iPhone' do
 
   # Pods for Unity-iPhone
-  pod 'AzureSpatialAnchors', '1.0.1'
+  pod 'AzureSpatialAnchors', '1.0.2'
 end

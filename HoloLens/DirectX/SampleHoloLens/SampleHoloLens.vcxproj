@@ -308,8 +308,8 @@
     <Import Project="$(VSINSTALLDIR)\Common7\IDE\Extensions\Microsoft\VsGraphics\ImageContentTask.targets" />
     <Import Project="$(VSINSTALLDIR)\Common7\IDE\Extensions\Microsoft\VsGraphics\MeshContentTask.targets" />
     <Import Project="$(VSINSTALLDIR)\Common7\IDE\Extensions\Microsoft\VsGraphics\ShaderGraphContentTask.targets" />
-    <Import Project="..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets" Condition="Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets')" />
-    <Import Project="..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets" Condition="Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets')" />
+    <Import Project="..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets" Condition="Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets')" />
+    <Import Project="..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets" Condition="Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets')" />
     <Import Project="..\packages\Microsoft.Windows.CppWinRT.1.0.190109.2\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.1.0.190109.2\build\native\Microsoft.Windows.CppWinRT.targets')" />
   </ImportGroup>
   <PropertyGroup>
@@ -324,8 +324,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.1\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.Redist.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.SpatialAnchors.WinCPP.1.0.2\build\native\Microsoft.Azure.SpatialAnchors.WinCPP.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Windows.CppWinRT.1.0.190109.2\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.CppWinRT.1.0.190109.2\build\native\Microsoft.Windows.CppWinRT.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Windows.CppWinRT.1.0.190109.2\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.CppWinRT.1.0.190109.2\build\native\Microsoft.Windows.CppWinRT.targets'))" />
   </Target>
