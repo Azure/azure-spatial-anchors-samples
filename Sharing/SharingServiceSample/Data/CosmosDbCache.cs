@@ -38,7 +38,7 @@ namespace SharingService.Data
         /// <summary>
         /// The anchor numbering index.
         /// </summary>
-        private long anchorNumberIndex = -1;
+        private long lastAnchorNumberIndex = -1;
 
         // To ensure our asynchronous initialization code is only ever invoked once, we employ two manualResetEvents
         ManualResetEventSlim initialized = new ManualResetEventSlim();
@@ -51,8 +51,9 @@ namespace SharingService.Data
                 if (!this.initializing.Wait(0))
                 {
                     this.initializing.Set();
-                    await this.dbCache.DeleteIfExistsAsync();
-                    await this.dbCache.CreateAsync();
+                    //await this.dbCache.DeleteIfExistsAsync();
+                    //await this.dbCache.CreateAsync();
+                    await this.dbCache.CreateIfNotExistsAsync();
                     this.initialized.Set();
                 }
 
@@ -102,10 +103,10 @@ namespace SharingService.Data
         }
 
         /// <summary>
-        /// Gets the last anchor key asynchronously.
+        /// Gets the last anchor asynchronously.
         /// </summary>
-        /// <returns>The anchor key.</returns>
-        public async Task<string> GetLastAnchorKeyAsync()
+        /// <returns>The anchor.</returns>
+        public async Task<AnchorCacheEntity> GetLastAnchorAsync()
         {
             await InitializeAsync();
 
@@ -119,7 +120,16 @@ namespace SharingService.Data
                 results.AddRange(previousSegment.Results);
             }
 
-            return results.OrderByDescending(x => x.Timestamp).DefaultIfEmpty(null).First()?.AnchorKey;
+            return results.OrderByDescending(x => x.Timestamp).DefaultIfEmpty(null).First();
+        }
+
+        /// <summary>
+        /// Gets the last anchor key asynchronously.
+        /// </summary>
+        /// <returns>The anchor key.</returns>
+        public async Task<string> GetLastAnchorKeyAsync()
+        {
+            return (await GetLastAnchorAsync())?.AnchorKey;
         }
 
         /// <summary>
@@ -131,13 +141,20 @@ namespace SharingService.Data
         {
             await InitializeAsync();
 
-            if (this.anchorNumberIndex == long.MaxValue)
+            if (lastAnchorNumberIndex == long.MaxValue)
             {
                 // Reset the anchor number index.
-                this.anchorNumberIndex = -1;
+                lastAnchorNumberIndex = -1;
             }
 
-            long newAnchorNumberIndex = ++this.anchorNumberIndex;
+            if(lastAnchorNumberIndex < 0)
+            {
+                // Query last row key
+                var rowKey = (await GetLastAnchorAsync())?.RowKey;
+                long.TryParse(rowKey, out lastAnchorNumberIndex);
+            }
+
+            long newAnchorNumberIndex = ++lastAnchorNumberIndex;
 
             AnchorCacheEntity anchorEntity = new AnchorCacheEntity(newAnchorNumberIndex, CosmosDbCache.partitionSize)
             {
