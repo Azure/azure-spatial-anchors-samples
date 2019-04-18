@@ -8,9 +8,11 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -18,6 +20,9 @@ Global
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM.ActiveCfg = Debug|ARM
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM.Build.0 = Debug|ARM
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM.Deploy.0 = Debug|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM64.Build.0 = Debug|ARM64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|ARM64.Deploy.0 = Debug|ARM64
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x64.ActiveCfg = Debug|x64
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x64.Build.0 = Debug|x64
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Debug|x64.Deploy.0 = Debug|x64
@@ -27,6 +32,9 @@ Global
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM.ActiveCfg = Release|ARM
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM.Build.0 = Release|ARM
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM.Deploy.0 = Release|ARM
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM64.ActiveCfg = Release|ARM64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM64.Build.0 = Release|ARM64
+		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|ARM64.Deploy.0 = Release|ARM64
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x64.ActiveCfg = Release|x64
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x64.Build.0 = Release|x64
 		{09D1705C-4A0D-4074-93C2-FA2DD5EBAB16}.Release|x64.Deploy.0 = Release|x64

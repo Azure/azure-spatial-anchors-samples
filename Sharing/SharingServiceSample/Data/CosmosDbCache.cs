@@ -51,8 +51,6 @@ namespace SharingService.Data
                 if (!this.initializing.Wait(0))
                 {
                     this.initializing.Set();
-                    //await this.dbCache.DeleteIfExistsAsync();
-                    //await this.dbCache.CreateAsync();
                     await this.dbCache.CreateIfNotExistsAsync();
                     this.initialized.Set();
                 }
@@ -75,7 +73,7 @@ namespace SharingService.Data
         /// <returns>A <see cref="Task{System.Boolean}" /> containing true if the identifier is found; otherwise false.</returns>
         public async Task<bool> ContainsAsync(long anchorId)
         {
-            await InitializeAsync();
+            await this.InitializeAsync();
 
             TableResult result = await this.dbCache.ExecuteAsync(TableOperation.Retrieve<AnchorCacheEntity>((anchorId / CosmosDbCache.partitionSize).ToString(), anchorId.ToString()));
             AnchorCacheEntity anchorEntity = result.Result as AnchorCacheEntity;
@@ -90,7 +88,7 @@ namespace SharingService.Data
         /// <returns>The anchor key.</returns>
         public async Task<string> GetAnchorKeyAsync(long anchorId)
         {
-            await InitializeAsync();
+            await this.InitializeAsync();
 
             TableResult result = await this.dbCache.ExecuteAsync(TableOperation.Retrieve<AnchorCacheEntity>((anchorId / CosmosDbCache.partitionSize).ToString(), anchorId.ToString()));
             AnchorCacheEntity anchorEntity = result.Result as AnchorCacheEntity;
@@ -108,7 +106,7 @@ namespace SharingService.Data
         /// <returns>The anchor.</returns>
         public async Task<AnchorCacheEntity> GetLastAnchorAsync()
         {
-            await InitializeAsync();
+            await this.InitializeAsync();
 
             List<AnchorCacheEntity> results = new List<AnchorCacheEntity>();
             TableQuery<AnchorCacheEntity> tableQuery = new TableQuery<AnchorCacheEntity>();
@@ -129,7 +127,7 @@ namespace SharingService.Data
         /// <returns>The anchor key.</returns>
         public async Task<string> GetLastAnchorKeyAsync()
         {
-            return (await GetLastAnchorAsync())?.AnchorKey;
+            return (await this.GetLastAnchorAsync())?.AnchorKey;
         }
 
         /// <summary>
@@ -139,7 +137,7 @@ namespace SharingService.Data
         /// <returns>An <see cref="Task{System.Int64}" /> representing the anchor identifier.</returns>
         public async Task<long> SetAnchorKeyAsync(string anchorKey)
         {
-            await InitializeAsync();
+            await this.InitializeAsync();
 
             if (lastAnchorNumberIndex == long.MaxValue)
             {
@@ -150,7 +148,7 @@ namespace SharingService.Data
             if(lastAnchorNumberIndex < 0)
             {
                 // Query last row key
-                var rowKey = (await GetLastAnchorAsync())?.RowKey;
+                var rowKey = (await this.GetLastAnchorAsync())?.RowKey;
                 long.TryParse(rowKey, out lastAnchorNumberIndex);
             }
 

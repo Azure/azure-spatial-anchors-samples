@@ -8,9 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		05E22B61DF4F674F4064C3A8 /* Pods_SampleObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E8B918780D0A7BA4FE891B /* Pods_SampleObjC.framework */; };
+		4FAED569221DD5F800747B77 /* BasicDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FAED568221DD5F800747B77 /* BasicDemoViewController.m */; };
+		4FAED56C221E0E5200747B77 /* MenuScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FAED56B221E0E5200747B77 /* MenuScreenViewController.m */; };
+		4FAED571221E10C500747B77 /* NearbyDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FAED570221E10C500747B77 /* NearbyDemoViewController.m */; };
+		4FAED575221E1E6800747B77 /* SharedDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FAED574221E1E6800747B77 /* SharedDemoViewController.m */; };
 		76C862FB21F253EF008A4362 /* AuthenticationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C862FA21F253EF008A4362 /* AuthenticationHelper.m */; };
 		9C5FAA4B20B734390067DA11 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5FAA4A20B734390067DA11 /* AppDelegate.m */; };
-		9C5FAA5020B734390067DA11 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5FAA4F20B734390067DA11 /* ViewController.m */; };
+		9C5FAA5020B734390067DA11 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5FAA4F20B734390067DA11 /* BaseViewController.m */; };
 		9C5FAA5320B734390067DA11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C5FAA5120B734390067DA11 /* Main.storyboard */; };
 		9C5FAA5520B7343A0067DA11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C5FAA5420B7343A0067DA11 /* Assets.xcassets */; };
 		9C5FAA5820B7343A0067DA11 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C5FAA5620B7343A0067DA11 /* LaunchScreen.storyboard */; };
@@ -32,6 +36,14 @@
 
 /* Begin PBXFileReference section */
 		20F35C4CE9BB0E31C0F1F004 /* Pods-SampleObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleObjC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SampleObjC/Pods-SampleObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		4FAED568221DD5F800747B77 /* BasicDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BasicDemoViewController.m; sourceTree = "<group>"; };
+		4FAED56A221DD66500747B77 /* BasicDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicDemoViewController.h; sourceTree = "<group>"; };
+		4FAED56B221E0E5200747B77 /* MenuScreenViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuScreenViewController.m; sourceTree = "<group>"; };
+		4FAED56D221E0E6400747B77 /* MenuScreenViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuScreenViewController.h; sourceTree = "<group>"; };
+		4FAED570221E10C500747B77 /* NearbyDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyDemoViewController.m; sourceTree = "<group>"; };
+		4FAED572221E10D500747B77 /* NearbyDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyDemoViewController.h; sourceTree = "<group>"; };
+		4FAED573221E1E5B00747B77 /* SharedDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedDemoViewController.h; sourceTree = "<group>"; };
+		4FAED574221E1E6800747B77 /* SharedDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedDemoViewController.m; sourceTree = "<group>"; };
 		63E8B918780D0A7BA4FE891B /* Pods_SampleObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76C862F921F15D71008A4362 /* AuthenticationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticationHelper.h; sourceTree = "<group>"; };
 		76C862FA21F253EF008A4362 /* AuthenticationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticationHelper.m; sourceTree = "<group>"; };
@@ -39,8 +51,8 @@
 		9C5FAA4620B734390067DA11 /* SampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C5FAA4920B734390067DA11 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9C5FAA4A20B734390067DA11 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		9C5FAA4E20B734390067DA11 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		9C5FAA4F20B734390067DA11 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		9C5FAA4E20B734390067DA11 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
+		9C5FAA4F20B734390067DA11 /* BaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		9C5FAA5220B734390067DA11 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9C5FAA5420B7343A0067DA11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C5FAA5720B7343A0067DA11 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -92,17 +104,25 @@
 			isa = PBXGroup;
 			children = (
 				76FB1EC321B899CF000D13D2 /* SampleObjC.entitlements */,
+				9C5FAA5A20B7343A0067DA11 /* main.m */,
 				9C5FAA4920B734390067DA11 /* AppDelegate.h */,
 				9C5FAA4A20B734390067DA11 /* AppDelegate.m */,
-				9C5FAA4E20B734390067DA11 /* ViewController.h */,
-				9C5FAA4F20B734390067DA11 /* ViewController.m */,
-				9C5FAA5120B734390067DA11 /* Main.storyboard */,
-				9C5FAA5420B7343A0067DA11 /* Assets.xcassets */,
-				9C5FAA5620B7343A0067DA11 /* LaunchScreen.storyboard */,
-				9C5FAA5920B7343A0067DA11 /* Info.plist */,
-				9C5FAA5A20B7343A0067DA11 /* main.m */,
+				4FAED56D221E0E6400747B77 /* MenuScreenViewController.h */,
+				4FAED56B221E0E5200747B77 /* MenuScreenViewController.m */,
+				9C5FAA4E20B734390067DA11 /* BaseViewController.h */,
+				9C5FAA4F20B734390067DA11 /* BaseViewController.m */,
+				4FAED56A221DD66500747B77 /* BasicDemoViewController.h */,
+				4FAED568221DD5F800747B77 /* BasicDemoViewController.m */,
+				4FAED572221E10D500747B77 /* NearbyDemoViewController.h */,
+				4FAED570221E10C500747B77 /* NearbyDemoViewController.m */,
+				4FAED573221E1E5B00747B77 /* SharedDemoViewController.h */,
+				4FAED574221E1E6800747B77 /* SharedDemoViewController.m */,
 				76C862F921F15D71008A4362 /* AuthenticationHelper.h */,
 				76C862FA21F253EF008A4362 /* AuthenticationHelper.m */,
+				9C5FAA5120B734390067DA11 /* Main.storyboard */,
+				9C5FAA5620B7343A0067DA11 /* LaunchScreen.storyboard */,
+				9C5FAA5420B7343A0067DA11 /* Assets.xcassets */,
+				9C5FAA5920B7343A0067DA11 /* Info.plist */,
 			);
 			path = SampleObjC;
 			sourceTree = "<group>";
@@ -234,7 +254,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C5FAA5020B734390067DA11 /* ViewController.m in Sources */,
+				4FAED575221E1E6800747B77 /* SharedDemoViewController.m in Sources */,
+				4FAED571221E10C500747B77 /* NearbyDemoViewController.m in Sources */,
+				9C5FAA5020B734390067DA11 /* BaseViewController.m in Sources */,
+				4FAED56C221E0E5200747B77 /* MenuScreenViewController.m in Sources */,
+				4FAED569221DD5F800747B77 /* BasicDemoViewController.m in Sources */,
 				76C862FB21F253EF008A4362 /* AuthenticationHelper.m in Sources */,
 				9C5FAA5B20B7343A0067DA11 /* main.m in Sources */,
 				9C5FAA4B20B734390067DA11 /* AppDelegate.m in Sources */,

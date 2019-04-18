@@ -9,24 +9,35 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.function.Consumer;
 
 // Posts an anchor GUID to the service detailed in the
 // Azure Spatial Anchors share anchors across devices tutorial
 // Provides the anchor number associated with the GUID for easier typing
 class AnchorPoster extends AsyncTask<String, Void, String>
 {
-    private String baseAddress;
-    private Shared sharedActivity;
+    private final String baseAddress;
+    private final Consumer<String> anchorPostedCallback;
 
-    public AnchorPoster(String BaseAddress, Shared SharedActivity)
-    {
-        baseAddress = BaseAddress;
-        sharedActivity= SharedActivity;
+    public AnchorPoster(String baseAddress, Consumer<String> anchorPostedCallback) {
+        this.baseAddress = baseAddress;
+        this.anchorPostedCallback = anchorPostedCallback;
     }
 
-    public String PostAnchor(String anchor)
-    {
-        String ret = "";
+    @Override
+    protected String doInBackground(String... input) {
+        return postAnchor(input[0]);
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (anchorPostedCallback != null) {
+            anchorPostedCallback.accept(result);
+        }
+    }
+
+    private String postAnchor(String anchor) {
+        String ret;
         try {
             URL url = new URL(baseAddress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -39,10 +50,6 @@ class AnchorPoster extends AsyncTask<String, Void, String>
             InputStream res = new BufferedInputStream(connection.getInputStream());
 
             byte[] resBytes = new byte[16];
-            for(int index=0;index<resBytes.length;index++)
-            {
-                resBytes[index] = 0;
-            }
 
             res.read(resBytes, 0, resBytes.length);
             ret = new String(resBytes);
@@ -54,17 +61,5 @@ class AnchorPoster extends AsyncTask<String, Void, String>
         }
 
         return ret;
-    }
-
-    @Override
-    protected String doInBackground(String... input)
-    {
-        return PostAnchor(input[0]);
-    }
-
-    @Override
-    protected void onPostExecute(String result)
-    {
-        sharedActivity.AnchorPosted(result);
     }
 }

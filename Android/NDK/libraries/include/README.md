@@ -1,0 +1,2 @@
+This directory should contain a downloaded copy of arcore_c_api.h from [here](https://github.com/google-ar/arcore-android-sdk/blob/master/libraries/include/arcore_c_api.h)
+for the version of ARCore being targetted.

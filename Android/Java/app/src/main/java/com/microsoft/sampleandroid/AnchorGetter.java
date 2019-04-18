@@ -8,24 +8,35 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.function.Consumer;
 
 // Gets an anchor GUID from the service detailed in the
 // Azure Spatial Anchors share anchors across devices tutorial
 // Consumes the anchor number associated with the GUID for easier typing
 class AnchorGetter extends AsyncTask<String, Void, String>
 {
-    private String baseAddress;
-    private Shared sharedActivity;
+    private final String baseAddress;
+    private final Consumer<String> anchorLocatedCallback;
 
-    public AnchorGetter(String BaseAddress, Shared SharedActivity)
-    {
-        baseAddress = BaseAddress;
-        sharedActivity= SharedActivity;
+    public AnchorGetter(String baseAddress, Consumer<String> anchorLocatedCallback) {
+        this.baseAddress = baseAddress;
+        this.anchorLocatedCallback = anchorLocatedCallback;
     }
 
-    public String GetAnchor(String AnchorNumber)
-    {
-        String ret = "";
+    @Override
+    protected String doInBackground(String... input) {
+        return getAnchor(input[0]);
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (this.anchorLocatedCallback != null) {
+            this.anchorLocatedCallback.accept(result);
+        }
+    }
+
+    private String getAnchor(String AnchorNumber) {
+        String ret;
         try {
             String anchorAddress = baseAddress+"/"+AnchorNumber;
             URL url = new URL(anchorAddress);
@@ -35,18 +46,18 @@ class AnchorGetter extends AsyncTask<String, Void, String>
             int responseCode = connection.getResponseCode();
             InputStream res = new DataInputStream(connection.getInputStream());
 
-            String temp = "";
+            StringBuilder temp = new StringBuilder();
             int readValue = -1;
             do {
                 readValue = res.read();
-                if(readValue!=-1)
+                if(readValue != -1)
                 {
-                    temp += (char)readValue;
+                    temp.append((char)readValue);
                 }
-            }while(readValue != -1);
+            } while(readValue != -1);
 
 
-            ret = temp;
+            ret = temp.toString();
 
             connection.disconnect();
         }
@@ -56,17 +67,5 @@ class AnchorGetter extends AsyncTask<String, Void, String>
         }
 
         return ret;
-    }
-
-    @Override
-    protected String doInBackground(String... input)
-    {
-        return GetAnchor(input[0]);
-    }
-
-    @Override
-    protected void onPostExecute(String result)
-    {
-        sharedActivity.AnchorLookedUp(result);
     }
 }

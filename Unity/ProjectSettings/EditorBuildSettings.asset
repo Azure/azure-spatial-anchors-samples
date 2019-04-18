@@ -6,12 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/AzureSpatialAnchorsPlugin/Examples/AzureSpatialAnchorsBasicDemo.unity
+    path: Assets/AzureSpatialAnchorsPlugin/Examples/Scenes/AzureSpatialAnchorsDemoLauncher.unity
+    guid: 4dcd43f53c599f94a80fb2408d9a15ff
+  - enabled: 1
+    path: Assets/AzureSpatialAnchorsPlugin/Examples/Scenes/AzureSpatialAnchorsBasicDemo.unity
     guid: 8eb951603c1152c4e920887a18cc2733
-  - enabled: 0
-    path: Assets/AzureSpatialAnchorsPlugin/Examples/AzureSpatialAnchorsNearbyDemo.unity
+  - enabled: 1
+    path: Assets/AzureSpatialAnchorsPlugin/Examples/Scenes/AzureSpatialAnchorsNearbyDemo.unity
     guid: 2e7fd4a208fcf48419d312fcf7b9553e
-  - enabled: 0
-    path: Assets/AzureSpatialAnchorsPlugin/Examples/AzureSpatialAnchorsLocalSharedDemo.unity
+  - enabled: 1
+    path: Assets/AzureSpatialAnchorsPlugin/Examples/Scenes/AzureSpatialAnchorsLocalSharedDemo.unity
     guid: f540d2472b41fdb4bb6a7f47521b0bdd
   m_configObjects: {}

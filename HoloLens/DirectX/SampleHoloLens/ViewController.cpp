@@ -57,11 +57,11 @@ std::wstring FeedbackToString(SessionUserFeedback userFeedback)
     return result;
 }
 
-
 std::wstring FormatPercent(float value)
 {
-    wchar_t buf[5];
-    swprintf_s(buf, 5, L"%00.0f%%", value);
+    value = value < 1000 ? value : 999;
+    wchar_t buf[5] = { 0 };
+    swprintf_s(buf, L"%00.0f%%", value);
     return buf;
 }
 
@@ -557,7 +557,7 @@ void ViewController::InputRecieved(SpatialPointerPose const& pose)
 
             AnchorLocateCriteria criteria = m_sscfactory.CreateAnchorLocateCriteria();
             auto nearAnchor = m_sscfactory.CreateNearAnchorCriteria();
-            nearAnchor.DistanceInMeters(50);
+            nearAnchor.DistanceInMeters(5);
             nearAnchor.SourceAnchor(m_foundAnchor);
             criteria.NearAnchor(nearAnchor);
 

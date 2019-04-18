@@ -12,50 +12,59 @@ import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.microsoft.azure.spatialanchors.CloudSpatialAnchor;
 
-public class AnchorVisual {
-
-    private Renderable nodeRenderable;
-    private Anchor localAnchor;
-    public AnchorNode anchorNode;
-    public CloudSpatialAnchor cloudAnchor;
-    public String identifier;
+class AnchorVisual {
+    private final AnchorNode anchorNode;
+    private CloudSpatialAnchor cloudAnchor;
     private Material color;
+    private Renderable nodeRenderable;
 
-    public AnchorVisual() {
-        anchorNode = new AnchorNode();
+    public AnchorVisual(Anchor localAnchor) {
+        anchorNode = new AnchorNode(localAnchor);
+    }
+
+    public AnchorNode getAnchorNode() {
+        return this.anchorNode;
+    }
+
+    public CloudSpatialAnchor getCloudAnchor() {
+        return this.cloudAnchor;
     }
 
     public Anchor getLocalAnchor() {
-        return localAnchor;
+        return this.anchorNode.getAnchor();
     }
 
-    public void setLocalAnchor(Anchor value) {
-        localAnchor = value;
-        anchorNode.setAnchor(value);
+    public void render(ArFragment arFragment) {
+        MainThreadContext.runOnUiThread(() -> {
+            nodeRenderable = ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), color);
+            anchorNode.setRenderable(nodeRenderable);
+            anchorNode.setParent(arFragment.getArSceneView().getScene());
+
+            TransformableNode sphere = new TransformableNode(arFragment.getTransformationSystem());
+            sphere.setParent(this.anchorNode);
+            sphere.setRenderable(this.nodeRenderable);
+            sphere.select();
+        });
     }
 
-    public void render(ArFragment arFragment){
-
-        nodeRenderable = ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), color);
-        anchorNode.setRenderable(nodeRenderable);
-        anchorNode.setParent(arFragment.getArSceneView().getScene());
-
-        TransformableNode sphere = new TransformableNode(arFragment.getTransformationSystem());
-        sphere.setParent(this.anchorNode);
-        sphere.setRenderable(this.nodeRenderable);
-        sphere.select();
+    public void setCloudAnchor(CloudSpatialAnchor cloudAnchor) {
+        this.cloudAnchor = cloudAnchor;
     }
 
-    public void setColor(Material material){
+    public void setColor(Material material) {
         color = material;
-        anchorNode.setRenderable(null);
-        nodeRenderable = ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), color);
-        anchorNode.setRenderable(nodeRenderable);
+
+        MainThreadContext.runOnUiThread(() -> {
+            anchorNode.setRenderable(null);
+            nodeRenderable = ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), color);
+            anchorNode.setRenderable(nodeRenderable);
+        });
     }
 
-    public void destroy()
-    {
-        anchorNode.setRenderable(null);
-        anchorNode.setParent(null);
+    public void destroy() {
+        MainThreadContext.runOnUiThread(() -> {
+            anchorNode.setRenderable(null);
+            anchorNode.setParent(null);
+        });
     }
 }

@@ -1,7 +1,6 @@
 package com.microsoft.sampleandroid;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.microsoft.CloudServices;
 

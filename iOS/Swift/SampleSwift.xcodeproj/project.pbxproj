@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		173E7730225C5FF200CB32CF /* DemoStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173E772F225C5FF200CB32CF /* DemoStep.swift */; };
+		17A8AE49225BC87D006DC1DB /* AnchorVisual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8AE48225BC87D006DC1DB /* AnchorVisual.swift */; };
+		17C1873F225BFC6000081781 /* BasicDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C1873E225BFC6000081781 /* BasicDemoViewController.swift */; };
+		17C18741225BFC7500081781 /* NearbyDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C18740225BFC7500081781 /* NearbyDemoViewController.swift */; };
+		17F13116225BD8BC00B7B910 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F13115225BD8BC00B7B910 /* BaseViewController.swift */; };
 		558D29DF2122278D003D5B51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558D29DE2122278D003D5B51 /* AppDelegate.swift */; };
-		558D29E32122278D003D5B51 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558D29E22122278D003D5B51 /* ViewController.swift */; };
 		558D29E62122278D003D5B51 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 558D29E42122278D003D5B51 /* Main.storyboard */; };
 		558D29E82122278E003D5B51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 558D29E72122278E003D5B51 /* Assets.xcassets */; };
 		558D29EB2122278E003D5B51 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 558D29E92122278E003D5B51 /* LaunchScreen.storyboard */; };
@@ -31,10 +35,14 @@
 
 /* Begin PBXFileReference section */
 		0E402A8FEF9D1BF811AE8501 /* Pods-SampleSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-SampleSwift/Pods-SampleSwift.release.xcconfig"; sourceTree = "<group>"; };
+		173E772F225C5FF200CB32CF /* DemoStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoStep.swift; sourceTree = "<group>"; };
+		17A8AE48225BC87D006DC1DB /* AnchorVisual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnchorVisual.swift; sourceTree = "<group>"; };
+		17C1873E225BFC6000081781 /* BasicDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicDemoViewController.swift; sourceTree = "<group>"; };
+		17C18740225BFC7500081781 /* NearbyDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyDemoViewController.swift; sourceTree = "<group>"; };
+		17F13115225BD8BC00B7B910 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		3DED57FD62FA89DCB418915F /* Pods-SampleSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleSwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SampleSwift/Pods-SampleSwift.debug.xcconfig"; sourceTree = "<group>"; };
 		558D29DB2122278D003D5B51 /* SampleSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		558D29DE2122278D003D5B51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		558D29E22122278D003D5B51 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		558D29E52122278D003D5B51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		558D29E72122278E003D5B51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		558D29EA2122278E003D5B51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -57,6 +65,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		173E7731225C6E1100CB32CF /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				17C1873E225BFC6000081781 /* BasicDemoViewController.swift */,
+				17F13115225BD8BC00B7B910 /* BaseViewController.swift */,
+				17C18740225BFC7500081781 /* NearbyDemoViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		3D9AFF4BF9F57070B3DAE9FE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,15 +105,17 @@
 		558D29DD2122278D003D5B51 /* SampleSwift */ = {
 			isa = PBXGroup;
 			children = (
-				76FB1EC421B8B64F000D13D2 /* SampleSwift.entitlements */,
+				173E7731225C6E1100CB32CF /* ViewControllers */,
+				17A8AE48225BC87D006DC1DB /* AnchorVisual.swift */,
 				558D29DE2122278D003D5B51 /* AppDelegate.swift */,
-				558D29E22122278D003D5B51 /* ViewController.swift */,
-				558D29E42122278D003D5B51 /* Main.storyboard */,
 				558D29E72122278E003D5B51 /* Assets.xcassets */,
-				558D29E92122278E003D5B51 /* LaunchScreen.storyboard */,
-				558D29EC2122278E003D5B51 /* Info.plist */,
-				55C1AF4621309507005A98E2 /* Bridging-Header.h */,
 				76C862FC21F27ADD008A4362 /* AuthenticationHelper.swift */,
+				55C1AF4621309507005A98E2 /* Bridging-Header.h */,
+				173E772F225C5FF200CB32CF /* DemoStep.swift */,
+				558D29EC2122278E003D5B51 /* Info.plist */,
+				558D29E92122278E003D5B51 /* LaunchScreen.storyboard */,
+				558D29E42122278D003D5B51 /* Main.storyboard */,
+				76FB1EC421B8B64F000D13D2 /* SampleSwift.entitlements */,
 			);
 			path = SampleSwift;
 			sourceTree = "<group>";
@@ -228,8 +248,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				558D29E32122278D003D5B51 /* ViewController.swift in Sources */,
+				17C1873F225BFC6000081781 /* BasicDemoViewController.swift in Sources */,
+				17C18741225BFC7500081781 /* NearbyDemoViewController.swift in Sources */,
+				17F13116225BD8BC00B7B910 /* BaseViewController.swift in Sources */,
+				17A8AE49225BC87D006DC1DB /* AnchorVisual.swift in Sources */,
 				558D29DF2122278D003D5B51 /* AppDelegate.swift in Sources */,
+				173E7730225C5FF200CB32CF /* DemoStep.swift in Sources */,
 				76C862FD21F27ADD008A4362 /* AuthenticationHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -2,6 +2,6 @@
 // Licensed under the MIT license.
 package com.microsoft.sampleandroid;
 
-public interface AuthenticationHelperCallback {
-    public void complete(String token);
+interface AuthenticationHelperCallback {
+    void complete(String token);
 }

@@ -1,0 +1,110 @@
+apply plugin: 'com.android.application'
+
+def azureSpatialAnchorsSdkVersion = '1.1.0'
+
+/*
+The arcore aar library contains the native shared libraries.  These are
+extracted before building to a temporary directory.
+ */
+def natives_libpath = "${buildDir}/natives"
+
+// Create a configuration to mark which aars to extract .so files from
+configurations { natives }
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.microsoft.samplenativeandroid"
+
+        // 24 is the minimum since ARCore only works with 24 and higher.
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14", "-Wall", "-I $buildDir/inc"
+                arguments "-DANDROID_STL=c++_static",
+                        "-DNATIVE_LIBPATH=${natives_libpath}/jni",
+                        "-DNATIVE_INCLUDE=${project.rootDir}/libraries/include"
+            }
+        }
+        ndk {
+            abiFilters "arm64-v8a", "x86"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    // ARCore library
+    implementation 'com.google.ar:core:1.7.0'
+    natives 'com.google.ar:core:1.7.0'
+
+    // Spatial Services
+    implementation "com.microsoft.azure.spatialanchors:spatialanchors_ndk:[${azureSpatialAnchorsSdkVersion}]"
+    natives "com.microsoft.azure.spatialanchors:spatialanchors_ndk:[${azureSpatialAnchorsSdkVersion}]"
+
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation "com.microsoft.azure.spatialanchors:spatialanchors_java:[${azureSpatialAnchorsSdkVersion}]"
+
+}
+
+// Extracts the shared libraries from aars in the natives configuration.
+// This is done so that NDK builds can access these libraries.
+task extractNativeLibraries() {
+    // Always extract, this insures the native libs are updated if the version changes.
+    outputs.upToDateWhen { false }
+    doFirst {
+        configurations.natives.files.each { f ->
+            copy {
+                from zipTree(f)
+                into natives_libpath
+                include "jni/**/*"
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded {
+    task-> if (task.name.contains("external") && !task.name.contains("Clean")) {
+        task.dependsOn(extractNativeLibraries)
+    }
+}
+
+// Automatically extract the 'inc' directory from the AAR to the build directory before compiling any sources
+task extractIncludeHeaders {
+    // Always extract, this insures the native libs are updated if the version changes.
+    outputs.upToDateWhen { false }
+    doFirst {
+        configurations.natives.each { f ->
+            copy {
+                from zipTree(f)
+                into buildDir
+                include "inc/**/*"
+            }
+        }
+    }
+}
+build.dependsOn('extractIncludeHeaders')
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith('compile')) {
+        task.dependsOn('extractIncludeHeaders')
+    }
+}

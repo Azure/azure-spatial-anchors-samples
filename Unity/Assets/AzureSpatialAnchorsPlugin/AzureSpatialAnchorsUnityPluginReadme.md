@@ -1,13 +1,15 @@
 # Azure Spatial Anchors Plugin for Unity
 
 ## Building in General
-1. Open the sample scene (for example `AzureSpatialAnchorsPlugin/Examples/AzureSpatialAnchorsBasicDemo.unity`)
-2. Select the AzureSpatialAnchors object
+1. Navigate to `AzureSpatialAnchorsPlugin/Examples/Resources`)
+2. Select AzureSpatialAnchorsDemoConfig
 3. Set the value in the `Spatial Anchors Endpoint` property.
 4. Set the value in the 'Spatial Anchors Account Key' property. 
+5. When configuring scenes for the build ensure that 'AzureSpatialAnchorsDemoLauncher' is at index 0.
 
 ## Known Issues When Switching Platforms
 1. When switching platforms you may see some errors in the editor remarking that certain materials failed to unload. These messges are benign and can be ignored.  
+2. If you experience AR rendering issues on Mobile, in Unity select Assets->Reimport All
 
 ## Building for HoloLens
 
