@@ -81,7 +81,6 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
         arFragment.setOnTapArPlaneListener(this::onTapArPlaneListener);
 
         sceneView = arFragment.getArSceneView();
-        SceneformHelper.setupSessionForSceneView(this, sceneView);
 
         Scene scene = sceneView.getScene();
         scene.addOnUpdateListener(frameTime -> {
@@ -119,6 +118,16 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+        // ArFragment of Sceneform automatically requests the camera permission before creating the AR session,
+        // so we don't need to request the camera permission explicitly
+        if (!SceneformHelper.hasCameraPermission(this)) {
+            return;
+        }
+
+        if (sceneView != null && sceneView.getSession() == null) {
+            SceneformHelper.setupSessionForSceneView(this, sceneView);
+        }
 
         if (AzureSpatialAnchorsManager.SpatialAnchorsAccountId.equals("Set me") || AzureSpatialAnchorsManager.SpatialAnchorsAccountKey.equals("Set me")) {
             Toast.makeText(this, "\"Set SpatialAnchorsAccountId and SpatialAnchorsAccountKey in AzureSpatialAnchorsManager.java\"", Toast.LENGTH_LONG)

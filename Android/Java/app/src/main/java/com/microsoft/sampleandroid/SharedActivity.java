@@ -131,7 +131,6 @@ public class SharedActivity extends AppCompatActivity
         arFragment.setOnTapArPlaneListener(this::onTapArPlaneListener);
 
         sceneView = arFragment.getArSceneView();
-        SceneformHelper.setupSessionForSceneView(this, sceneView);
 
         textView = findViewById(R.id.textView);
         textView.setVisibility(View.VISIBLE);
@@ -171,6 +170,16 @@ public class SharedActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+        // ArFragment of Sceneform automatically requests the camera permission before creating the AR session,
+        // so we don't need to request the camera permission explicitly
+        if (!SceneformHelper.hasCameraPermission(this)) {
+            return;
+        }
+
+        if (sceneView != null && sceneView.getSession() == null) {
+            SceneformHelper.setupSessionForSceneView(this, sceneView);
+        }
 
         if ((AzureSpatialAnchorsManager.SpatialAnchorsAccountId == null || AzureSpatialAnchorsManager.SpatialAnchorsAccountId.equals("Set me"))
                 || (AzureSpatialAnchorsManager.SpatialAnchorsAccountKey == null|| AzureSpatialAnchorsManager.SpatialAnchorsAccountKey.equals("Set me"))) {
