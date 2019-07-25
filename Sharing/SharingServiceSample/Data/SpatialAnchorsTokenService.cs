@@ -13,14 +13,14 @@ namespace SharingService.Data
     {
         // Azure Spatial Anchors configuration
         // TODO: Update with your own values
-        public const string spatialAnchorsAccountId = "<Spatial Anchors Account Id>"; // Account ID from Azure Spatial Anchors account
-        public const string spatialAnchorsResource = "https://sts.mixedreality.azure.com";
+        public string spatialAnchorsAccountId = Environment.GetEnvironmentVariable("SPATIAL_ANCHORS_ACCOUNT_ID"); // Account ID from Azure Spatial Anchors account
+        public string spatialAnchorsResource = Environment.GetEnvironmentVariable("SPATIAL_ANCHORS_RESOURCE");
 
         // AAD configuration
         // TODO: Update with your own values
-        public const string aadClientId = "<AAD client id>"; // Application ID from AAD registration
-        public const string aadClientKey = "<AAD client key>"; // Application key from AAD registration
-        public const string aadTenantId = "<AAD Tenant ID>"; //  Specify the Azure tenant ID in which the application was registered
+        public string aadClientId = Environment.GetEnvironmentVariable("AAD_CLIENT_ID"); // Application ID from AAD registration
+        public string aadClientKey = Environment.GetEnvironmentVariable("AAD_CLIENT_KEY"); // Application key from AAD registration
+        public string aadTenantId = Environment.GetEnvironmentVariable("AAD_TENANT_ID"); //  Specify the Azure tenant ID in which the application was registered
 
         private readonly HttpClient httpClient;
 
