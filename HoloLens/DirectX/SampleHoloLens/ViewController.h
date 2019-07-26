@@ -105,5 +105,7 @@ namespace SampleHoloLens
 #ifdef USE_ANCHOR_EXCHANGE
         AnchorExchanger m_anchorExchange{ AnchorExchangeURL };
 #endif
+
+        winrt::fire_and_forget RequestCapabilityAccess(const winrt::hstring &capabilityName);
     };
 }

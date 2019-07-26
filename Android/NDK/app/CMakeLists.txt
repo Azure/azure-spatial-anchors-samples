@@ -22,7 +22,7 @@ set_target_properties(azurespatialanchorsndk PROPERTIES IMPORTED_LOCATION
 # Import the glm header file from the NDK.
 add_library( glm INTERFACE )
 set_target_properties( glm PROPERTIES
-                       INTERFACE_INCLUDE_DIRECTORIES ${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm
+                       INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/../libraries/glm/glm
 )
 
 # This is the main app library.

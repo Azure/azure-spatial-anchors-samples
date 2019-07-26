@@ -145,6 +145,11 @@ void AzureSpatialAnchorsApplication::OnDrawFrame() {
     for (const auto& visualPair : m_anchorVisuals) {
         const auto &visual = visualPair.second;
 
+        if (visual.color == NoColor)
+        {
+            continue;
+        }
+
         ArTrackingState trackingState = AR_TRACKING_STATE_STOPPED;
         ArAnchor_getTrackingState(m_arSession, visual.localAnchor, &trackingState);
 
@@ -156,7 +161,7 @@ void AzureSpatialAnchorsApplication::OnDrawFrame() {
             ArPose_getMatrix(m_arSession, anchorPose.AcquireArPose(), glm::value_ptr(modelMat));
 
             glm::mat4 mvp_mat = projectionMat * viewMat * modelMat;
-            m_cubeRenderer.Draw(mvp_mat);
+            m_cubeRenderer.Draw(mvp_mat, visual.color);
         }
     }
 
@@ -226,6 +231,7 @@ void AzureSpatialAnchorsApplication::OnTouched(float x, float y) {
         AnchorVisual visual;
         visual.localAnchor = anchor;
         visual.identifier = ""; // Set local anchor id to empty.
+        visual.color = ReadyColor;
 
         m_anchorVisuals[visual.identifier] = visual;
 
@@ -234,7 +240,7 @@ void AzureSpatialAnchorsApplication::OnTouched(float x, float y) {
 }
 
 void AzureSpatialAnchorsApplication::AcquireArHitResult(float x, float y, ArHitResult **hitResult) {
-    // Return if an oriented point was hit.
+    // Return if a plane or an oriented point was hit.
     ArHitResultList* hitResultList = nullptr;
     ArHitResultList_create(m_arSession, &hitResultList);
     CHECK(hitResultList);
@@ -259,15 +265,30 @@ void AzureSpatialAnchorsApplication::AcquireArHitResult(float x, float y, ArHitR
         ArTrackableType trackableType = AR_TRACKABLE_NOT_VALID;
         ArTrackable_getType(m_arSession, trackable, &trackableType);
 
-        if (trackableType == AR_TRACKABLE_POINT) {
+        if (trackableType == AR_TRACKABLE_PLANE) {
+            Util::ScopedArPose hitPose(m_arSession);
+            ArHitResult_getHitPose(m_arSession, arHit, hitPose.AcquireArPose());
+            int32_t inPolygon = 0;
+            ArPlane* arPlane = ArAsPlane(trackable);
+            ArPlane_isPoseInPolygon(m_arSession, arPlane, hitPose.AcquireArPose(), &inPolygon);
+
+            if (inPolygon) {
+                *hitResult = arHit;
+                ArTrackable_release(trackable);
+                break;
+            }
+        } else if (trackableType == AR_TRACKABLE_POINT) {
             ArPoint *arPoint = ArAsPoint(trackable);
             ArPointOrientationMode mode;
             ArPoint_getOrientationMode(m_arSession, arPoint, &mode);
             if (mode == AR_POINT_ORIENTATION_ESTIMATED_SURFACE_NORMAL) {
                 *hitResult = arHit;
+                ArTrackable_release(trackable);
                 break;
             }
         }
+
+        ArTrackable_release(trackable);
     }
 
     ArHitResultList_destroy(hitResultList);
@@ -384,6 +405,7 @@ void AzureSpatialAnchorsApplication::AddEventListeners() {
                 foundVisual.cloudAnchor = args->Anchor();
                 foundVisual.localAnchor = foundVisual.cloudAnchor->LocalAnchor();
                 foundVisual.identifier = foundVisual.cloudAnchor->Identifier();
+                foundVisual.color = FoundColor;
                 m_anchorVisuals[foundVisual.identifier] = foundVisual;
             }
                 break;
@@ -447,7 +469,7 @@ void AzureSpatialAnchorsApplication::QueryNearbyAnchors(std::shared_ptr<CloudSpa
 
     auto criteria = std::make_shared<AnchorLocateCriteria>();
     auto nearbyCriteria = std::make_shared<NearAnchorCriteria>();
-    nearbyCriteria->DistanceInMeters(5);
+    nearbyCriteria->DistanceInMeters(10);
     nearbyCriteria->SourceAnchor(sourceAnchor);
     criteria->NearAnchor(nearbyCriteria);
 
@@ -481,11 +503,13 @@ void AzureSpatialAnchorsApplication::CreateCloudAnchor() {
         auto itr = m_anchorVisuals.find("");
         auto &visual = itr->second;
         if (status != Status::OK) {
+            visual.color = FailedColor;
             m_buttonText = "Save Failed: " + std::to_string(static_cast<uint32_t>(status));
             return;
         }
         m_saveCount++;
         visual.identifier = visual.cloudAnchor->Identifier();
+        visual.color = SavedColor;
         m_anchorVisuals[visual.identifier] = visual;
         m_anchorVisuals.erase("");
 
@@ -507,11 +531,16 @@ void AzureSpatialAnchorsApplication::DeleteCloudAnchor() {
     for (auto &toDeleteVisualPair : m_anchorVisuals) {
         auto &visual = toDeleteVisualPair.second;
         std::string id = visual.identifier;
+        visual.color = NoColor;
         m_cloudSession->DeleteAnchorAsync(visual.cloudAnchor,
                 [this, id](Status status) {
                     m_saveCount--;
                     if (status != Status::OK) {
                         m_buttonText = "Delete Failed: " + std::to_string(static_cast<uint32_t>(status));
+                        auto itr = m_anchorVisuals.find(id);
+                        if (itr != m_anchorVisuals.end()) {
+                            itr->second.color = FailedColor;
+                        }
                     }
 
                     if (m_demoMode == DemoMode::Basic || m_saveCount == 0) {

@@ -120,7 +120,8 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
         super.onResume();
 
         // ArFragment of Sceneform automatically requests the camera permission before creating the AR session,
-        // so we don't need to request the camera permission explicitly
+        // so we don't need to request the camera permission explicitly.
+        // This will cause onResume to be called again after the user responds to the permission request.
         if (!SceneformHelper.hasCameraPermission(this)) {
             return;
         }
@@ -135,13 +136,10 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
 
             finish();
         }
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        startDemo();
+        if (currentDemoStep == DemoStep.Start) {
+            startDemo();
+        }
     }
 
     private void advanceDemo() {
@@ -229,7 +227,7 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
 
                 AnchorLocateCriteria nearbyLocateCriteria = new AnchorLocateCriteria();
                 NearAnchorCriteria nearAnchorCriteria = new NearAnchorCriteria();
-                nearAnchorCriteria.setDistanceInMeters(5);
+                nearAnchorCriteria.setDistanceInMeters(10);
                 nearAnchorCriteria.setSourceAnchor(anchorVisuals.get(anchorID).getCloudAnchor());
                 nearbyLocateCriteria.setNearAnchor(nearAnchorCriteria);
                 // Cannot run more than one watcher concurrently
@@ -447,7 +445,7 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
 
     private void startNewSession() {
         destroySession();
-        
+
         cloudAnchorManager = new AzureSpatialAnchorsManager(sceneView.getSession());
         cloudAnchorManager.addAnchorLocatedListener(this::onAnchorLocated);
         cloudAnchorManager.addLocateAnchorsCompletedListener(this::onLocateAnchorsCompleted);

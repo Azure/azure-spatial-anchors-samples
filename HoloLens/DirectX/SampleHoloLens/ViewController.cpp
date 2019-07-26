@@ -21,9 +21,11 @@ using namespace Microsoft::WRL;
 using namespace std::placeholders;
 using namespace std::literals::chrono_literals;
 using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::Foundation::Metadata;
 using namespace winrt::Windows::Foundation::Numerics;
 using namespace winrt::Windows::Perception::Spatial;
 using namespace winrt::Windows::UI::Input::Spatial;
+using namespace winrt::Windows::Security::Authorization::AppCapabilityAccess;
 using namespace winrt::Windows::System::Threading;
 using namespace winrt::Microsoft::Azure::SpatialAnchors;
 
@@ -557,7 +559,7 @@ void ViewController::InputRecieved(SpatialPointerPose const& pose)
 
             AnchorLocateCriteria criteria = m_sscfactory.CreateAnchorLocateCriteria();
             auto nearAnchor = m_sscfactory.CreateNearAnchorCriteria();
-            nearAnchor.DistanceInMeters(5);
+            nearAnchor.DistanceInMeters(10);
             nearAnchor.SourceAnchor(m_foundAnchor);
             criteria.NearAnchor(nearAnchor);
 

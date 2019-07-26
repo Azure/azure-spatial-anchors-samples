@@ -32,6 +32,7 @@
 #include <winrt\Windows.Graphics.Holographic.h>
 #include <winrt\Windows.Perception.People.h>
 #include <winrt\Windows.Perception.Spatial.h>
+#include <winrt\Windows.Security.Authorization.AppCapabilityAccess.h>
 #include <winrt\Windows.Storage.h>
 #include <winrt\Windows.Storage.Streams.h>
 #include <winrt\Windows.UI.Core.h>
