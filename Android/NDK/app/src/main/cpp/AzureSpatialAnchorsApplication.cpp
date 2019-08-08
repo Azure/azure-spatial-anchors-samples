@@ -116,6 +116,7 @@ void AzureSpatialAnchorsApplication::OnDrawFrame() {
     // Update session to get current frame and render camera background.
     if (ArSession_update(m_arSession, m_arFrame) != AR_SUCCESS) {
         LOGE("AzureSpatialAnchorsApplication::OnDrawFrame ArSession_update error");
+        return;
     }
 
     if (m_cloudSession != nullptr) {

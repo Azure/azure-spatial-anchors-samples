@@ -283,7 +283,7 @@ winrt::fire_and_forget ViewController::DeleteAnchor(DemoStep errorStep)
     co_return;
 }
 
-void ViewController::InputRecieved(SpatialPointerPose const& pose)
+void ViewController::InputReceived(SpatialPointerPose const& pose)
 {
     if (!SanityCheckAccessInformation() || m_asyncOpInProgress)
     {
@@ -442,7 +442,7 @@ void ViewController::InputRecieved(SpatialPointerPose const& pose)
         {
             m_cloudSession.Start();
             m_sessionStarted = true;
-           
+
             AnchorLocateCriteria criteria = m_sscfactory.CreateAnchorLocateCriteria();
 
 #ifdef USE_ANCHOR_EXCHANGE

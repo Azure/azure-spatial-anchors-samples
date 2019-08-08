@@ -1,0 +1,17 @@
+<resources>
+  <string name="app_name">Sample Xamarin Android</string>
+  <string name="title_activity_aractive">ARActive</string>
+  <string name="main_title_text">Select a Spatial Anchors Demo</string>
+  <string name="main_basic_button_text">Basic</string>
+  <string name="main_basic_details_text">Create and locate and anchor.</string>
+  <string name="main_nearby_button_text">Nearby</string>
+  <string name="main_nearby_details_text">Create 3 anchors and locate the last. Then, find the other 2 anchors using a query for nearby anchors.</string>
+  <string name="main_shared_button_text">Shared</string>
+  <string name="main_shared_details_text">Create and locate anchors between multiple devices.</string>
+  <string name="shared_title_text">Welcome to the Azure Spatial Anchors Shared Anchors Demo\nChoose Create or Locate</string>
+  <string name="shared_enter_anchor_text">Enter Anchor Number:</string>
+  <string name="shared_anchor_number_text">Anchor Number</string>
+  <string name="back_button_text">Back</string>
+  <string name="create_button_text">Create</string>
+  <string name="locate_button_text">Locate</string>
+</resources>
