@@ -252,7 +252,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         protected virtual void MoveAnchoredObject(GameObject objectToMove, Vector3 worldPos, Quaternion worldRot, CloudSpatialAnchor cloudSpatialAnchor = null)
         {
             // Get the cloud-native anchor behavior
-            CloudNativeAnchor cna = spawnedObject.GetComponent<CloudNativeAnchor>();
+            CloudNativeAnchor cna = objectToMove.GetComponent<CloudNativeAnchor>();
 
             // Warn and exit if the behavior is missing
             if (cna == null)
