@@ -751,6 +751,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 #else
             throw new NotSupportedException("The platform is not supported.");
 #endif
+            OnSessionCreated();
         }
 
         /// <summary>
