@@ -127,6 +127,7 @@ static NSString *MatrixToString(matrix_float4x4 value) {
 -(void)stopSession{
     if (_cloudSession){
         [_cloudSession stop];
+        [_cloudSession dispose];
     }
     _cloudAnchor = NULL;
     _localAnchor = NULL;
@@ -150,7 +151,7 @@ static NSString *MatrixToString(matrix_float4x4 value) {
 -(void)lookForNearbyAnchors{
     ASAAnchorLocateCriteria *criteria = [ASAAnchorLocateCriteria new];
     ASANearAnchorCriteria *nearCriteria = [ASANearAnchorCriteria new];
-    [nearCriteria setDistanceInMeters:5];
+    [nearCriteria setDistanceInMeters:10];
     [nearCriteria setSourceAnchor:_anchorVisuals[_targetId].cloudAnchor];
     [criteria setNearAnchor:nearCriteria];
     [_cloudSession createWatcher:criteria];

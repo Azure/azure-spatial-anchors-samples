@@ -40,7 +40,7 @@ SampleHoloLensMain::SampleHoloLensMain(std::shared_ptr<DX::DeviceResources> cons
         OnGamepadAdded(nullptr, gamepad);
     }
 
-    // Subscribe for notifications about changes to the state of the default HolographicDisplay 
+    // Subscribe for notifications about changes to the state of the default HolographicDisplay
     // and its SpatialLocator.
     m_holographicDisplayIsAvailableChangedEventToken = HolographicSpace::IsAvailableChanged(bind(&SampleHoloLensMain::OnHolographicDisplayIsAvailableChanged, this, _1, _2));
 
@@ -217,7 +217,7 @@ HolographicFrame SampleHoloLensMain::Update()
     // When a Pressed gesture is detected, signal the ViewControler
     if (inputPose != nullptr)
     {
-        m_viewController->InputRecieved(inputPose);
+        m_viewController->InputReceived(inputPose);
     }
 
     m_textRenderer->RenderTextOffscreen(m_viewController->GetTitleText(), m_viewController->GetStatusText(), m_viewController->GetLogText());
@@ -306,9 +306,9 @@ bool SampleHoloLensMain::Render(HolographicFrame const& holographicFrame)
             //      data obtained via the surface mapping APIs. You can use this depth map to avoid
             //      rendering holograms that are intended to be hidden behind tables, walls,
             //      monitors, and so on.
-            //    * On HolographicDisplays that are transparent, black pixels will appear transparent 
-            //      to the user. On such devices, you should clear the screen to Transparent as shown 
-            //      above. You should still use alpha blending to draw semitransparent holograms. 
+            //    * On HolographicDisplays that are transparent, black pixels will appear transparent
+            //      to the user. On such devices, you should clear the screen to Transparent as shown
+            //      above. You should still use alpha blending to draw semitransparent holograms.
             //
 
 
@@ -331,14 +331,14 @@ bool SampleHoloLensMain::Render(HolographicFrame const& holographicFrame)
                 }
                 m_quadRenderer->Render(m_textRenderer->GetTexture());
 
-                // On versions of the platform that support the CommitDirect3D11DepthBuffer API, we can 
-                // provide the depth buffer to the system, and it will use depth information to stabilize 
+                // On versions of the platform that support the CommitDirect3D11DepthBuffer API, we can
+                // provide the depth buffer to the system, and it will use depth information to stabilize
                 // the image at a per-pixel level.
                 HolographicCameraRenderingParameters renderingParameters = holographicFrame.GetRenderingParameters(cameraPose);
-                    
+
                 IDirect3DSurface interopSurface = DX::CreateDepthTextureInteropObject(pCameraResources->GetDepthStencilTexture2D());
 
-                // Calling CommitDirect3D11DepthBuffer causes the system to queue Direct3D commands to 
+                // Calling CommitDirect3D11DepthBuffer causes the system to queue Direct3D commands to
                 // read the depth buffer. It will then use that information to stabilize the image as
                 // the HolographicFrame is presented.
                 renderingParameters.CommitDirect3D11DepthBuffer(interopSurface);
@@ -478,12 +478,12 @@ void SampleHoloLensMain::OnCameraRemoved(
     create_task([this]()
     {
         //
-        // TODO: Asynchronously unload or deactivate content resources (not back buffer 
+        // TODO: Asynchronously unload or deactivate content resources (not back buffer
         //       resources) that are specific only to the camera that was removed.
         //
     });
 
-    // Before letting this callback return, ensure that all references to the back buffer 
+    // Before letting this callback return, ensure that all references to the back buffer
     // are released.
     // Since this function may be called at any time, the RemoveHolographicCamera function
     // waits until it can get a lock on the set of holographic camera resources before
@@ -554,6 +554,6 @@ void SampleHoloLensMain::OnHolographicDisplayIsAvailableChanged(winrt::Windows::
             // In this example, we create a reference frame attached to the device.
             m_attachedReferenceFrame = m_spatialLocator.CreateAttachedFrameOfReferenceAtCurrentHeading();
         }
-        
+
     }
 }

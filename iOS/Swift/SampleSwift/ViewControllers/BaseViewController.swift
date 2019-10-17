@@ -277,6 +277,7 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
     func stopSession() {
         if let cloudSession = cloudSession {
             cloudSession.stop()
+            cloudSession.dispose()
         }
         
         cloudAnchor = nil
@@ -301,7 +302,7 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
     func lookForNearbyAnchors() {
         let criteria = ASAAnchorLocateCriteria()!
         let nearCriteria = ASANearAnchorCriteria()!
-        nearCriteria.distanceInMeters = 5
+        nearCriteria.distanceInMeters = 10
         nearCriteria.sourceAnchor = anchorVisuals[targetId!]!.cloudAnchor
         criteria.nearAnchor = nearCriteria
         cloudSession!.createWatcher(criteria)

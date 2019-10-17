@@ -13,12 +13,12 @@ void CubeRenderer::Initialize(AAssetManager* assetManager) {
     }
 
     m_vertices = glGetAttribLocation(m_program, "aPosition");
-    m_colors = glGetAttribLocation(m_program, "aColor");
-
     m_mvp = glGetUniformLocation(m_program, "uModelViewProjection");
+
+    u_color = glGetUniformLocation(m_program, "uColor");
 }
 
-void CubeRenderer::Draw(const glm::mat4& modelViewProjection) const {
+void CubeRenderer::Draw(const glm::mat4& modelViewProjection, const glm::vec3& color) const {
     if (!m_program) {
         LOGE("program is null.");
         return;
@@ -26,16 +26,15 @@ void CubeRenderer::Draw(const glm::mat4& modelViewProjection) const {
 
     glUseProgram(m_program);
 
+    glUniform4f(u_color, color.x, color.y, color.z, 255.0f);
+
     glEnableVertexAttribArray(m_vertices);
     glVertexAttribPointer(m_vertices, 3, GL_FLOAT, GL_FALSE, 0, CubeVertices);
-
-    glEnableVertexAttribArray(m_colors);
-    glVertexAttribPointer(m_colors, 3, GL_FLOAT, GL_FALSE, 0, CubeColors);
 
     glm::mat4 scaledMvp = glm::scale(modelViewProjection, glm::vec3(0.1f, 0.1f, 0.1f));
     glUniformMatrix4fv(m_mvp, 1, GL_FALSE, glm::value_ptr(scaledMvp));
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, CubeIndices);
 
     glUseProgram(0);
     Util::CheckGlError("CubeRenderer::Draw() error");

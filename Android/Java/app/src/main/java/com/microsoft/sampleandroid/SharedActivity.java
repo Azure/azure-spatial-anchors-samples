@@ -172,7 +172,8 @@ public class SharedActivity extends AppCompatActivity
         super.onResume();
 
         // ArFragment of Sceneform automatically requests the camera permission before creating the AR session,
-        // so we don't need to request the camera permission explicitly
+        // so we don't need to request the camera permission explicitly.
+        // This will cause onResume to be called again after the user responds to the permission request.
         if (!SceneformHelper.hasCameraPermission(this)) {
             return;
         }

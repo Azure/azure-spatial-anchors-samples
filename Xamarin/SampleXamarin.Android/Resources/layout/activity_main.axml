@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_title_text"
+        android:textAlignment="center"
+        android:layout_marginBottom="15dp"
+        android:textSize="24sp" />
+	<Button
+		android:id="@+id/arBasicDemo"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/main_basic_button_text"
+		android:layout_marginTop="15dp"
+		android:textAllCaps="false" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_basic_details_text"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/arNearbyDemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_nearby_button_text"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_nearby_details_text"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/arSharedDemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_shared_button_text"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_shared_details_text"
+        android:textAlignment="center" />
+</LinearLayout>

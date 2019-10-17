@@ -1,0 +1,3 @@
+[submodule "Android/NDK/libraries/include/glm"]
+	path = Android/NDK/libraries/glm
+	url = https://github.com/g-truc/glm

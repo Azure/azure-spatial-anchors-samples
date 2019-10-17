@@ -408,7 +408,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Microsoft.SampleSwift;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.spatialanchorsswiftsample-df";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SampleSwift/Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
@@ -430,7 +430,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Microsoft.SampleSwift;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.spatialanchorsswiftsample-df";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SampleSwift/Bridging-Header.h";
 				SWIFT_VERSION = 4.0;

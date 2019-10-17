@@ -59,6 +59,7 @@ namespace AzureSpatialAnchors {
             ArAnchor* localAnchor;
             std::shared_ptr<Microsoft::Azure::SpatialAnchors::CloudSpatialAnchor> cloudAnchor;
             std::string identifier;
+            glm::vec3 color;
         };
 
         ArSession* m_arSession = nullptr;

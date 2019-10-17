@@ -27,14 +27,14 @@ namespace SampleHoloLens
         // Controller update called once per frame.
         void Update(winrt::Windows::Perception::Spatial::SpatialCoordinateSystem const& currentCoordinateSystem);
 
-        void InputRecieved(winrt::Windows::UI::Input::Spatial::SpatialPointerPose const& pose);
+        void InputReceived(winrt::Windows::UI::Input::Spatial::SpatialPointerPose const& pose);
 
         const std::wstring& GetTitleText() { return m_titleText; }
         const std::wstring& GetStatusText() { return m_statusText; }
         const std::wstring& GetLogText() { return m_logText; }
 
         winrt::Windows::Foundation::Collections::IObservableMap<winrt::hstring, winrt::SampleHoloLens::AnchorVisual> GetFoundAnchors()
-        { 
+        {
             return m_foundAnchors;
         }
 
@@ -42,7 +42,7 @@ namespace SampleHoloLens
         enum class DemoStep : uint32_t {
             CreateFactory = 0,  ///< a factory object will be created
             CreateSession,      ///< a session object will be created
-            ConfigSession,      ///< the session will be configurated
+            ConfigSession,      ///< the session will be configured
             StartSession,       ///< the session will be started
 #ifdef BASIC_DEMO
             CreateLocalAnchor,  ///< the session will create a local anchor
@@ -105,5 +105,7 @@ namespace SampleHoloLens
 #ifdef USE_ANCHOR_EXCHANGE
         AnchorExchanger m_anchorExchange{ AnchorExchangeURL };
 #endif
+
+        winrt::fire_and_forget RequestCapabilityAccess(const winrt::hstring &capabilityName);
     };
 }

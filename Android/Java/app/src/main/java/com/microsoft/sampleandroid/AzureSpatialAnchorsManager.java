@@ -38,6 +38,10 @@ class AzureSpatialAnchorsManager {
     private final CloudSpatialAnchorSession spatialAnchorsSession;
 
     public AzureSpatialAnchorsManager(Session arCoreSession) {
+        if (arCoreSession == null) {
+            throw new IllegalArgumentException("The arCoreSession may not be null.");
+        }
+
         spatialAnchorsSession = new CloudSpatialAnchorSession();
         spatialAnchorsSession.getConfiguration().setAccountId(SpatialAnchorsAccountId);
         spatialAnchorsSession.getConfiguration().setAccountKey(SpatialAnchorsAccountKey);

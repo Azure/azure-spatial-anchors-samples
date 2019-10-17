@@ -16,7 +16,7 @@ using namespace winrt::Windows::UI::Core;
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
     winrt::init_apartment();
-    CoreApplication::Run(AppViewSource());
+    CoreApplication::Run(winrt::make<AppViewSource>());
     return 0;
 }
 
@@ -24,7 +24,7 @@ int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 
 IFrameworkView AppViewSource::CreateView()
 {
-    return holographicView;
+    return holographicView.as<IFrameworkView>();
 }
 
 // IFrameworkView methods
