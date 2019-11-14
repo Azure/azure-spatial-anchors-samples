@@ -20,32 +20,48 @@
         android:textColor="@android:color/holo_orange_light"
         android:visibility="invisible" />
 
+  <Button
+      android:id="@+id/demoAdvance"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:text=""
+      android:textAllCaps="false"
+      android:visibility="gone" />
+
+  <LinearLayout
+      android:id="@+id/demoOptions"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:gravity="center_horizontal"
+      android:padding="30dp"
+      android:orientation="vertical">
+
+    <Button
+        android:id="@+id/coarseRelocDemo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Coarse Reloc Demo"
+        android:textAllCaps="false" />
+
     <Button
         android:id="@+id/nearbyDemo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
         android:text="Nearby Demo"
         android:textAllCaps="false" />
 
     <Button
         android:id="@+id/basicDemo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
         android:text="Basic Demo"
         android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/demoAdvance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:text=""
-        android:textAllCaps="false" />
+  </LinearLayout>
 
 
 </RelativeLayout>

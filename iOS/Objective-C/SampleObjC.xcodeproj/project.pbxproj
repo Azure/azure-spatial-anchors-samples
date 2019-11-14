@@ -13,6 +13,10 @@
 		4FAED571221E10C500747B77 /* NearbyDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FAED570221E10C500747B77 /* NearbyDemoViewController.m */; };
 		4FAED575221E1E6800747B77 /* SharedDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FAED574221E1E6800747B77 /* SharedDemoViewController.m */; };
 		76C862FB21F253EF008A4362 /* AuthenticationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C862FA21F253EF008A4362 /* AuthenticationHelper.m */; };
+		7F03D8ED232F848B00AE0D2A /* SensorStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F03D8EC232F848B00AE0D2A /* SensorStatusView.xib */; };
+		7F03D8F6232FA64100AE0D2A /* LocationProviderSensorStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F03D8F5232FA64100AE0D2A /* LocationProviderSensorStatus.m */; };
+		7F03D8F7232FB16500AE0D2A /* SensorStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F03D8EF232F852C00AE0D2A /* SensorStatusView.m */; };
+		7F3D3488232ABBFC0092912B /* CoarseRelocDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F3D3487232ABBFC0092912B /* CoarseRelocDemoViewController.m */; };
 		9C5FAA4B20B734390067DA11 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5FAA4A20B734390067DA11 /* AppDelegate.m */; };
 		9C5FAA5020B734390067DA11 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5FAA4F20B734390067DA11 /* BaseViewController.m */; };
 		9C5FAA5320B734390067DA11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C5FAA5120B734390067DA11 /* Main.storyboard */; };
@@ -48,6 +52,15 @@
 		76C862F921F15D71008A4362 /* AuthenticationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticationHelper.h; sourceTree = "<group>"; };
 		76C862FA21F253EF008A4362 /* AuthenticationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticationHelper.m; sourceTree = "<group>"; };
 		76FB1EC321B899CF000D13D2 /* SampleObjC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SampleObjC.entitlements; sourceTree = "<group>"; };
+		7F03D8EC232F848B00AE0D2A /* SensorStatusView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SensorStatusView.xib; sourceTree = "<group>"; };
+		7F03D8EE232F84C900AE0D2A /* SensorStatusView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SensorStatusView.h; sourceTree = "<group>"; };
+		7F03D8EF232F852C00AE0D2A /* SensorStatusView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SensorStatusView.m; sourceTree = "<group>"; };
+		7F03D8F2232FA60200AE0D2A /* SensorStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SensorStatus.h; sourceTree = "<group>"; };
+		7F03D8F3232FA61A00AE0D2A /* SensorStatusModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SensorStatusModel.h; sourceTree = "<group>"; };
+		7F03D8F4232FA62C00AE0D2A /* LocationProviderSensorStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationProviderSensorStatus.h; sourceTree = "<group>"; };
+		7F03D8F5232FA64100AE0D2A /* LocationProviderSensorStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationProviderSensorStatus.m; sourceTree = "<group>"; };
+		7F3D3486232ABB810092912B /* CoarseRelocDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoarseRelocDemoViewController.h; sourceTree = "<group>"; };
+		7F3D3487232ABBFC0092912B /* CoarseRelocDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoarseRelocDemoViewController.m; sourceTree = "<group>"; };
 		9C5FAA4620B734390067DA11 /* SampleObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C5FAA4920B734390067DA11 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9C5FAA4A20B734390067DA11 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -73,6 +86,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7F03D8EB232F842600AE0D2A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7F03D8EC232F848B00AE0D2A /* SensorStatusView.xib */,
+				7F03D8EE232F84C900AE0D2A /* SensorStatusView.h */,
+				7F03D8EF232F852C00AE0D2A /* SensorStatusView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7F03D8F1232FA5E800AE0D2A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7F03D8F2232FA60200AE0D2A /* SensorStatus.h */,
+				7F03D8F3232FA61A00AE0D2A /* SensorStatusModel.h */,
+				7F03D8F4232FA62C00AE0D2A /* LocationProviderSensorStatus.h */,
+				7F03D8F5232FA64100AE0D2A /* LocationProviderSensorStatus.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		8487ABF5C761FBBE647B9D88 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,7 +137,9 @@
 		9C5FAA4820B734390067DA11 /* SampleObjC */ = {
 			isa = PBXGroup;
 			children = (
-				76FB1EC321B899CF000D13D2 /* SampleObjC.entitlements */,
+				7F03D8F1232FA5E800AE0D2A /* Models */,
+				7F03D8EB232F842600AE0D2A /* Views */,
+				9C5FAA5420B7343A0067DA11 /* Assets.xcassets */,
 				9C5FAA5A20B7343A0067DA11 /* main.m */,
 				9C5FAA4920B734390067DA11 /* AppDelegate.h */,
 				9C5FAA4A20B734390067DA11 /* AppDelegate.m */,
@@ -113,16 +149,18 @@
 				9C5FAA4F20B734390067DA11 /* BaseViewController.m */,
 				4FAED56A221DD66500747B77 /* BasicDemoViewController.h */,
 				4FAED568221DD5F800747B77 /* BasicDemoViewController.m */,
+				7F3D3486232ABB810092912B /* CoarseRelocDemoViewController.h */,
+				7F3D3487232ABBFC0092912B /* CoarseRelocDemoViewController.m */,
 				4FAED572221E10D500747B77 /* NearbyDemoViewController.h */,
 				4FAED570221E10C500747B77 /* NearbyDemoViewController.m */,
 				4FAED573221E1E5B00747B77 /* SharedDemoViewController.h */,
 				4FAED574221E1E6800747B77 /* SharedDemoViewController.m */,
 				76C862F921F15D71008A4362 /* AuthenticationHelper.h */,
 				76C862FA21F253EF008A4362 /* AuthenticationHelper.m */,
+				9C5FAA5920B7343A0067DA11 /* Info.plist */,
 				9C5FAA5120B734390067DA11 /* Main.storyboard */,
 				9C5FAA5620B7343A0067DA11 /* LaunchScreen.storyboard */,
-				9C5FAA5420B7343A0067DA11 /* Assets.xcassets */,
-				9C5FAA5920B7343A0067DA11 /* Info.plist */,
+				76FB1EC321B899CF000D13D2 /* SampleObjC.entitlements */,
 			);
 			path = SampleObjC;
 			sourceTree = "<group>";
@@ -202,6 +240,7 @@
 			files = (
 				9C5FAA5820B7343A0067DA11 /* LaunchScreen.storyboard in Resources */,
 				9C5FAA5520B7343A0067DA11 /* Assets.xcassets in Resources */,
+				7F03D8ED232F848B00AE0D2A /* SensorStatusView.xib in Resources */,
 				9C5FAA5320B734390067DA11 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,19 +253,14 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-SampleObjC/Pods-SampleObjC-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ADAL/ADAL.framework",
-				"${PODS_ROOT}/AzureSpatialAnchors/bin/frameworks/AzureSpatialAnchors.framework",
+			inputFileListPaths = (
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ADAL.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AzureSpatialAnchors.framework",
+			outputFileListPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SampleObjC/Pods-SampleObjC-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SampleObjC/Pods-SampleObjC-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D650D7C0A8C6454EC41703FB /* [CP] Check Pods Manifest.lock */ = {
@@ -256,11 +290,14 @@
 			files = (
 				4FAED575221E1E6800747B77 /* SharedDemoViewController.m in Sources */,
 				4FAED571221E10C500747B77 /* NearbyDemoViewController.m in Sources */,
+				7F3D3488232ABBFC0092912B /* CoarseRelocDemoViewController.m in Sources */,
 				9C5FAA5020B734390067DA11 /* BaseViewController.m in Sources */,
 				4FAED56C221E0E5200747B77 /* MenuScreenViewController.m in Sources */,
 				4FAED569221DD5F800747B77 /* BasicDemoViewController.m in Sources */,
 				76C862FB21F253EF008A4362 /* AuthenticationHelper.m in Sources */,
 				9C5FAA5B20B7343A0067DA11 /* main.m in Sources */,
+				7F03D8F7232FB16500AE0D2A /* SensorStatusView.m in Sources */,
+				7F03D8F6232FA64100AE0D2A /* LocationProviderSensorStatus.m in Sources */,
 				9C5FAA4B20B734390067DA11 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -408,6 +445,11 @@
 				CODE_SIGN_ENTITLEMENTS = SampleObjC/SampleObjC.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/ADAL\"/**",
+					"\"${PODS_ROOT}/AzureSpatialAnchors/bin/frameworks\"",
+				);
 				INFOPLIST_FILE = SampleObjC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -416,6 +458,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.spatialanchorsObjectiveCsample-df";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/SampleObjC";
 			};
 			name = Debug;
 		};
@@ -436,6 +479,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.spatialanchorsObjectiveCsample-df";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/SampleObjC";
 			};
 			name = Release;
 		};

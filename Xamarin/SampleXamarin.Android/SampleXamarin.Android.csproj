@@ -52,20 +52,33 @@
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Android.Export" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionSelectionFragment.cs" />
+    <Compile Include="AnchorCreationFragment.cs" />
+    <Compile Include="AnchorPlacementFragment.cs" />
+    <Compile Include="AzureSpatialAnchorsCoarseRelocActivity.cs" />
     <Compile Include="AzureSpatialAnchorsManager.cs" />
     <Compile Include="AnchorVisual.cs" />
     <Compile Include="AzureSpatialAnchorsActivity.cs" />
     <Compile Include="AzureSpatialAnchorsSharedActivity.cs" />
+    <Compile Include="FragmentHelper.cs" />
+    <Compile Include="FutureResultConsumer.cs" />
+    <Compile Include="LocationProviderSensorStatus.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneformHelper.cs" />
+    <Compile Include="SensorPermissionsHelper.cs" />
+    <Compile Include="SensorStatus.cs" />
+    <Compile Include="SensorStatusModel.cs" />
+    <Compile Include="SensorStatusView.cs" />
+    <Compile Include="WatcherFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
@@ -86,8 +99,6 @@
     <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
     <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher.xml" />
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher_round.xml" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher.png" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_round.png" />
@@ -103,21 +114,48 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_round.png" />
-    <AndroidResource Include="Resources\drawable\ic_launcher_foreground.xml" />
-    <AndroidResource Include="Resources\drawable\ic_launcher_background.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.SpatialAnchors.Xamarin" Version="1.3.3" />
-    <PackageReference Include="Xamarin.Android.SceneForm.UX" Version="1.9.0-preview1" />
-    <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.1" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
-    <PackageReference Include="Xamarin.Google.ARCore" Version="1.9.0" />
+    <PackageReference Include="Microsoft.Azure.SpatialAnchors.Xamarin" Version="2.0.0" />
+    <PackageReference Include="Xamarin.Android.SceneForm.UX" Version="1.11.0" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.3" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SampleXamarin.Common\SampleXamarin.Common.csproj">
       <Project>{838607e8-34e4-41a9-9112-39e61ab9ba5e}</Project>
       <Name>SampleXamarin.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_coarse_reloc.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\sensor_status.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\coarse_reloc_action_selection.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\coarse_reloc_anchor_creation.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\coarse_reloc_anchor_placement.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\coarse_reloc_watcher.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -507,7 +507,6 @@ MonoBehaviour:
   clientId: 
   tenantId: 
   logLevel: 2
-  quadRenderer: {fileID: 0}
 --- !u!1001 &309079621
 PrefabInstance:
   m_ObjectHideFlags: 0

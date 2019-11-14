@@ -9,28 +9,19 @@ using Android.Views;
 using Android.Widget;
 using Google.AR.Core;
 using Google.AR.Sceneform;
-using Google.AR.Sceneform.Rendering;
 using Google.AR.Sceneform.UX;
-using Java.Util.Concurrent;
 using Microsoft.Azure.SpatialAnchors;
 using SampleXamarin.AnchorSharing;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Color = Android.Graphics.Color;
 
 namespace SampleXamarin
 {
     [Activity(Label = "AzureSpatialAnchorsSharedActivity")]
     public class AzureSpatialAnchorsSharedActivity : AppCompatActivity
     {
-        private static Material failedColor;
-
-        private static Material foundColor;
-
-        private static Material readyColor;
-
-        private static Material savedColor;
-
         private readonly ConcurrentDictionary<string, AnchorVisual> anchorVisuals = new ConcurrentDictionary<string, AnchorVisual>();
 
         private readonly object renderLock = new object();
@@ -151,7 +142,7 @@ namespace SampleXamarin
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.activity_shared);
 
-            this.arFragment = (ArFragment)this.SupportFragmentManager.FindFragmentById(Resource.Id.ux_fragment);
+            this.arFragment = (ArFragment)this.SupportFragmentManager.FindFragmentById(Resource.Id.ar_fragment);
             this.arFragment.TapArPlane += (sender, args) => this.OnTapArPlaneListener(args.HitResult, args.Plane, args.MotionEvent);
 
             this.sceneView = this.arFragment.ArSceneView;
@@ -174,15 +165,6 @@ namespace SampleXamarin
                 // Pass frames to Spatial Anchors for processing.
                 this.cloudAnchorManager?.Update(this.sceneView.ArFrame);
             };
-
-            // Initialize the colors.
-            MaterialFactory.MakeOpaqueWithColor(this, new Color(Android.Graphics.Color.Red)).GetAsync().ContinueWith(materialTask => failedColor = (Material)materialTask.Result);
-            MaterialFactory.MakeOpaqueWithColor(this, new Color(Android.Graphics.Color.Green)).GetAsync().ContinueWith(materialTask => savedColor = (Material)materialTask.Result);
-            MaterialFactory.MakeOpaqueWithColor(this, new Color(Android.Graphics.Color.Yellow)).GetAsync().ContinueWith(materialTask =>
-            {
-                readyColor = (Material)materialTask.Result;
-                foundColor = readyColor;
-            });
         }
 
         protected override void OnDestroy()
@@ -253,13 +235,13 @@ namespace SampleXamarin
                     {
                         anchorLocated = true;
 
-                        AnchorVisual foundVisual = new AnchorVisual(anchor.LocalAnchor)
+                        AnchorVisual foundVisual = new AnchorVisual(arFragment, anchor.LocalAnchor)
                         {
                             CloudAnchor = anchor
                         };
                         foundVisual.AnchorNode.SetParent(this.arFragment.ArSceneView.Scene);
                         string cloudAnchorIdentifier = foundVisual.CloudAnchor.Identifier;
-                        foundVisual.SetColor(foundColor);
+                        foundVisual.SetColor(this, Color.Yellow);
                         foundVisual.AddToScene(this.arFragment);
                         this.anchorVisuals[cloudAnchorIdentifier] = foundVisual;
                     }
@@ -314,8 +296,8 @@ namespace SampleXamarin
 
         private Anchor CreateAnchor(HitResult hitResult)
         {
-            AnchorVisual visual = new AnchorVisual(hitResult.CreateAnchor());
-            visual.SetColor(readyColor);
+            AnchorVisual visual = new AnchorVisual(arFragment, hitResult.CreateAnchor());
+            visual.SetColor(this, Color.Yellow);
             visual.AddToScene(this.arFragment);
             this.anchorVisuals[string.Empty] = visual;
 
@@ -429,7 +411,7 @@ namespace SampleXamarin
 
                         string anchorId = anchor.Identifier;
                         Log.Debug("ASADemo:", "created anchor: " + anchorId);
-                        visual.SetColor(savedColor);
+                        visual.SetColor(this, Color.Green);
                         this.anchorVisuals[anchorId] = visual;
                         this.anchorVisuals.TryRemove(string.Empty, out _);
 
@@ -445,7 +427,7 @@ namespace SampleXamarin
                     catch (Exception ex)
                     {
                         this.CreateAnchorExceptionCompletion(ex.Message);
-                        visual.SetColor(failedColor);
+                        visual.SetColor(this, Color.Red);
                     }
                 });
         }

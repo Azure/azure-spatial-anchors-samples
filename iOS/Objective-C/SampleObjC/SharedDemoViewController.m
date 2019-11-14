@@ -10,7 +10,7 @@ NSString *const SharingAnchorsServiceUrl = @"";
 // We then type that the anchor number (or a past anchor number - from a different device!) to get the Cloud Spatial Anchor identifier and locate the anchor.
 @implementation SharedDemoViewController
 
--(void)moveToNextStepAfterCreateCloudAnchor{
+-(void)onCloudAnchorCreated{
     [_feedbackControl setHidden:YES];
     [_button setTitle:@"Anchor being saved to sharing service... " forState:UIControlStateNormal];
 
@@ -35,7 +35,8 @@ NSString *const SharingAnchorsServiceUrl = @"";
     }];
 }
 
--(void)moveToNextStepAfterAnchorLocated{
+-(void)onLocateAnchorsCompleted{
+    _ignoreTaps = NO;
     [_feedbackControl setHidden:YES];
     [_button setTitle:@"Anchor found! Tap to finish demo" forState:UIControlStateNormal];
     _step = DemoStepStopSession;
@@ -63,10 +64,10 @@ NSString *const SharingAnchorsServiceUrl = @"";
             [_secondaryButton setHidden:YES];
             
             [self startSession];
-            
-            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor
-            // We will then put that anchor in the anchorVisuals dictionary with a key of "" and call CreateCloudAnchor when there is enough data for saving
-            // CreateCloudAnchor will call moveToNextStepAfterCreateCloudAnchor when its async method returns
+
+            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor.
+            // We will then put that anchor in the anchorVisuals dictionary with a key of "" and call CreateCloudAnchor when there is enough data for saving.
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             [_button setTitle:@"Tap on the screen to create an Anchor ☝️" forState:UIControlStateNormal];
             break;
         case DemoStepEnterAnchorNumber:
@@ -81,7 +82,7 @@ NSString *const SharingAnchorsServiceUrl = @"";
             [self stopSession];
             [self startSession];
             
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             [self lookForAnchor];
             break;
         case DemoStepStopSession:
@@ -232,7 +233,8 @@ NSString *const SharingAnchorsServiceUrl = @"";
     [super viewDidLoad];
     
     // Secondary button for use in sharing sample
-    _secondaryButton = [self addButtonAt:super.sceneView.bounds.size.height - 140 lines:1];
+    _secondaryButton = [self addButton];
+    [self layoutButton:_secondaryButton top:super.sceneView.bounds.size.height - 200 lines:1];
     [_secondaryButton addTarget:self action:@selector(secondaryButtonTap:) forControlEvents:UIControlEventTouchDown];
     [_secondaryButton setTitle:@"Tap to locate Anchor by its anchor number" forState:UIControlStateNormal];
     

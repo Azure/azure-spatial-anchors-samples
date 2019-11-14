@@ -9,7 +9,7 @@ uint const NumberOfNearbyAnchors = 3; ///< the number of anchors we will create 
 
 @implementation NearbyDemoViewController
 
--(void)moveToNextStepAfterCreateCloudAnchor{
+-(void)onCloudAnchorCreated{
     if (_saveCount < NumberOfNearbyAnchors) {
         [_button setTitle:@"Tap on the screen to create the next Anchor ☝️" forState:UIControlStateNormal];
         _currentlySavingAnchor = YES;
@@ -21,7 +21,8 @@ uint const NumberOfNearbyAnchors = 3; ///< the number of anchors we will create 
     }
 }
 
--(void)moveToNextStepAfterAnchorLocated{
+-(void)onLocateAnchorsCompleted{
+    _ignoreTaps = NO;
     if (_step == DemoStepLookForAnchor) {
         [_button setTitle:@"Anchor found! Tap to locate nearby" forState:UIControlStateNormal];
         _step = DemoStepLookForNearbyAnchors;
@@ -49,9 +50,9 @@ uint const NumberOfNearbyAnchors = 3; ///< the number of anchors we will create 
             
             [self startSession];
             
-            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor
-            // We will then put that anchor in the anchorVisuals dictionary with a key of "" and call CreateCloudAnchor when there is enough data for saving
-            // CreateCloudAnchor will call moveToNextStepAfterCreateCloudAnchor when its async method returns
+            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor.
+            // We will then put that anchor in the anchorVisuals dictionary with a key of "" and call CreateCloudAnchor when there is enough data for saving.
+            // CreateCloudAnchor will call onCloudAnchorCreated when its async method returns to move to the next step.
             [_button setTitle:@"Tap on the screen to create an Anchor ☝️" forState:UIControlStateNormal];
             break;
         case DemoStepLookForAnchor:
@@ -59,7 +60,7 @@ uint const NumberOfNearbyAnchors = 3; ///< the number of anchors we will create 
             [self stopSession];
             [self startSession];
             
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             [self lookForAnchor];
             break;
         case DemoStepLookForNearbyAnchors:
@@ -69,7 +70,7 @@ uint const NumberOfNearbyAnchors = 3; ///< the number of anchors we will create 
             }
             _ignoreTaps = YES;
             
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             [self lookForNearbyAnchors];
             break;
         case DemoStepDeleteFoundAnchors:

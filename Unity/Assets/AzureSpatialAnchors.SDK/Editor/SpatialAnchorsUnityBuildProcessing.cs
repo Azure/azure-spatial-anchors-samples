@@ -41,7 +41,7 @@ public class SpatialAnchorsUnityBuildProcessing : IPreprocessBuildWithReport, IP
         SpatialAnchorConfig config = Resources.Load<SpatialAnchorConfig>("SpatialAnchorConfig");
         if (string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountId) || string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountKey))
         {
-            Debug.LogWarning(@"Missing security values in AzureSpatialAnchors.SDK\Resources\SpatialAnchorConfig");
+            Debug.LogWarning(@"Missing security values in Resources\SpatialAnchorConfig");
         }
     }
 
@@ -266,7 +266,7 @@ which is required for package restoration to work. If the file has been moved, y
 
         if (dependencies.Count == 0)
         {
-            Debug.LogError("Unable to understand the project.json file. No depdendencies were found.");
+            Debug.LogError("Unable to understand the project.json file. No dependencies were found.");
             return;
         }
 

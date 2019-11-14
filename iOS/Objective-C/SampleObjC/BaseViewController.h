@@ -11,6 +11,7 @@ typedef enum DemoStep {
     DemoStepEnterAnchorNumber,      ///< in the sharing sample, we will enter the anchor number to locate
     DemoStepLookForAnchor,          ///< the session will look for an anchor
     DemoStepLookForNearbyAnchors,   ///< the session will look for nearby anchors
+    DemoStepStopWatcher,            ///< the watcher will stop looking for anchors
     DemoStepDeleteFoundAnchors,     ///< the session will delete found anchors
     DemoStepStopSession,            ///< the session will stop and be cleaned up
 } DemoStep;
@@ -51,14 +52,16 @@ typedef enum DemoStep {
     UIColor *failedColor;
 }
 
-@property (strong, nonatomic) ARSCNView *sceneView;
+@property (strong, nonatomic) IBOutlet ARSCNView *sceneView;
 
--(UIButton *)addButtonAt:(float)top lines:(int)lines;
+-(UIButton *)addButton;
+-(void)layoutButton:(UIButton *)button top:(float)top lines:(int)lines;
 -(void)showLogMessage:(NSString *)text here:(UIView *)here;
 -(void)moveToMainMenu;
 
--(void)moveToNextStepAfterCreateCloudAnchor;
--(void)moveToNextStepAfterAnchorLocated;
+-(void)onCloudAnchorCreated;
+-(void)onNewAnchorLocated:(ASACloudSpatialAnchor*)cloudAnchor;
+-(void)onLocateAnchorsCompleted;
 
 -(void)startSession;
 -(void)createCloudAnchor;

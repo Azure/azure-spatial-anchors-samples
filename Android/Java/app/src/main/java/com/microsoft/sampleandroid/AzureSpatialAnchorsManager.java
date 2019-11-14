@@ -11,6 +11,7 @@ import com.microsoft.azure.spatialanchors.AnchorLocatedListener;
 import com.microsoft.azure.spatialanchors.CloudSpatialAnchor;
 import com.microsoft.azure.spatialanchors.CloudSpatialAnchorSession;
 import com.microsoft.azure.spatialanchors.CloudSpatialAnchorWatcher;
+import com.microsoft.azure.spatialanchors.PlatformLocationProvider;
 import com.microsoft.azure.spatialanchors.LocateAnchorsCompletedListener;
 import com.microsoft.azure.spatialanchors.OnLogDebugEvent;
 import com.microsoft.azure.spatialanchors.SessionErrorEvent;
@@ -30,6 +31,9 @@ class AzureSpatialAnchorsManager {
 
     // Set this string to the account key provided for the Azure Spatial Service resource.
     public static final String SpatialAnchorsAccountKey = "Set me";
+
+    // Log message tag
+    private static final String TAG = "ASACloud";
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
@@ -80,6 +84,10 @@ class AzureSpatialAnchorsManager {
 
     //endregion
 
+    public void setLocationProvider(PlatformLocationProvider locationProvider) {
+        spatialAnchorsSession.setLocationProvider(locationProvider);
+    }
+
     public CompletableFuture<CloudSpatialAnchor> createAnchorAsync(CloudSpatialAnchor anchor) {
         //noinspection unchecked,unchecked
         return this.toEmptyCompletableFuture(spatialAnchorsSession.createAnchorAsync(anchor))
@@ -109,6 +117,10 @@ class AzureSpatialAnchorsManager {
         stopLocating();
 
         return spatialAnchorsSession.createWatcher(criteria);
+    }
+
+    public boolean isLocating() {
+        return !spatialAnchorsSession.getActiveWatchers().isEmpty();
     }
 
     public void stopLocating() {
@@ -157,10 +169,10 @@ class AzureSpatialAnchorsManager {
     }
 
     private void onErrorListener(SessionErrorEvent event) {
-        Log.d("ASAError: ", event.getErrorMessage());
+        Log.e(TAG, event.getErrorMessage());
     }
 
     private void onLogDebugListener(OnLogDebugEvent args) {
-        Log.d("ASACloud", args.getMessage());
+        Log.d(TAG, args.getMessage());
     }
 }

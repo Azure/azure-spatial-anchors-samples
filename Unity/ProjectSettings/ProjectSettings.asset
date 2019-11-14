@@ -558,7 +558,7 @@ PlayerSettings:
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
   cameraUsageDescription: Required for augmented reality support.
-  locationUsageDescription: 
+  locationUsageDescription: Required to find anchors near your device.
   microphoneUsageDescription: 
   switchNetLibKey: 
   switchSocketMemoryPoolSize: 6144
@@ -790,7 +790,8 @@ PlayerSettings:
     25: UNITY_POST_PROCESSING_STACK_V2
     26: UNITY_POST_PROCESSING_STACK_V2
     27: UNITY_POST_PROCESSING_STACK_V2
-  platformArchitecture: {}
+  platformArchitecture:
+    iPhone: 1
   scriptingBackend:
     Android: 0
     Windows Store Apps: 1
@@ -813,10 +814,10 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: Microsoft
   metroCertificateIssuer: Microsoft
-  metroCertificateNotAfter: 80fc3381fa5ad601
+  metroCertificateNotAfter: 005f022bdc82d601
   metroApplicationDescription: Template_3D
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: HelloAR U3D
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -835,7 +836,7 @@ PlayerSettings:
       Appointments: False
       BackgroundMediaPlayback: False
       BlockedChatMessages: False
-      Bluetooth: False
+      Bluetooth: True
       Chat: False
       CodeGeneration: False
       Contacts: False
@@ -868,7 +869,14 @@ PlayerSettings:
       VideosLibrary: False
       VoipCall: False
       WebCam: True
-  metroTargetDeviceFamilies: {}
+  metroTargetDeviceFamilies:
+    Desktop: False
+    Holographic: False
+    IoT: False
+    IoTHeadless: False
+    Mobile: False
+    Team: False
+    Xbox: False
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 

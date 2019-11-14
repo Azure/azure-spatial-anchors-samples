@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -14,11 +14,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         {
             // Start the update
             serializedObject.Update();
-
-            /*
-            // TODO: Delete the code below when AAD support is completed
-            DrawPropertiesExcluding(serializedObject, new string[] { "authenticationMode", "clientId", "tenantId" });
-            */
 
             // Draw based on auth mode
             switch (GetAuthMode())

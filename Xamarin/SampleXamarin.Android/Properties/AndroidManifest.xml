@@ -1,10 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="SampleXamarin.Android" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="28" />
+
+  <uses-feature android:name="android.hardware.camera.ar" android:required="true" />
+
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-	<uses-feature android:name="android.hardware.camera.ar" android:required="true" />
+
+  <!-- Required for relocalization based on geolocation -->
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+  <!-- Required for relocalization based on Wi-Fi -->
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+  <!-- Required for relocalization based on Bluetooth -->
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
 	<application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/AppTheme">
 		<meta-data android:name="com.google.ar.core" android:value="required" />
 	</application>
