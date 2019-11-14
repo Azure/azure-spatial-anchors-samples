@@ -23,9 +23,9 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
     
     // Set this to the account key provided for the Azure Spatial Service resource.
     let spatialAnchorsAccountKey = "Set me"
-    
+
     @IBOutlet var sceneView: ARSCNView!
-    
+
     var mainButton: UIButton!
     var backButton: UIButton!
     var feedbackControl: UIButton!
@@ -44,9 +44,11 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
     var step = DemoStep.prepare         // the next step to perform
     var targetId : String? = nil        // the cloud anchor identifier to locate
     
-    func moveToNextStepAfterCreateCloudAnchor() { assertionFailure("Must be implemented in subclass") }
-    
-    func moveToNextStepAfterAnchorLocated() { assertionFailure("Must be implemented in subclass") }
+    func onCloudAnchorCreated() { assertionFailure("Must be implemented in subclass") }
+
+    func onNewAnchorLocated(_ cloudAnchor: ASACloudSpatialAnchor) { }
+
+    func onLocateAnchorsCompleted() { }
     
     // MARK: - View Management
     
@@ -72,11 +74,11 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
         sceneView.scene = SCNScene()           // Create a new scene and set it on the view
         
         // Main button
-        mainButton = addButtonAt(Double(sceneView.bounds.size.height - 80), lines: Double(1.0))
+        mainButton = addButton()
         mainButton.addTarget(self, action:#selector(mainButtonTap), for: .touchDown)
         
         // Control to go back to the menu screen
-        backButton = addButtonAt(20, lines: 1)
+        backButton = addButton()
         backButton.addTarget(self, action:#selector(backButtonTap), for: .touchDown)
         backButton.backgroundColor = .clear
         backButton.setTitleColor(.blue, for: .normal)
@@ -84,15 +86,17 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
         backButton.setTitle("Exit Demo", for: .normal)
         
          // Control to indicate when we can create an anchor
-        feedbackControl = addButtonAt(Double(sceneView.bounds.size.height - 40), lines: Double(1.0))
+        feedbackControl = addButton()
         feedbackControl.backgroundColor = .clear
         feedbackControl.setTitleColor(.yellow, for: .normal)
         feedbackControl.contentHorizontalAlignment = .left
         feedbackControl.isHidden = true
         
         // Control to show errors and verbose text
-        errorControl = addButtonAt(Double(sceneView.bounds.size.height - 400), lines: Double(5.0))
+        errorControl = addButton()
         errorControl.isHidden = true
+
+        layoutButtons()
         
         if (spatialAnchorsAccountId == "Set me" || spatialAnchorsAccountKey == "Set me") {
             mainButton.isHidden = true
@@ -103,6 +107,11 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
             // Start the demo
             mainButtonTap(sender: mainButton)
         }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        layoutButtons()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -269,7 +278,7 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
                 self.anchorVisuals.removeValue(forKey: unsavedAnchorId)
                 self.localAnchor = nil
                 
-                self.moveToNextStepAfterCreateCloudAnchor()
+                self.onCloudAnchorCreated()
             }
         })
     }
@@ -379,14 +388,15 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
             // Ignore if we were already handling this.
             break
         case .located:
-            let anchor = args.anchor
-            print("Cloud Anchor found! Identifier: \(anchor!.identifier ?? "nil"). Location: \(BaseViewController.matrixToString(value: anchor!.localAnchor.transform))")
+            let anchor = args.anchor!
+            print("Cloud Anchor found! Identifier: \(anchor.identifier ?? "nil"). Location: \(BaseViewController.matrixToString(value: anchor.localAnchor.transform))")
             let visual = AnchorVisual()
             visual.cloudAnchor = anchor
-            visual.identifier = anchor!.identifier
-            visual.localAnchor = anchor!.localAnchor
+            visual.identifier = anchor.identifier
+            visual.localAnchor = anchor.localAnchor
             anchorVisuals[visual.identifier] = visual
-            sceneView.session.add(anchor: anchor!.localAnchor)
+            sceneView.session.add(anchor: anchor.localAnchor)
+            onNewAnchorLocated(anchor)
         case .notLocatedAnchorDoesNotExist:
             break
         case .notLocated:
@@ -396,8 +406,7 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
     
     internal func locateAnchorsCompleted(_ cloudSpatialAnchorSession: ASACloudSpatialAnchorSession!, _ args: ASALocateAnchorsCompletedEventArgs!) {
         print("Anchor locate operation completed completed for watcher with identifier: \(args.watcher!.identifier)")
-        ignoreMainButtonTaps = false
-        moveToNextStepAfterAnchorLocated()
+        onLocateAnchorsCompleted()
     }
     
     internal func sessionUpdated(_ cloudSpatialAnchorSession: ASACloudSpatialAnchorSession!, _ args: ASASessionUpdatedEventArgs!) {
@@ -418,17 +427,27 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
     }
     
     // MARK: - UI Helpers
-    
-    func addButtonAt(_ top: Double, lines: Double) -> UIButton {
+
+    private func layoutButtons() {
+        layoutButton(mainButton, top: Double(sceneView.bounds.size.height - 80), lines: Double(1.0))
+        layoutButton(backButton, top: 20, lines: 1)
+        layoutButton(feedbackControl, top: Double(sceneView.bounds.size.height - 40), lines: Double(1.0))
+        layoutButton(errorControl, top: Double(sceneView.bounds.size.height - 400), lines: Double(5.0))
+    }
+
+    private func layoutButton(_ button: UIButton, top: Double, lines: Double) {
         let wideSize = sceneView.bounds.size.width - 20.0
+        button.frame = CGRect(x: 10.0, y: top, width: Double(wideSize), height: lines * 40)
+        if (lines > 1) {
+            button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
+        }
+    }
+
+    func addButton() -> UIButton {
         let result = UIButton(type: .system)
-        result.frame = CGRect(x: 10.0, y: top, width: Double(wideSize), height: lines * 40)
         result.setTitleColor(.black, for: .normal)
         result.setTitleShadowColor(.white, for: .normal)
         result.backgroundColor = UIColor.lightGray.withAlphaComponent(0.6)
-        if (lines > 1) {
-            result.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
-        }
         sceneView.addSubview(result)
         return result
     }

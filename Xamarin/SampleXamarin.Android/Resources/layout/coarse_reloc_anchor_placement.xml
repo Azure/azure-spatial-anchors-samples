@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical"
+    android:gravity="bottom|center_horizontal">
+
+    <TextView
+        android:id="@+id/hint_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorHint"
+        android:text="@string/hint_place_anchor"
+        android:textColor="@android:color/holo_orange_light"
+        android:padding="3dp" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorHint"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select a shape"
+            android:textColor="@android:color/holo_orange_light"
+            android:padding="3dp" />
+        <RadioGroup
+            android:id="@+id/shape_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/sphere_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                style="?android:attr/buttonStyle"
+                android:text="Sphere"
+                android:checked="true" />
+            <RadioButton
+                android:id="@+id/cylinder_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                style="?android:attr/buttonStyle"
+                android:text="Cylinder" />
+            <RadioButton
+                android:id="@+id/cube_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                style="?android:attr/buttonStyle"
+                android:text="Cube" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/confirm_placement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_placement" />
+
+</LinearLayout>

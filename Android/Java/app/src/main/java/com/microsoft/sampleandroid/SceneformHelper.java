@@ -18,22 +18,23 @@ class SceneformHelper {
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA;
 
     // Check to see we have the necessary permissions for this app
-    public static boolean hasCameraPermission(Activity activity)
-    {
+    public static boolean hasCameraPermission(Activity activity) {
         return ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void setupSessionForSceneView(Context context, ArSceneView sceneView) {
+    public static boolean trySetupSessionForSceneView(Context context, ArSceneView sceneView) {
         try {
             Session session = new Session(context);
             Config config = new Config(session);
             config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
             session.configure(config);
             sceneView.setupSession(session);
+            return true;
         }
         catch (UnavailableException e) {
-            Log.e("ASADemo: ", e.toString());
+            Log.e("ASADemo: ", "Make sure you have a supported ARCore version installed. Exception: " + e.toString());
+            return false;
         }
     }
 }

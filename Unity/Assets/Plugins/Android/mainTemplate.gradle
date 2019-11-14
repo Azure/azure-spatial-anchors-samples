@@ -22,7 +22,7 @@ allprojects {
 
 apply plugin: 'com.android.application'
 
-def azureSpatialAnchorsSdkVersion = '1.3.3'
+def azureSpatialAnchorsSdkVersion = '2.0.0'
 
 /*
 The ARCore aar library contains the native shared libraries.  These are

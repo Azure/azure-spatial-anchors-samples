@@ -34,6 +34,8 @@ namespace SampleXamarin
             nearbyDemoButton.Click += this.OnNearbyDemoClick;
             Button sharingDemoButton = this.FindViewById<Button>(Resource.Id.arSharedDemo);
             sharingDemoButton.Click += this.OnSharedDemoClick;
+            Button coarseRelocDemoButton = this.FindViewById<Button>(Resource.Id.coarseRelocDemoButton);
+            coarseRelocDemoButton.Click += this.OnCoarseRelocDemoClick;
         }
 
         public void OnBasicDemoClick(object sender, EventArgs e)
@@ -53,6 +55,12 @@ namespace SampleXamarin
         public void OnSharedDemoClick(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(AzureSpatialAnchorsSharedActivity));
+            this.StartActivity(intent);
+        }
+
+        public void OnCoarseRelocDemoClick(object sender, EventArgs e)
+        {
+            Intent intent = new Intent(this, typeof(AzureSpatialAnchorsCoarseRelocActivity));
             this.StartActivity(intent);
         }
 

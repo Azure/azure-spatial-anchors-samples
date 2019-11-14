@@ -61,4 +61,19 @@
         android:layout_height="wrap_content"
         android:text="@string/main_shared_details_text"
         android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/coarseRelocDemoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_coarse_reloc_button_text"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false" />
+
+    <TextView
+        android:id="@+id/coarseRelocDemoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_coarse_reloc_details_text"
+        android:textAlignment="center" />
 </LinearLayout>

@@ -17,7 +17,13 @@
 		558D29E82122278E003D5B51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 558D29E72122278E003D5B51 /* Assets.xcassets */; };
 		558D29EB2122278E003D5B51 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 558D29E92122278E003D5B51 /* LaunchScreen.storyboard */; };
 		76C862FD21F27ADD008A4362 /* AuthenticationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C862FC21F27ADD008A4362 /* AuthenticationHelper.swift */; };
-		C21DBA9482D15118C809DEFF /* Pods_SampleSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 961D99C835D2CEBA659619DF /* Pods_SampleSwift.framework */; };
+		7FF5D487232FF5EA00849D92 /* SensorStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE759E423264C4F00A70519 /* SensorStatusView.swift */; };
+		7FF5D488232FF60C00849D92 /* SensorStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FE759E223264B5900A70519 /* SensorStatusView.xib */; };
+		7FF5D48A232FF7CE00849D92 /* SensorStatusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE759E72326509900A70519 /* SensorStatusModel.swift */; };
+		7FF5D48B232FF7D100849D92 /* SensorStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE759E92326510900A70519 /* SensorStatus.swift */; };
+		7FF5D48C232FF7D400849D92 /* LocationProviderSensorStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE759EB2327ABBA00A70519 /* LocationProviderSensorStatus.swift */; };
+		7FF5D48D232FF7E300849D92 /* CoarseRelocDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE759DF2322CD6D00A70519 /* CoarseRelocDemoViewController.swift */; };
+		7FF5D495232FFECA00849D92 /* Pods_SampleSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF5D494232FFECA00849D92 /* Pods_SampleSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,7 +56,13 @@
 		55C1AF4621309507005A98E2 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		76C862FC21F27ADD008A4362 /* AuthenticationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationHelper.swift; sourceTree = "<group>"; };
 		76FB1EC421B8B64F000D13D2 /* SampleSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SampleSwift.entitlements; sourceTree = "<group>"; };
-		961D99C835D2CEBA659619DF /* Pods_SampleSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FE759DF2322CD6D00A70519 /* CoarseRelocDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoarseRelocDemoViewController.swift; sourceTree = "<group>"; };
+		7FE759E223264B5900A70519 /* SensorStatusView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SensorStatusView.xib; sourceTree = "<group>"; };
+		7FE759E423264C4F00A70519 /* SensorStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorStatusView.swift; sourceTree = "<group>"; };
+		7FE759E72326509900A70519 /* SensorStatusModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorStatusModel.swift; sourceTree = "<group>"; };
+		7FE759E92326510900A70519 /* SensorStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorStatus.swift; sourceTree = "<group>"; };
+		7FE759EB2327ABBA00A70519 /* LocationProviderSensorStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProviderSensorStatus.swift; sourceTree = "<group>"; };
+		7FF5D494232FFECA00849D92 /* Pods_SampleSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SampleSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C21DBA9482D15118C809DEFF /* Pods_SampleSwift.framework in Frameworks */,
+				7FF5D495232FFECA00849D92 /* Pods_SampleSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +83,7 @@
 				17C1873E225BFC6000081781 /* BasicDemoViewController.swift */,
 				17F13115225BD8BC00B7B910 /* BaseViewController.swift */,
 				17C18740225BFC7500081781 /* NearbyDemoViewController.swift */,
+				7FE759DF2322CD6D00A70519 /* CoarseRelocDemoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -105,6 +118,8 @@
 		558D29DD2122278D003D5B51 /* SampleSwift */ = {
 			isa = PBXGroup;
 			children = (
+				7FE759E62326507500A70519 /* Models */,
+				7FE759E123264B2A00A70519 /* Views */,
 				173E7731225C6E1100CB32CF /* ViewControllers */,
 				17A8AE48225BC87D006DC1DB /* AnchorVisual.swift */,
 				558D29DE2122278D003D5B51 /* AppDelegate.swift */,
@@ -123,9 +138,28 @@
 		55C1AF4321309298005A98E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				961D99C835D2CEBA659619DF /* Pods_SampleSwift.framework */,
+				7FF5D494232FFECA00849D92 /* Pods_SampleSwift.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7FE759E123264B2A00A70519 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7FE759E223264B5900A70519 /* SensorStatusView.xib */,
+				7FE759E423264C4F00A70519 /* SensorStatusView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7FE759E62326507500A70519 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7FE759E72326509900A70519 /* SensorStatusModel.swift */,
+				7FE759E92326510900A70519 /* SensorStatus.swift */,
+				7FE759EB2327ABBA00A70519 /* LocationProviderSensorStatus.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +230,7 @@
 			files = (
 				558D29EB2122278E003D5B51 /* LaunchScreen.storyboard in Resources */,
 				558D29E82122278E003D5B51 /* Assets.xcassets in Resources */,
+				7FF5D488232FF60C00849D92 /* SensorStatusView.xib in Resources */,
 				558D29E62122278D003D5B51 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -226,19 +261,14 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-SampleSwift/Pods-SampleSwift-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ADAL/ADAL.framework",
-				"${PODS_ROOT}/AzureSpatialAnchors/bin/frameworks/AzureSpatialAnchors.framework",
+			inputFileListPaths = (
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ADAL.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AzureSpatialAnchors.framework",
+			outputFileListPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SampleSwift/Pods-SampleSwift-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SampleSwift/Pods-SampleSwift-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -249,12 +279,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				17C1873F225BFC6000081781 /* BasicDemoViewController.swift in Sources */,
+				7FF5D48C232FF7D400849D92 /* LocationProviderSensorStatus.swift in Sources */,
 				17C18741225BFC7500081781 /* NearbyDemoViewController.swift in Sources */,
+				7FF5D487232FF5EA00849D92 /* SensorStatusView.swift in Sources */,
 				17F13116225BD8BC00B7B910 /* BaseViewController.swift in Sources */,
 				17A8AE49225BC87D006DC1DB /* AnchorVisual.swift in Sources */,
 				558D29DF2122278D003D5B51 /* AppDelegate.swift in Sources */,
 				173E7730225C5FF200CB32CF /* DemoStep.swift in Sources */,
+				7FF5D48D232FF7E300849D92 /* CoarseRelocDemoViewController.swift in Sources */,
+				7FF5D48B232FF7D100849D92 /* SensorStatus.swift in Sources */,
 				76C862FD21F27ADD008A4362 /* AuthenticationHelper.swift in Sources */,
+				7FF5D48A232FF7CE00849D92 /* SensorStatusModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

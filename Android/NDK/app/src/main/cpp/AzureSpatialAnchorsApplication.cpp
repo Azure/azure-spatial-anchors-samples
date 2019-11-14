@@ -3,11 +3,23 @@
 
 #include "AzureSpatialAnchorsApplication.h"
 #include "AzureSpatialAnchorsNDK.hpp"
+#include <string>
+#include <vector>
 
 namespace AzureSpatialAnchors {
 
 const std::string SpatialAnchorsAccountId = "Set me";
 const std::string SpatialAnchorsAccountKey = "Set me";
+
+/// Whitelist of Bluetooth-LE beacons used to find anchors and improve the locatability
+/// of existing anchors.
+/// Add the UUIDs for your own Bluetooth beacons here to use them with Azure Spatial Anchors.
+const std::vector<std::string> KnownBluetoothProximityUuids = {
+    "61687109-905f-4436-91f8-e602f514c96d",
+    "e1f54e02-1e23-44e0-9c3d-512eb56adec9",
+    "01234567-8901-2345-6789-012345678903",
+};
+
 constexpr uint32_t NumberOfNearbyAnchors = 3;
 
 const glm::vec3 ReadyColor = { 0, 0, 255 };
@@ -308,6 +320,12 @@ void AzureSpatialAnchorsApplication::OnNearbyButtonPress() {
     AdvanceDemo();
 }
 
+void AzureSpatialAnchorsApplication::OnCoarseRelocButtonPress() {
+    m_showAdvanceButton = true;
+    m_demoMode = DemoMode::CoarseReloc;
+    AdvanceDemo();
+}
+
 void AzureSpatialAnchorsApplication::AdvanceDemo() {
     if (m_ignoreTaps) {
         return;
@@ -330,11 +348,17 @@ void AzureSpatialAnchorsApplication::AdvanceDemo() {
             break;
         }
         case DemoStep::LocateCloudAnchor: {
-            m_ignoreTaps = true;
-            m_buttonText = "Doing async locate...";
             m_status = "Keep moving!";
             StartCloudSession();
-            QueryAnchor();
+            if (m_demoMode == DemoMode::CoarseReloc) {
+                m_buttonText = "Stop watcher";
+                m_demoStep = DemoStep::StopWatcher;
+                QueryAnchorsNearDevice();
+            } else {
+                m_ignoreTaps = true;
+                m_buttonText = "Doing async locate...";
+                QueryAnchor();
+            }
             break;
         }
         case DemoStep::LocateNearbyAnchors: {
@@ -355,6 +379,20 @@ void AzureSpatialAnchorsApplication::AdvanceDemo() {
             DeleteCloudAnchor();
             break;
         }
+        case DemoStep::StopWatcher: {
+            StopWatcher();
+            m_demoStep = DemoStep::StopSession;
+            m_status = "";
+            m_buttonText = "Stop session";
+            break;
+        }
+        case DemoStep::StopSession: {
+            DestroyCloudSession();
+            m_buttonText = ""; // Return to the main menu
+            m_demoStep = DemoStep::CreateCloudAnchor;
+            m_showAdvanceButton = false;
+            break;
+        }
     }
 }
 
@@ -364,6 +402,13 @@ void AzureSpatialAnchorsApplication::StartCloudSession() {
     m_cloudSession->Configuration()->AccountId(SpatialAnchorsAccountId);
     m_cloudSession->Configuration()->AccountKey(SpatialAnchorsAccountKey);
     m_cloudSession->LogLevel(SessionLogLevel::All);
+
+    if (m_demoMode == DemoMode::CoarseReloc) {
+        m_locationProvider = std::make_shared<PlatformLocationProvider>();
+        m_locationProvider->Sensors()->KnownBeaconProximityUuids(KnownBluetoothProximityUuids);
+        EnableAllowedSensors();
+        m_cloudSession->LocationProvider(m_locationProvider);
+    }
 
     AddEventListeners();
 
@@ -408,6 +453,10 @@ void AzureSpatialAnchorsApplication::AddEventListeners() {
                 foundVisual.identifier = foundVisual.cloudAnchor->Identifier();
                 foundVisual.color = FoundColor;
                 m_anchorVisuals[foundVisual.identifier] = foundVisual;
+
+                if (m_demoMode == DemoMode::CoarseReloc) {
+                    m_status = std::to_string(m_numAnchorsFound++) + " anchor(s) found";
+                }
             }
                 break;
             case LocateAnchorStatus::NotLocated:
@@ -422,7 +471,9 @@ void AzureSpatialAnchorsApplication::AddEventListeners() {
     m_locateAnchorsCompletedToken = m_cloudSession->LocateAnchorsCompleted(
             [this](auto &&, auto &&args) {
                 m_ignoreTaps = false;
-                if (m_demoMode == DemoMode::Nearby && m_demoStep == DemoStep::LocateCloudAnchor) {
+                if (m_demoMode == DemoMode::CoarseReloc) {
+                    // Ignored
+                } else if (m_demoMode == DemoMode::Nearby && m_demoStep == DemoStep::LocateCloudAnchor) {
                     m_buttonText = "Locate nearby anchors";
                     m_demoStep = DemoStep::LocateNearbyAnchors;
                 } else {
@@ -435,8 +486,7 @@ void AzureSpatialAnchorsApplication::AddEventListeners() {
 }
 
 void AzureSpatialAnchorsApplication::DestroyCloudSession() {
-    if (m_cloudSession != nullptr)
-    {
+    if (m_cloudSession != nullptr) {
         m_cloudSession->SessionUpdated(m_sessionUpdatedToken);
         m_cloudSession->OnLogDebug(m_onLogDebugToken);
         m_cloudSession->Error(m_errorToken);
@@ -444,6 +494,10 @@ void AzureSpatialAnchorsApplication::DestroyCloudSession() {
         m_cloudSession->LocateAnchorsCompleted(m_locateAnchorsCompletedToken);
         m_cloudSession->Stop();
         m_cloudSession.reset();
+    }
+
+    if (m_locationProvider != nullptr) {
+        m_locationProvider.reset();
     }
 
     StopWatcher();
@@ -477,9 +531,23 @@ void AzureSpatialAnchorsApplication::QueryNearbyAnchors(std::shared_ptr<CloudSpa
     m_cloudSpatialAnchorWatcher = m_cloudSession->CreateWatcher(criteria);
 }
 
+void AzureSpatialAnchorsApplication::QueryAnchorsNearDevice() {
+    // Cannot run more than one watcher concurrently
+    StopWatcher();
+
+    m_numAnchorsFound = 0;
+
+    auto nearDevice = std::make_shared<NearDeviceCriteria>();
+    nearDevice->DistanceInMeters(8.0f);
+    nearDevice->MaxResultCount(25);
+
+    auto criteria = std::make_shared<AnchorLocateCriteria>();
+    criteria->NearDevice(nearDevice);
+    m_cloudSpatialAnchorWatcher = m_cloudSession->CreateWatcher(criteria);
+}
+
 void AzureSpatialAnchorsApplication::StopWatcher() {
-    if (m_cloudSpatialAnchorWatcher != nullptr)
-    {
+    if (m_cloudSpatialAnchorWatcher != nullptr) {
         m_cloudSpatialAnchorWatcher->Stop();
         m_cloudSpatialAnchorWatcher.reset();
     }
@@ -516,7 +584,7 @@ void AzureSpatialAnchorsApplication::CreateCloudAnchor() {
 
         m_anchorID = visual.cloudAnchor->Identifier();
 
-        if (m_demoMode == DemoMode::Basic || m_saveCount == NumberOfNearbyAnchors) {
+        if (m_demoMode != DemoMode::Nearby || m_saveCount == NumberOfNearbyAnchors) {
             m_ignoreTaps = false;
             m_demoStep = DemoStep::DestroyCloudSession;
             m_buttonText = "Destroy Cloud Session";
@@ -554,6 +622,32 @@ void AzureSpatialAnchorsApplication::DeleteCloudAnchor() {
         });
 
     }
+}
+
+void AzureSpatialAnchorsApplication::UpdateGeoLocationPermission(bool isGranted) {
+    m_haveGeoLocationPermission = isGranted;
+    EnableAllowedSensors();
+}
+
+void AzureSpatialAnchorsApplication::UpdateWifiPermission(bool isGranted) {
+    m_haveWifiPermission =  isGranted;
+    EnableAllowedSensors();
+}
+
+void AzureSpatialAnchorsApplication::UpdateBluetoothPermission(bool isGranted) {
+    m_haveBluetoothPermission = isGranted;
+    EnableAllowedSensors();
+}
+
+void AzureSpatialAnchorsApplication::EnableAllowedSensors() {
+    if (m_locationProvider == nullptr) {
+        return;
+    }
+
+    const std::shared_ptr<SensorCapabilities>& sensors = m_locationProvider->Sensors();
+    sensors->GeoLocationEnabled(m_haveGeoLocationPermission);
+    sensors->WifiEnabled(m_haveWifiPermission);
+    sensors->BluetoothEnabled(m_haveBluetoothPermission);
 }
 
 }

@@ -95,6 +95,14 @@ JNI_METHOD(void, onNearbyButtonPress)
     gNativeApplication->OnNearbyButtonPress();
 }
 
+JNI_METHOD(void, onCoarseRelocButtonPress)
+(JNIEnv *, jclass) {
+    if (gNativeApplication == nullptr) {
+        return;
+    }
+    gNativeApplication->OnCoarseRelocButtonPress();
+}
+
 JNI_METHOD(void, advanceDemo)
 (JNIEnv *, jclass) {
     if (gNativeApplication == nullptr) {
@@ -136,6 +144,30 @@ JNI_METHOD(jboolean, isSpatialAnchorsAccountSet)
         return JNI_FALSE;
     }
     return static_cast<jboolean>(gNativeApplication->IsSpatialAnchorsAccountSet() ? JNI_TRUE : JNI_FALSE);
+}
+
+JNI_METHOD(void, updateGeoLocationPermission)
+(JNIEnv *, jclass, jboolean isGranted) {
+    if (gNativeApplication == nullptr) {
+        return;
+    }
+    return gNativeApplication->UpdateGeoLocationPermission(isGranted);
+}
+
+JNI_METHOD(void, updateWifiPermission)
+(JNIEnv *, jclass, jboolean isGranted) {
+    if (gNativeApplication == nullptr) {
+        return;
+    }
+    return gNativeApplication->UpdateWifiPermission(isGranted);
+}
+
+JNI_METHOD(void, updateBluetoothPermission)
+(JNIEnv *, jclass, jboolean isGranted) {
+    if (gNativeApplication == nullptr) {
+        return;
+    }
+    return gNativeApplication->UpdateBluetoothPermission(isGranted);
 }
 
 #ifdef  __cplusplus

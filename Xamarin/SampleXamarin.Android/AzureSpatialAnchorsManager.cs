@@ -57,6 +57,12 @@ namespace SampleXamarin
             this.spatialAnchorsSession.SessionUpdated += this.SpatialAnchorsSession_SessionUpdated;
         }
 
+        public PlatformLocationProvider LocationProvider
+        {
+            get { return spatialAnchorsSession?.LocationProvider; }
+            set { spatialAnchorsSession.LocationProvider = value; }
+        }
+
         public CloudSpatialAnchorWatcher StartLocating(AnchorLocateCriteria locateCriteria)
         {
             // Only 1 active watcher at a time is permitted.

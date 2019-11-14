@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorHint">#03A9F4</color>
+    <color name="sensorStatusIndeterminate">#888888</color>
+    <color name="sensorStatusBlocked">#FF0000</color>
+    <color name="sensorStatusUnavailable">#FFA500</color>
+    <color name="sensorStatusAvailable">#00FF00</color>
 </resources>

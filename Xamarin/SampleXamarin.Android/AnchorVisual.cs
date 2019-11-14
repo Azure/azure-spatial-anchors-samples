@@ -1,25 +1,49 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using Android.Content;
 using Google.AR.Core;
 using Google.AR.Sceneform;
 using Google.AR.Sceneform.Math;
 using Google.AR.Sceneform.Rendering;
 using Google.AR.Sceneform.UX;
+using Java.Util.Concurrent;
 using Microsoft.Azure.SpatialAnchors;
 using System;
+using System.Collections.Generic;
 using Xamarin.Essentials;
 
 namespace SampleXamarin
 {
     internal class AnchorVisual
     {
-        private Material colorMaterial;
-        private Renderable nodeRenderable;
-
-        public AnchorVisual(Anchor localAnchor)
+        public enum NamedShape
         {
-            this.AnchorNode = new AnchorNode(localAnchor);
+            Sphere,
+            Cube,
+            Cylinder,
+        }
+
+        private TransformableNode transformableNode;
+        private NamedShape shape = NamedShape.Sphere;
+        private Material material;
+
+        private static Dictionary<int, CompletableFuture> solidColorMaterialCache = new Dictionary<int, CompletableFuture>();
+
+        public AnchorVisual(ArFragment arFragment, Anchor localAnchor)
+        {
+            AnchorNode = new AnchorNode(localAnchor);
+
+            transformableNode = new TransformableNode(arFragment.TransformationSystem);
+            transformableNode.ScaleController.Enabled = false;
+            transformableNode.TranslationController.Enabled = false;
+            transformableNode.RotationController.Enabled = false;
+            transformableNode.SetParent(AnchorNode);
+        }
+        public AnchorVisual(ArFragment arFragment, CloudSpatialAnchor cloudAnchor)
+            : this(arFragment, cloudAnchor.LocalAnchor)
+        {
+            CloudAnchor = cloudAnchor;
         }
 
         public AnchorNode AnchorNode { get; }
@@ -28,45 +52,108 @@ namespace SampleXamarin
 
         public Anchor LocalAnchor => this.AnchorNode.Anchor;
 
+        public NamedShape Shape
+        {
+            get { return shape; }
+            set
+            {
+                if (shape != value)
+                {
+                    shape = value;
+                    MainThread.BeginInvokeOnMainThread(RecreateRenderableOnMainThread);
+                }
+            }
+        }
+
+        public bool IsMovable
+        {
+            set
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    transformableNode.TranslationController.Enabled = value;
+                    transformableNode.RotationController.Enabled = value;
+                });
+            }
+        }
+
         public void AddToScene(ArFragment arFragment)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                this.nodeRenderable = ShapeFactory.MakeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), this.colorMaterial);
-                this.AnchorNode.Renderable = this.nodeRenderable;
-                this.AnchorNode.SetParent(arFragment.ArSceneView.Scene);
-
-                TransformableNode sphere = new TransformableNode(arFragment.TransformationSystem);
-                sphere.SetParent(this.AnchorNode);
-                sphere.Renderable = this.nodeRenderable;
-                sphere.Select();
+                RecreateRenderableOnMainThread();
+                AnchorNode.SetParent(arFragment.ArSceneView.Scene);
             });
         }
 
-        public void SetColor(Material material)
+        public void SetColor(Context context, int rgb)
         {
-            if (material is null)
+            lock (this)
             {
-                throw new ArgumentNullException(nameof(material));
+                if (!solidColorMaterialCache.ContainsKey(rgb))
+                {
+                    solidColorMaterialCache[rgb] = MaterialFactory.MakeOpaqueWithColor(context, new Color(rgb));
+                }
+                CompletableFuture loadMaterial = solidColorMaterialCache[rgb];
+                loadMaterial.ThenAccept(new FutureResultConsumer<Material>(SetMaterial));
             }
+        }
 
-            this.colorMaterial = material;
-
-            MainThread.BeginInvokeOnMainThread(() =>
+        public void SetMaterial(Material material)
+        {
+            if (this.material != material)
             {
-                this.AnchorNode.Renderable = null;
-                this.nodeRenderable = ShapeFactory.MakeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), this.colorMaterial);
-                this.AnchorNode.Renderable = this.nodeRenderable;
-            });
+                this.material = material;
+                MainThread.BeginInvokeOnMainThread(RecreateRenderableOnMainThread);
+            }
         }
 
         public void Destroy()
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                this.AnchorNode.Renderable = null;
-                this.AnchorNode.SetParent(null);
+                AnchorNode.Renderable = null;
+                AnchorNode.SetParent(null);
+                Anchor localAnchor = AnchorNode.Anchor;
+                if (localAnchor != null)
+                {
+                    AnchorNode.Anchor = null;
+                    localAnchor.Detach();
+                }
             });
+        }
+
+        private void RecreateRenderableOnMainThread()
+        {
+            if (material != null)
+            {
+                Renderable renderable;
+                switch (shape)
+                {
+                    case NamedShape.Sphere:
+                        renderable = ShapeFactory.MakeSphere(
+                                0.1f,
+                                new Vector3(0.0f, 0.1f, 0.0f),
+                                material);
+                        break;
+                    case NamedShape.Cube:
+                        renderable = ShapeFactory.MakeCube(
+                                new Vector3(0.161f, 0.161f, 0.161f),
+                                new Vector3(0.0f, 0.0805f, 0.0f),
+                                material);
+                        break;
+                    case NamedShape.Cylinder:
+                        renderable = ShapeFactory.MakeCylinder(
+                                0.0874f,
+                                0.175f,
+                                new Vector3(0.0f, 0.0875f, 0.0f),
+                                material);
+                        break;
+                    default:
+                        throw new InvalidOperationException("Invalid shape");
+                }
+                transformableNode.Renderable = renderable;
+            }
         }
     }
 }
