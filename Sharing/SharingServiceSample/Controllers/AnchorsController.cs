@@ -72,5 +72,18 @@ namespace SharingService.Controllers
             // Set the key and return the anchor number
             return await this.anchorKeyCache.SetAnchorKeyAsync(anchorKey);
         }
+
+        // POST api/anchors/key
+        [HttpPost("key")]
+        public async Task<ActionResult<long>> PostKeyAsync(string anchorKey)
+        {
+            if (string.IsNullOrWhiteSpace(anchorKey))
+            {
+                return this.BadRequest();
+            }
+
+            // Set the key and return the anchor number
+            return await this.anchorKeyCache.SetAnchorKeyAsync(anchorKey);
+        }
     }
 }

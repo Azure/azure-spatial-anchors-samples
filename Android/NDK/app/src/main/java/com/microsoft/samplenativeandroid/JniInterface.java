@@ -33,6 +33,8 @@ public class JniInterface {
 
     public static native void onNearbyButtonPress();
 
+    public static native void onCoarseRelocButtonPress();
+
     public static native void advanceDemo();
 
     public static native String getStatusText();
@@ -42,4 +44,10 @@ public class JniInterface {
     public static native boolean showAdvanceButton();
 
     public static native boolean isSpatialAnchorsAccountSet();
+
+    public static native void updateGeoLocationPermission(boolean isGranted);
+
+    public static native void updateWifiPermission(boolean isGranted);
+
+    public static native void updateBluetoothPermission(boolean isGranted);
 }

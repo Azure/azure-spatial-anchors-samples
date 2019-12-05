@@ -7,7 +7,7 @@ class NearbyDemoViewController: BaseViewController {
 
     let numberOfNearbyAnchors = 3    // the number of anchors we will create in the nearby demo
     
-    override func moveToNextStepAfterCreateCloudAnchor() {
+    override func onCloudAnchorCreated() {
         if (saveCount < numberOfNearbyAnchors) {
             currentlyPlacingAnchor = true
             
@@ -26,7 +26,8 @@ class NearbyDemoViewController: BaseViewController {
         }
     }
     
-    override func moveToNextStepAfterAnchorLocated() {
+    override func onLocateAnchorsCompleted() {
+        ignoreMainButtonTaps = false
         if (step == .lookForAnchor) {
             step = .lookForNearbyAnchors
             
@@ -61,16 +62,16 @@ class NearbyDemoViewController: BaseViewController {
             
             startSession()
             
-            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor
-            // We will then put that anchor in the anchorVisuals dictionary with a special key and call CreateCloudAnchor when there is enough data for saving
-            // CreateCloudAnchor will call moveToNextStepAfterCreateCloudAnchor when its async method returns
+            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor.
+            // We will then put that anchor in the anchorVisuals dictionary with a special key and call CreateCloudAnchor when there is enough data for saving.
+            // CreateCloudAnchor will call onCloudAnchorCreated when its async method returns to move to the next step.
             mainButton.setTitle("Tap on the screen to create an Anchor ☝️", for: .normal)
         case .lookForAnchor:
             ignoreMainButtonTaps = true
             stopSession()
             startSession()
             
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             lookForAnchor()
         case .lookForNearbyAnchors:
             if (anchorVisuals.count == 0) {
@@ -79,8 +80,8 @@ class NearbyDemoViewController: BaseViewController {
             }
             
             ignoreMainButtonTaps = true
-            
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             lookForNearbyAnchors()
         case .deleteFoundAnchors:
             ignoreMainButtonTaps = true
@@ -90,6 +91,8 @@ class NearbyDemoViewController: BaseViewController {
         case .stopSession:
             stopSession()
             moveToMainMenu()
+        default:
+            assertionFailure("Demo has somehow entered an invalid state")
         }
     }
 }

@@ -49,10 +49,10 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
     private int saveCount = 0;
 
     // Materials
-    private static Material failedColor;
-    private static Material foundColor;
-    private static Material readyColor;
-    private static Material savedColor;
+    private static final int FAILED_COLOR = android.graphics.Color.RED;
+    private static final int FOUND_COLOR = android.graphics.Color.YELLOW;
+    private static final int READY_COLOR = android.graphics.Color.YELLOW;
+    private static final int SAVED_COLOR = android.graphics.Color.GREEN;
 
     // UI Elements
     private ArFragment arFragment;
@@ -77,7 +77,7 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
 
         basicDemo = getIntent().getBooleanExtra("BasicDemo", true);
 
-        arFragment = (ArFragment)getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment = (ArFragment)getSupportFragmentManager().findFragmentById(R.id.ar_fragment);
         arFragment.setOnTapArPlaneListener(this::onTapArPlaneListener);
 
         sceneView = arFragment.getArSceneView();
@@ -95,18 +95,6 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
         scanProgressText = findViewById(R.id.scanProgressText);
         actionButton = findViewById(R.id.actionButton);
         actionButton.setOnClickListener((View v) -> advanceDemo());
-
-        MaterialFactory.makeOpaqueWithColor(this, new Color(android.graphics.Color.RED))
-                .thenAccept(material -> failedColor = material);
-
-        MaterialFactory.makeOpaqueWithColor(this, new Color(android.graphics.Color.GREEN))
-                .thenAccept(material -> savedColor = material);
-
-        MaterialFactory.makeOpaqueWithColor(this, new Color(android.graphics.Color.YELLOW))
-                .thenAccept(material -> {
-                    readyColor = material;
-                    foundColor = material;
-                });
     }
 
     @Override
@@ -127,10 +115,15 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
         }
 
         if (sceneView != null && sceneView.getSession() == null) {
-            SceneformHelper.setupSessionForSceneView(this, sceneView);
+            if (!SceneformHelper.trySetupSessionForSceneView(this, sceneView)) {
+
+                finish();
+                return;
+            }
         }
 
-        if (AzureSpatialAnchorsManager.SpatialAnchorsAccountId.equals("Set me") || AzureSpatialAnchorsManager.SpatialAnchorsAccountKey.equals("Set me")) {
+        if ((AzureSpatialAnchorsManager.SpatialAnchorsAccountId == null || AzureSpatialAnchorsManager.SpatialAnchorsAccountId.equals("Set me"))
+                || (AzureSpatialAnchorsManager.SpatialAnchorsAccountKey == null|| AzureSpatialAnchorsManager.SpatialAnchorsAccountKey.equals("Set me"))) {
             Toast.makeText(this, "\"Set SpatialAnchorsAccountId and SpatialAnchorsAccountKey in AzureSpatialAnchorsManager.java\"", Toast.LENGTH_LONG)
                     .show();
 
@@ -270,7 +263,7 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
         Log.d("ASADemo:", "created anchor: " + anchorID);
 
         AnchorVisual visual = anchorVisuals.get("");
-        visual.setColor(savedColor);
+        visual.setColor(this, SAVED_COLOR);
         anchorVisuals.put(anchorID, visual);
         anchorVisuals.remove("");
 
@@ -297,7 +290,7 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
     private void anchorSaveFailed(String message) {
         runOnUiThread(() -> statusText.setText(message));
         AnchorVisual visual = anchorVisuals.get("");
-        visual.setColor(failedColor);
+        visual.setColor(this, FAILED_COLOR);
     }
 
     private void clearVisuals() {
@@ -309,8 +302,8 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
     }
 
     private Anchor createAnchor(HitResult hitResult) {
-        AnchorVisual visual = new AnchorVisual(hitResult.createAnchor());
-        visual.setColor(readyColor);
+        AnchorVisual visual = new AnchorVisual(arFragment, hitResult.createAnchor());
+        visual.setColor(this, READY_COLOR);
         visual.render(arFragment);
         anchorVisuals.put("", visual);
 
@@ -409,11 +402,11 @@ public class AzureSpatialAnchorsActivity extends AppCompatActivity
     }
 
     private void renderLocatedAnchor(CloudSpatialAnchor anchor) {
-        AnchorVisual foundVisual = new AnchorVisual(anchor.getLocalAnchor());
+        AnchorVisual foundVisual = new AnchorVisual(arFragment, anchor.getLocalAnchor());
         foundVisual.setCloudAnchor(anchor);
         foundVisual.getAnchorNode().setParent(arFragment.getArSceneView().getScene());
         String cloudAnchorIdentifier = foundVisual.getCloudAnchor().getIdentifier();
-        foundVisual.setColor(foundColor);
+        foundVisual.setColor(this, FOUND_COLOR);
         foundVisual.render(arFragment);
         anchorVisuals.put(cloudAnchorIdentifier, foundVisual);
     }

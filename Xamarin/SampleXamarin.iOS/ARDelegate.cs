@@ -11,9 +11,9 @@ namespace SampleXamarin.iOS
 {
     public class ARDelegate : ARSCNViewDelegate
     {
-        private readonly DemoControllerBase source;
+        private readonly DemoViewControllerBase source;
 
-        public ARDelegate(DemoControllerBase bvc)
+        public ARDelegate(DemoViewControllerBase bvc)
         {
             this.source = bvc;
         }
@@ -47,26 +47,7 @@ namespace SampleXamarin.iOS
 
         public override void WillRenderScene(ISCNSceneRenderer renderer, SCNScene scene, double timeInSeconds)
         {
-            // Note: Always a super-tricky thing in ARKit : must get rid of the managed reference to the Frame object ASAP.
-            using (ARFrame frame = this.source.scnView?.Session?.CurrentFrame)
-            {
-                if (frame == null)
-                {
-                    return;
-                }
-
-                if (this.source.cloudSession == null)
-                {
-                    return;
-                }
-
-                this.source.cloudSession.ProcessFrame(frame);
-
-                if (this.source.currentlyPlacingAnchor && this.source.enoughDataForSaving && this.source.localAnchor != null)
-                {
-                    this.source.CreateCloudAnchor();
-                }
-            }
+            this.source.OnUpdateScene(timeInSeconds);
         }
     }
 }

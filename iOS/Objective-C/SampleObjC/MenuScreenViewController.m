@@ -4,26 +4,9 @@
 #import "BasicDemoViewController.h"
 #import "NearbyDemoViewController.h"
 #import "SharedDemoViewController.h"
+#import "CoarseRelocDemoViewController.h"
 
 @implementation MenuScreenViewController
-
-- (IBAction)sharedTap:(id)sender {
-    NSLog(@"Starting Shared Demo");
-    SharedDemoViewController * vc = [[SharedDemoViewController alloc] init];
-    [self presentViewController:vc animated:NO completion:nil];
-}
-
-- (IBAction)nearbyTap:(id)sender {
-    NSLog(@"Starting Nearby Demo");
-    NearbyDemoViewController * vc = [[NearbyDemoViewController alloc] init];
-    [self presentViewController:vc animated:NO completion:nil];
-}
-
-- (IBAction)basicTap:(id)sender {
-    NSLog(@"Starting Basic Demo");
-    BasicDemoViewController * vc = [[BasicDemoViewController alloc] init];
-    [self presentViewController:vc animated:NO completion:nil];
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -43,7 +26,3 @@
 }
 
 @end
-
-
-
-

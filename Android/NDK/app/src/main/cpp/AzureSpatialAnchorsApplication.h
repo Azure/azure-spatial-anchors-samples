@@ -32,6 +32,11 @@ namespace AzureSpatialAnchors {
         void AdvanceDemo();
         void OnBasicButtonPress();
         void OnNearbyButtonPress();
+        void OnCoarseRelocButtonPress();
+
+        void UpdateGeoLocationPermission(bool isGranted);
+        void UpdateWifiPermission(bool isGranted);
+        void UpdateBluetoothPermission(bool isGranted);
 
         bool IsSpatialAnchorsAccountSet();
         bool ShowAdvanceButton() const { return m_showAdvanceButton; }
@@ -40,10 +45,12 @@ namespace AzureSpatialAnchors {
 
      private:
         void AcquireArHitResult(float x, float y, ArHitResult **hitResult);
+        void EnableAllowedSensors();
 
         enum class DemoMode : uint32_t {
             Basic = 0,
-            Nearby
+            Nearby,
+            CoarseReloc
         };
 
         enum class DemoStep : uint32_t {
@@ -51,7 +58,9 @@ namespace AzureSpatialAnchors {
             DestroyCloudSession,
             LocateCloudAnchor,
             LocateNearbyAnchors,
-            DeleteCloudAnchor
+            DeleteCloudAnchor,
+            StopWatcher,
+            StopSession
         };
 
         struct AnchorVisual
@@ -76,6 +85,7 @@ namespace AzureSpatialAnchors {
 
         std::shared_ptr<Microsoft::Azure::SpatialAnchors::CloudSpatialAnchorSession> m_cloudSession;
         std::shared_ptr<Microsoft::Azure::SpatialAnchors::CloudSpatialAnchorWatcher> m_cloudSpatialAnchorWatcher;
+        std::shared_ptr<Microsoft::Azure::SpatialAnchors::PlatformLocationProvider> m_locationProvider;
         std::unordered_map<std::string, AnchorVisual> m_anchorVisuals;
 
         AAssetManager* const m_assetManager;
@@ -88,6 +98,11 @@ namespace AzureSpatialAnchors {
         DemoStep m_demoStep { DemoStep::CreateCloudAnchor };
         bool m_ignoreTaps = false;
         uint32_t m_saveCount = 0;
+        uint32_t m_numAnchorsFound = 0;
+
+        bool m_haveGeoLocationPermission = false;
+        bool m_haveWifiPermission = false;
+        bool m_haveBluetoothPermission = false;
 
         Microsoft::Azure::SpatialAnchors::event_token m_anchorLocatedToken;
         Microsoft::Azure::SpatialAnchors::event_token m_locateAnchorsCompletedToken;
@@ -106,6 +121,7 @@ namespace AzureSpatialAnchors {
         void DeleteCloudAnchor();
         void QueryAnchor();
         void QueryNearbyAnchors(std::shared_ptr<CloudSpatialAnchor> const& sourceAnchor);
+        void QueryAnchorsNearDevice();
     };
 }
 

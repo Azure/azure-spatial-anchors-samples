@@ -5,12 +5,12 @@ package com.microsoft.sampleandroid;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
-import android.view.MotionEvent;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
@@ -54,10 +54,10 @@ public class SharedActivity extends AppCompatActivity
     private final Object renderLock = new Object();
 
     // Materials
-    private static Material failedColor;
-    private static Material savedColor;
-    private static Material readyColor;
-    private static Material foundColor;
+    private static final int FAILED_COLOR = android.graphics.Color.RED;
+    private static final int SAVED_COLOR = android.graphics.Color.GREEN;
+    private static final int READY_COLOR = android.graphics.Color.YELLOW;
+    private static final int FOUND_COLOR = android.graphics.Color.YELLOW;
 
     // UI Elements
     private EditText anchorNumInput;
@@ -127,7 +127,7 @@ public class SharedActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shared);
 
-        arFragment = (ArFragment)getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment = (ArFragment)getSupportFragmentManager().findFragmentById(R.id.ar_fragment);
         arFragment.setOnTapArPlaneListener(this::onTapArPlaneListener);
 
         sceneView = arFragment.getArSceneView();
@@ -147,18 +147,6 @@ public class SharedActivity extends AppCompatActivity
                 cloudAnchorManager.update(sceneView.getArFrame());
             }
         });
-
-        MaterialFactory.makeOpaqueWithColor(this, new Color(android.graphics.Color.RED))
-                .thenAccept(material -> failedColor = material);
-
-        MaterialFactory.makeOpaqueWithColor(this, new Color(android.graphics.Color.GREEN))
-                .thenAccept(material -> savedColor = material);
-
-        MaterialFactory.makeOpaqueWithColor(this, new Color(android.graphics.Color.YELLOW))
-                .thenAccept(material -> {
-                    readyColor = material;
-                    foundColor = material;
-                });
     }
 
     @Override
@@ -179,7 +167,11 @@ public class SharedActivity extends AppCompatActivity
         }
 
         if (sceneView != null && sceneView.getSession() == null) {
-            SceneformHelper.setupSessionForSceneView(this, sceneView);
+            if (!SceneformHelper.trySetupSessionForSceneView(this, sceneView)) {
+
+                finish();
+                return;
+            }
         }
 
         if ((AzureSpatialAnchorsManager.SpatialAnchorsAccountId == null || AzureSpatialAnchorsManager.SpatialAnchorsAccountId.equals("Set me"))
@@ -213,11 +205,11 @@ public class SharedActivity extends AppCompatActivity
                     switch (event.getStatus()) {
                         case AlreadyTracked:
                         case Located:
-                            AnchorVisual foundVisual = new AnchorVisual(anchor.getLocalAnchor());
+                            AnchorVisual foundVisual = new AnchorVisual(arFragment, anchor.getLocalAnchor());
                             foundVisual.setCloudAnchor(anchor);
                             foundVisual.getAnchorNode().setParent(arFragment.getArSceneView().getScene());
                             String cloudAnchorIdentifier = foundVisual.getCloudAnchor().getIdentifier();
-                            foundVisual.setColor(foundColor);
+                            foundVisual.setColor(this, FOUND_COLOR);
                             foundVisual.render(arFragment);
                             anchorVisuals.put(cloudAnchorIdentifier, foundVisual);
                             break;
@@ -251,8 +243,8 @@ public class SharedActivity extends AppCompatActivity
 
     private Anchor createAnchor(HitResult hitResult) {
 
-        AnchorVisual visual = new AnchorVisual(hitResult.createAnchor());
-        visual.setColor(readyColor);
+        AnchorVisual visual = new AnchorVisual(arFragment, hitResult.createAnchor());
+        visual.setColor(this, READY_COLOR);
         visual.render(arFragment);
         anchorVisuals.put("", visual);
 
@@ -353,7 +345,7 @@ public class SharedActivity extends AppCompatActivity
                 .thenAccept(anchor -> {
                     String anchorId = anchor.getIdentifier();
                     Log.d("ASADemo:", "created anchor: " + anchorId);
-                    visual.setColor(savedColor);
+                    visual.setColor(this, SAVED_COLOR);
                     anchorVisuals.put(anchorId, visual);
                     anchorVisuals.remove("");
 
@@ -369,7 +361,7 @@ public class SharedActivity extends AppCompatActivity
                         exceptionMessage = (((CloudSpatialException) t).getErrorCode().toString());
                     }
                     createAnchorExceptionCompletion(exceptionMessage);
-                    visual.setColor(failedColor);
+                    visual.setColor(this, FAILED_COLOR);
                     return null;
         });
     }

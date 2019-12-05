@@ -4,7 +4,7 @@
 // This demo creates and saves an anchor. It then locates it with its identifier.
 class BasicDemoViewController: BaseViewController {
     
-    override func moveToNextStepAfterCreateCloudAnchor() {
+    override func onCloudAnchorCreated() {
         ignoreMainButtonTaps = false
         step = .lookForAnchor
         
@@ -13,10 +13,11 @@ class BasicDemoViewController: BaseViewController {
             self.mainButton.setTitle("Tap to start next Session & look for Anchor", for: .normal)
         }
     }
-    
-    override func moveToNextStepAfterAnchorLocated() {
+
+    override func onLocateAnchorsCompleted() {
+        ignoreMainButtonTaps = false
         step = .deleteFoundAnchors
-        
+
         DispatchQueue.main.async {
             self.feedbackControl.isHidden = true
             self.mainButton.setTitle("Anchor found! Tap to delete", for: .normal)
@@ -39,16 +40,16 @@ class BasicDemoViewController: BaseViewController {
             
             startSession()
             
-            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor
-            // We will then put that anchor in the anchorVisuals dictionary with a special key and call CreateCloudAnchor when there is enough data for saving
-            // CreateCloudAnchor will call moveToNextStepAfterCreateCloudAnchor when its async method returns
+            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor.
+            // We will then put that anchor in the anchorVisuals dictionary with a special key and call CreateCloudAnchor when there is enough data for saving.
+            // CreateCloudAnchor will call onCloudAnchorCreated when its async method returns to move to the next step.
             mainButton.setTitle("Tap on the screen to create an Anchor ☝️", for: .normal)
         case .lookForAnchor:
             ignoreMainButtonTaps = true
             stopSession()
             startSession()
-            
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             lookForAnchor()
         case .deleteFoundAnchors:
             ignoreMainButtonTaps = true

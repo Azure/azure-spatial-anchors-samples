@@ -15,23 +15,25 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
-    public void onBasicDemoClick(View v)
-    {
+    public void onBasicDemoClick(View v) {
         Intent intent = new Intent(this, AzureSpatialAnchorsActivity.class);
         intent.putExtra("BasicDemo", true);
         startActivity(intent);
     }
 
-    public void onNearbyDemoClick(View v)
-    {
+    public void onNearbyDemoClick(View v) {
         Intent intent = new Intent(this, AzureSpatialAnchorsActivity.class);
         intent.putExtra("BasicDemo", false);
         startActivity(intent);
     }
 
-    public void onSharedDemoClick(View v)
-    {
+    public void onSharedDemoClick(View v) {
         Intent intent = new Intent(this, SharedActivity.class);
+        startActivity(intent);
+    }
+
+    public void onCoarseRelocDemoClick(View v) {
+        Intent intent = new Intent(this, CoarseRelocActivity.class);
         startActivity(intent);
     }
 }

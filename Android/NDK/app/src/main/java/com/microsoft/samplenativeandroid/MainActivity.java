@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     private Button mDemoAdvanceButton;
     private Button mBasicButton;
     private Button mNearbyButton;
+    private Button mCoarseRelocButton;
 
     private boolean mViewportChanged = false;
     private int mViewportWidth;
@@ -55,11 +56,26 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        if (!hasCameraPermission(this)) {
-            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
-                    .show();
-
-            finish();
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (!hasCameraPermission(this)) {
+                Toast.makeText(
+                        this,
+                        "Camera permission is needed to run this application",
+                        Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+        } else {
+            SensorPermissionsHelper.PermissionsResult outcome =
+                    SensorPermissionsHelper.onRequestPermissionsResult(this, requestCode);
+            if (outcome == SensorPermissionsHelper.PermissionsResult.Denied) {
+                Toast.makeText(
+                        this,
+                        "Location permission is needed to run this demo",
+                        Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
         }
     }
 
@@ -97,9 +113,11 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         mTextView = findViewById(R.id.textView);
         mBasicButton = findViewById(R.id.basicDemo);
         mNearbyButton = findViewById(R.id.nearbyDemo);
+        mCoarseRelocButton = findViewById(R.id.coarseRelocDemo);
         mDemoAdvanceButton = findViewById(R.id.demoAdvance);
         mBasicButton.setOnClickListener((View v) -> BasicButtonPress());
         mNearbyButton.setOnClickListener((View v) -> NearbyButtonPress());
+        mCoarseRelocButton.setOnClickListener((View v) -> CoarseRelocButtonPress());
         mDemoAdvanceButton.setOnClickListener((View v) -> AdvanceDemo());
     }
 
@@ -120,8 +138,16 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         JniInterface.onNearbyButtonPress();
     }
 
+    private void CoarseRelocButtonPress() {
+        JniInterface.onCoarseRelocButtonPress();
+        SensorPermissionsHelper.requestMissingPermissions(this);
+    }
+
     private void AdvanceDemo() {
-        JniInterface.advanceDemo();
+        // Can modify session state or destroy it. Synchronized to avoid racing onDrawFrame.
+        synchronized (this) {
+            JniInterface.advanceDemo();
+        }
     }
 
     @Override
@@ -150,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
             mDemoAdvanceButton.setVisibility(showAdvance ? View.VISIBLE : View.GONE);
             mBasicButton.setVisibility(showAdvance ? View.GONE : View.VISIBLE);
             mNearbyButton.setVisibility(showAdvance ? View.GONE : View.VISIBLE);
+            mCoarseRelocButton.setVisibility(showAdvance ? View.GONE : View.VISIBLE);
             mTextView.setVisibility(showAdvance ? View.VISIBLE : View.GONE);
 
             updateStatus();

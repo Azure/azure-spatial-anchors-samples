@@ -119,7 +119,7 @@ static NSString *MatrixToString(matrix_float4x4 value) {
             [self->_anchorVisuals removeObjectForKey:@""];
             self->_localAnchor = NULL;
             
-            [self moveToNextStepAfterCreateCloudAnchor];
+            [self onCloudAnchorCreated];
         }
     }];
 }
@@ -230,6 +230,7 @@ static NSString *MatrixToString(matrix_float4x4 value) {
             visual.localAnchor = anchor.localAnchor;
             [_anchorVisuals setValue:visual forKey:visual.identifier];
             [_sceneView.session addAnchor:anchor.localAnchor];
+            [self onNewAnchorLocated: anchor];
             break;
         }
         case ASALocateAnchorStatusNotLocatedAnchorDoesNotExist:
@@ -241,8 +242,7 @@ static NSString *MatrixToString(matrix_float4x4 value) {
 
 - (void)locateAnchorsCompleted:(ASACloudSpatialAnchorSession *)cloudSpatialAnchorSession :(ASALocateAnchorsCompletedEventArgs *)args {
     NSLog(@"Locate operation completed for watcher with identifier: %i", args.watcher.identifier);
-    _ignoreTaps = NO;
-    [self moveToNextStepAfterAnchorLocated];
+    [self onLocateAnchorsCompleted];
 }
 
 - (void)sessionUpdated:(ASACloudSpatialAnchorSession *)cloudSpatialAnchorSession :(ASASessionUpdatedEventArgs *)args {
@@ -306,9 +306,15 @@ static NSString *MatrixToString(matrix_float4x4 value) {
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
--(void)moveToNextStepAfterCreateCloudAnchor{}
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
 
--(void)moveToNextStepAfterAnchorLocated{}
+-(void)onCloudAnchorCreated{}
+
+-(void)onNewAnchorLocated:(ASACloudSpatialAnchor*)cloudAnchor{}
+
+-(void)onLocateAnchorsCompleted{}
 
 -(void)showLogMessage:(NSString *)text here:(UIView *)here{
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -321,16 +327,33 @@ static NSString *MatrixToString(matrix_float4x4 value) {
     });
 }
 
-- (UIButton *)addButtonAt:(float)top lines:(int)lines {
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self layoutButtons];
+}
+
+- (void)layoutButtons {
+    [self layoutButton:_feedbackControl top:_sceneView.bounds.size.height - 40 lines:1];
+    [self layoutButton:_button top:_sceneView.bounds.size.height - 80 lines:1];
+
+    [self layoutButton:_errorControl top:_sceneView.bounds.size.height - 400 lines:5];
+
+    [self layoutButton:_backControl top:20 lines:1];
+}
+
+- (void)layoutButton:(UIButton *)button top:(float)top lines:(int)lines {
     float wideSize = _sceneView.bounds.size.width - 20;
+    button.frame = CGRectMake(10, top, wideSize, lines * 40);
+    if (lines > 1) {
+        button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    }
+}
+
+- (UIButton *)addButton {
     UIButton *result = [UIButton buttonWithType:UIButtonTypeSystem];
-    result.frame = CGRectMake(10, top, wideSize, lines * 40);
     [result setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
     [result setTitleShadowColor:UIColor.whiteColor forState:UIControlStateNormal];
     [result setBackgroundColor:[UIColor.lightGrayColor colorWithAlphaComponent:0.6]];
-    if (lines > 1) {
-        result.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    }
     [self.sceneView addSubview:result];
     return result;
 }
@@ -339,12 +362,6 @@ static NSString *MatrixToString(matrix_float4x4 value) {
     [super viewDidLoad];
     
     [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-
-    // Initialize ARSCNView
-    self.sceneView = [[ARSCNView alloc] initWithFrame:self.view.bounds];
-    
-    // Set the view's session
-    self.sceneView.session = [[ARSession alloc] init];
     
     // Set the view's delegate
     self.sceneView.delegate = self;
@@ -358,9 +375,6 @@ static NSString *MatrixToString(matrix_float4x4 value) {
     // Set the scene to the view
     self.sceneView.scene = scene;
     
-    // Add sceneView to the view
-    [self.view addSubview:self.sceneView];
-    
     _anchorVisuals = [[NSMutableDictionary<NSString*, AnchorVisual *> alloc] init];
 
     readyColor = [UIColor.blueColor colorWithAlphaComponent:0.6];           // blue for a local anchor
@@ -370,27 +384,29 @@ static NSString *MatrixToString(matrix_float4x4 value) {
     failedColor = [UIColor.redColor colorWithAlphaComponent:0.6];           // red when there was an error
     
     // Control to indicate when we can create an anchor
-    _feedbackControl  = [self addButtonAt:_sceneView.bounds.size.height - 40 lines:1];
+    _feedbackControl  = [self addButton];
     [_feedbackControl setBackgroundColor: [UIColor clearColor]];
     [_feedbackControl setTitleColor:[UIColor yellowColor] forState:UIControlStateNormal];
     [_feedbackControl setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_feedbackControl setHidden:YES];
 
     // Main button
-    _button = [self addButtonAt:_sceneView.bounds.size.height - 80 lines:1];
+    _button = [self addButton];
     [_button addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchDown];
     
     // Control to show errors and verbose text
-    _errorControl  = [self addButtonAt:_sceneView.bounds.size.height - 400 lines:5];
+    _errorControl  = [self addButton];
     [_errorControl setHidden:YES];
     
     // Control to go back to the menu screen
-    _backControl = [self addButtonAt: 20 lines:1];
+    _backControl = [self addButton];
     [_backControl addTarget:self action:@selector(backButtonTap:) forControlEvents:UIControlEventTouchDown];
     [_backControl setBackgroundColor: [UIColor clearColor]];
     [_backControl setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [_backControl setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_backControl setTitle:@"Exit Demo" forState:UIControlStateNormal];
+
+    [self layoutButtons];
     
     if ([SpatialAnchorsAccountId isEqual: @"Set me"] || [SpatialAnchorsAccountKey isEqual: @"Set me"]) {
         [_button setHidden:YES];

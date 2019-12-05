@@ -188,6 +188,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
             anchorIdsToLocate.Clear();
             anchorIdsToLocate.AddRange(anchorIds);
+
             anchorLocateCriteria.Identifiers = anchorIdsToLocate.ToArray();
         }
 
@@ -209,7 +210,17 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             nac.SourceAnchor = nearbyAnchor;
             nac.DistanceInMeters = DistanceInMeters;
             nac.MaxResultCount = MaxNearAnchorsToFind;
+
             anchorLocateCriteria.NearAnchor = nac;
+        }
+
+        protected void SetNearDevice(float DistanceInMeters, int MaxAnchorsToFind)
+        {
+            NearDeviceCriteria nearDeviceCriteria = new NearDeviceCriteria();
+            nearDeviceCriteria.DistanceInMeters = DistanceInMeters;
+            nearDeviceCriteria.MaxResultCount = MaxAnchorsToFind;
+
+            anchorLocateCriteria.NearDevice = nearDeviceCriteria;
         }
 
         protected void SetGraphEnabled(bool UseGraph, bool JustGraph = false)

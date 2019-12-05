@@ -6,7 +6,7 @@
     tools:context=".AzureSpatialAnchorsActivity">
 
     <fragment android:name="com.google.ar.sceneform.ux.ArFragment"
-        android:id="@+id/ux_fragment"
+        android:id="@+id/ar_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="top"/>

@@ -172,7 +172,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             if (arCameraManager.subsystem.TryGetLatestFrame(cameraParams, out xRCameraFrame))
             {
                 long latestFrameTimeStamp = xRCameraFrame.timestampNs;
-                
+
                 bool newFrameToProcess = latestFrameTimeStamp > lastFrameProcessedTimeStamp;
 
                 if (newFrameToProcess)
@@ -201,7 +201,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
         /// <summary>
         /// ARFoundation can discover platform anchors *after* ASA has provided the CloudSpatialAnchor to us
-        /// When ARFoundation finds the platform anchor (usually within a frame or two) we will call the 
+        /// When ARFoundation finds the platform anchor (usually within a frame or two) we will call the
         /// anchor located event.
         /// </summary>
         private void ProcessPendingEventArgs()
@@ -355,6 +355,17 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
 #if UNITY_ANDROID || UNITY_IOS
             // Check ARFoundation configuration
+            // On Android the ARCameraManager can take a few seconds to get going.
+            int retries = 0;
+            while (retries++ < 60)
+            {
+                if (arCameraManager != null && arCameraManager.enabled)
+                {
+                    break;
+                }
+                await Task.Delay(100);
+            }
+
             if (arCameraManager == null || !arCameraManager.enabled)
             {
                 Debug.LogError("Need an enabled ARCameraManager in the scene");
@@ -551,7 +562,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
 #if UNITY_ANDROID || UNITY_IOS
         /// <summary>
-        /// Keeps track of when platform anchors (surfaced by ARFoundation as ARReferencePoints) are 
+        /// Keeps track of when platform anchors (surfaced by ARFoundation as ARReferencePoints) are
         /// added/updated/removed by ARFoundation.  This is critical for mapping Azure Spatial Anchors CloudAnchors
         /// to Unity ARFoundation Reference Points.
         /// </summary>
@@ -637,7 +648,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             arCameraManager = FindObjectOfType<ARCameraManager>();
             arSession = FindObjectOfType<ARSession>();
             arReferencePointManager = FindObjectOfType<ARReferencePointManager>();
-#endif    
+#endif
 
             // Only allow the manager to start if it is properly configured.
             await EnsureValidConfiguration(disable: true, exception: false);
@@ -646,7 +657,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             arReferencePointManager.referencePointsChanged += ARReferencePointManager_referencePointsChanged;
 #endif
         }
-        
+
         /// <summary>
         /// Update is called once per frame
         /// </summary>
@@ -723,7 +734,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
             // Configure logging
             session.LogLevel = logLevel;
-           
+
             // Configure authentication
             if (authenticationMode == AuthenticationMode.ApiKey)
             {
@@ -932,7 +943,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
             // Start the session
             session.Start();
-            
+
             // It's started
             isSessionStarted = true;
 

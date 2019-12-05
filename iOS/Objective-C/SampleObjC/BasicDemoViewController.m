@@ -5,14 +5,15 @@
 // This demo creates and saves an anchor. It then locates it with its identifier
 @implementation BasicDemoViewController
 
--(void)moveToNextStepAfterCreateCloudAnchor{
+-(void)onCloudAnchorCreated{
     _ignoreTaps = NO;
     [_feedbackControl setHidden:YES];
     [_button setTitle:@"Tap to start next Session & look for Anchor" forState:UIControlStateNormal];
     _step = DemoStepLookForAnchor;
 }
 
--(void)moveToNextStepAfterAnchorLocated{
+-(void)onLocateAnchorsCompleted{
+    _ignoreTaps = NO;
     [_feedbackControl setHidden:YES];
     [_button setTitle:@"Anchor found! Tap to delete" forState:UIControlStateNormal];
     _step = DemoStepDeleteFoundAnchors;
@@ -34,9 +35,9 @@
             
             [self startSession];
             
-            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor
-            // We will then put that anchor in the anchorVisuals dictionary with a key of "" and call CreateCloudAnchor when there is enough data for saving
-            // CreateCloudAnchor will call moveToNextStepAfterCreateCloudAnchor when its async method returns
+            // When you tap on the screen, touchesBegan will call createLocalAnchor and create a local ARAnchor.
+            // We will then put that anchor in the anchorVisuals dictionary with a key of "" and call CreateCloudAnchor when there is enough data for saving.
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             [_button setTitle:@"Tap on the screen to create an Anchor ☝️" forState:UIControlStateNormal];
             break;
         case DemoStepLookForAnchor:
@@ -44,7 +45,7 @@
             [self stopSession];
             [self startSession];
             
-            // We will get a call to locateAnchorsCompleted when locate operation completes, which will call moveToNextStepAfterAnchorLocated
+            // We will get a call to onLocateAnchorsCompleted which will move to the next step when the locate operation completes.
             [self lookForAnchor];
             break;
         case DemoStepDeleteFoundAnchors:

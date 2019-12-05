@@ -4,16 +4,18 @@
 #include "ViewController.h"
 #include "Content/AnchorVisual.h"
 
-#ifdef BASIC_DEMO
+#if DEMO_TYPE == BASIC_DEMO
 #define AFTER_LOCATE_STEP DemoStep::DeleteFoundAnchor
 #else
 #ifdef USE_ANCHOR_EXCHANGE
 #undef USE_ANCHOR_EXCHANGE
 #endif
+#if DEMO_TYPE == NEARBY_DEMO
 #define AFTER_LOCATE_STEP DemoStep::LookForNearbyAnchors
+#elif DEMO_TYPE == COARSE_RELOC_DEMO
+#define AFTER_LOCATE_STEP DemoStep::StopWatcher
 #endif
-
-
+#endif
 
 using namespace SampleHoloLens;
 using namespace concurrency;
@@ -40,6 +42,17 @@ const std::wstring SpatialAnchorsAccountId = L"Set me";
 // Set this string to the Spatial Anchors account key provided for the Azure Spatial Service resource.
 const std::wstring SpatialAnchorsAccountKey = L"Set me";
 
+// Set this to the url for the service created in the 'SharingService' sample
+const std::wstring AnchorExchangeURL = L"Set me";
+
+// Whitelist of Bluetooth-LE beacons used to find anchors and improve the locatability
+// of existing anchors.
+// Add the UUIDs for your own Bluetooth beacons here to use them with Azure Spatial Anchors.
+const winrt::hstring KnownBluetoothProximityUuids[] = {
+    L"61687109-905f-4436-91f8-e602f514c96d",
+    L"e1f54e02-1e23-44e0-9c3d-512eb56adec9",
+    L"01234567-8901-2345-6789-012345678903",
+};
 
 std::wstring FeedbackToString(SessionUserFeedback userFeedback)
 {
@@ -74,6 +87,9 @@ std::wstring StatusToString(SessionStatus status) {
 }
 
 ViewController::ViewController()
+#ifdef USE_ANCHOR_EXCHANGE
+    : m_anchorExchange{ AnchorExchangeURL }
+#endif
 {
 #ifdef USE_ANCHOR_EXCHANGE
     m_anchorExchange.WatchKeys();
@@ -83,9 +99,6 @@ ViewController::ViewController()
     if (!SanityCheckAccessInformation())
     {
         m_titleText = L"Set Azure Spatial Anchors access information in ViewController.cpp";
-#ifdef USE_ANCHOR_EXCHANGE
-        m_titleText += L"\nand Set AnchorExchangeURL in ViewController.h";
-#endif
     }
 }
 
@@ -120,9 +133,9 @@ void ViewController::AddEventListeners()
             anchorVisual.Anchor(args.Anchor().LocalAnchor());
             m_foundAnchors.Insert(args.Anchor().Identifier(), anchorVisual);
             m_titleText = L"anchor found : " + std::wstring(args.Anchor().Identifier());
-#ifdef BASIC_DEMO
+#if DEMO_TYPE == BASIC_DEMO
             m_titleText += L"\nairtap to delete anchor";
-#else
+#elif DEMO_TYPE == NEARBY_DEMO
             if (m_step == DemoStep::StopSessionForQuery)
             {
                 m_titleText += L"\nairtap to delete anchors";
@@ -131,6 +144,8 @@ void ViewController::AddEventListeners()
             {
                 m_titleText += L"\nairtap to find nearby anchors";
             }
+#else // DEMO_TYPE == COARSE_RELOC_DEMO
+            m_titleText += L"\nairtap to stop watcher";
 #endif
 
             if (args.Anchor().Identifier() == m_targetId)
@@ -197,7 +212,7 @@ void ViewController::RemoveEventListeners()
 bool SampleHoloLens::ViewController::SanityCheckAccessInformation()
 {
 #ifdef USE_ANCHOR_EXCHANGE
-    return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me" || AnchorExchangeURL == L"");
+    return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me" || AnchorExchangeURL == L"Set me");
 #else
     return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me");
 #endif
@@ -220,9 +235,9 @@ winrt::fire_and_forget ViewController::SaveAnchor(DemoStep errorStep)
         m_foundAnchors.Remove(L"");
         m_targetId = m_cloudAnchor.Identifier();
         m_titleText = L"cloud anchor saved with ID " + m_targetId;
-#ifdef BASIC_DEMO
+#if (DEMO_TYPE == BASIC_DEMO) || (DEMO_TYPE == COARSE_RELOC_DEMO)
         m_titleText += L"\nairtap to stop session";
-#else
+#else // DEMO_TYPE == NEARBY_DEMO
         if (m_step == DemoStep::CreateForQuery)
         {
             m_titleText += L"\nairtap to stop session";
@@ -283,6 +298,94 @@ winrt::fire_and_forget ViewController::DeleteAnchor(DemoStep errorStep)
     co_return;
 }
 
+
+void ViewController::AppendSensorsState(std::wostringstream& str) const
+{
+#if DEMO_TYPE == COARSE_RELOC_DEMO
+    if (!m_locationProvider)
+    {
+        str << L"No location provider";
+        return;
+    }
+    SensorCapabilities sensors = m_locationProvider.Sensors();
+    str << L"GeoLocation: ";
+    if (!sensors.GeoLocationEnabled())
+    {
+        str << L"Disabled";
+    }
+    else
+    {
+        switch (m_locationProvider.GeoLocationStatus())
+        {
+        case GeoLocationStatusResult::Available:
+            str << L"Available";
+            break;
+        case GeoLocationStatusResult::DisabledCapability:
+            str << L"Disabled";
+            break;
+        case GeoLocationStatusResult::NoGPSData:
+            str << L"Unavailable";
+            break;
+        case GeoLocationStatusResult::MissingSensorFingerprintProvider:
+        default:
+            str << L"Indeterminate";
+            break;
+        }
+    }
+
+    str << L", Bluetooth: ";
+    if (!sensors.BluetoothEnabled())
+    {
+        str << L"Disabled";
+    }
+    else
+    {
+        switch (m_locationProvider.BluetoothStatus())
+        {
+        case BluetoothStatusResult::Available:
+            str << L"Available";
+            break;
+        case BluetoothStatusResult::DisabledCapability:
+            str << L"Disabled";
+            break;
+        case BluetoothStatusResult::NoBeaconsFound:
+            str << L"Unavailable";
+            break;
+        case BluetoothStatusResult::MissingSensorFingerprintProvider:
+        default:
+            str << L"Indeterminate";
+            break;
+        }
+    }
+
+    str << L", Wifi: ";
+    if (!sensors.WifiEnabled())
+    {
+        str << L"Disabled";
+    }
+    else
+    {
+        switch (m_locationProvider.WifiStatus())
+        {
+        case WifiStatusResult::Available:
+            str << L"Available";
+            break;
+        case WifiStatusResult::DisabledCapability:
+            str << L"Disabled";
+            break;
+        case WifiStatusResult::NoAccessPointsFound:
+            str << L"Unavailable";
+            break;
+        case WifiStatusResult::MissingSensorFingerprintProvider:
+        default:
+            str << L"Indeterminate";
+            break;
+        }
+    }
+#endif
+
+}
+
 void ViewController::InputReceived(SpatialPointerPose const& pose)
 {
     if (!SanityCheckAccessInformation() || m_asyncOpInProgress)
@@ -292,23 +395,13 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
 
     switch (m_step)
     {
-        case DemoStep::CreateFactory:
-        {
-            winrt::com_ptr<::IUnknown> unk;
-            winrt::check_hresult(ASACreateFactory(unk.put()));
-            m_sscfactory = unk.as<SpatialAnchorsFactory>();
-            m_titleText = L"factory created\nairtap to create session";
-        }
-#ifdef BASIC_DEMO
-        break;
-#endif
         case DemoStep::CreateSession:
         {
             m_enoughDataForSaving = false;
-            m_cloudSession = m_sscfactory.CreateCloudSpatialAnchorSession();
+            m_cloudSession = CloudSpatialAnchorSession();
             m_titleText = L"session created, not configured\nairtap to configure session";
         }
-#ifdef BASIC_DEMO
+#if DEMO_TYPE == BASIC_DEMO
         break;
 #endif
         case DemoStep::ConfigSession:
@@ -321,21 +414,25 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             AddEventListeners();
             m_titleText = L"session configured, not started\nairtap to start session";
         }
-#ifdef BASIC_DEMO
+#if DEMO_TYPE == BASIC_DEMO
         break;
 #endif
         case DemoStep::StartSession:
         {
             m_cloudSession.Start();
             m_sessionStarted = true;
+#if DEMO_TYPE == BASIC_DEMO
             m_titleText = L"session started\nairtap to place anchor";
-#ifndef BASIC_DEMO
+#elif DEMO_TYPE == NEARBY_DEMO
             m_titleText = L"airtap to place first anchor";
+            m_step = DemoStep::StartSession; // The fall throughs above didn't move the step counter.
+#elif DEMO_TYPE == COARSE_RELOC_DEMO
+            m_titleText = L"session started\nairtap to create location provider";
             m_step = DemoStep::StartSession; // The fall throughs above didn't move the step counter.
 #endif
         }
         break;
-#ifdef BASIC_DEMO
+#if DEMO_TYPE == BASIC_DEMO || DEMO_TYPE == COARSE_RELOC_DEMO
         case DemoStep::CreateLocalAnchor:
         {
             auto lock = std::unique_lock<std::mutex>(m_mutex);
@@ -364,7 +461,11 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             }
             else
             {
-                m_titleText = L"local anchor created\nairtap to prepare a cloud anchor";
+                std::wostringstream str;
+                str << L"local anchor created\n";
+                AppendSensorsState(str);
+                str << L"\nairtap to prepare a cloud anchor";
+                m_titleText = str.str();
             }
             anchorVisual.Anchor(m_localAnchor);
             m_foundAnchors.Insert(L"", anchorVisual);
@@ -373,9 +474,13 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
         case DemoStep::CreateCloudAnchor:
         {
             auto lock = std::unique_lock<std::mutex>(m_mutex);
-            m_cloudAnchor = m_sscfactory.CreateCloudSpatialAnchor();
+            m_cloudAnchor = CloudSpatialAnchor();
             m_cloudAnchor.LocalAnchor(m_localAnchor);
-            m_titleText = L"cloud anchor created, not saved\nairtap to set expiration date";
+            std::wostringstream str;
+            str << L"cloud anchor created, not saved\n";
+            AppendSensorsState(str);
+            str << L"\nairtap to set expiration date";
+            m_titleText = str.str();
         }
         break;
         case DemoStep::SetAnchorExpiration:
@@ -424,10 +529,12 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             }
         }
         break;
+#endif
+#if DEMO_TYPE == BASIC_DEMO
         case DemoStep::CreateForQuery:
         {
             m_enoughDataForSaving = false;
-            m_cloudSession = m_sscfactory.CreateCloudSpatialAnchorSession();
+            m_cloudSession = CloudSpatialAnchorSession();
 
             auto configuration = m_cloudSession.Configuration();
             configuration.AccountId(SpatialAnchorsAccountId);
@@ -443,7 +550,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             m_cloudSession.Start();
             m_sessionStarted = true;
 
-            AnchorLocateCriteria criteria = m_sscfactory.CreateAnchorLocateCriteria();
+            AnchorLocateCriteria criteria = AnchorLocateCriteria();
 
 #ifdef USE_ANCHOR_EXCHANGE
             criteria.Identifiers(m_anchorExchange.AnchorKeys());
@@ -465,7 +572,8 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             DeleteAnchor(DemoStep::DeleteFoundAnchor);
         }
         break;
-#else
+#endif
+#if DEMO_TYPE == NEARBY_DEMO
         case DemoStep::CreateNearbyOne:
         case DemoStep::CreateNearbyTwo:
         case DemoStep::CreateNearbyThree:
@@ -502,7 +610,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
                 }
                 anchorVisual.Anchor(m_localAnchor);
                 m_foundAnchors.Insert(L"", anchorVisual);
-                m_cloudAnchor = m_sscfactory.CreateCloudSpatialAnchor();
+                m_cloudAnchor = CloudSpatialAnchor();
                 m_cloudAnchor.LocalAnchor(m_localAnchor);
             }
 
@@ -528,7 +636,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             }
 
             m_enoughDataForSaving = false;
-            m_cloudSession = m_sscfactory.CreateCloudSpatialAnchorSession();
+            m_cloudSession = CloudSpatialAnchorSession();
 
             auto configuration = m_cloudSession.Configuration();
             configuration.AccountId(SpatialAnchorsAccountId);
@@ -543,7 +651,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
         break;
         case DemoStep::LookForAnchor:
         {
-            AnchorLocateCriteria criteria = m_sscfactory.CreateAnchorLocateCriteria();
+            AnchorLocateCriteria criteria = AnchorLocateCriteria();
             criteria.Identifiers({ m_targetId });
             m_cloudSession.CreateWatcher(criteria);
             m_titleText = L"criteria created, locating ...";
@@ -557,14 +665,93 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
                 return;
             }
 
-            AnchorLocateCriteria criteria = m_sscfactory.CreateAnchorLocateCriteria();
-            auto nearAnchor = m_sscfactory.CreateNearAnchorCriteria();
+            AnchorLocateCriteria criteria = AnchorLocateCriteria();
+            auto nearAnchor = NearAnchorCriteria();
             nearAnchor.DistanceInMeters(10);
             nearAnchor.SourceAnchor(m_foundAnchor);
             criteria.NearAnchor(nearAnchor);
 
             m_cloudSession.CreateWatcher(criteria);
             m_titleText = L"nearby criteria created, locating ...";
+        }
+        break;
+#endif
+#if DEMO_TYPE == COARSE_RELOC_DEMO
+        case DemoStep::CreateLocationProvider:
+        {
+            m_locationProvider = PlatformLocationProvider();
+            m_locationProvider.Sensors().KnownBeaconProximityUuids(KnownBluetoothProximityUuids);
+            m_cloudSession.LocationProvider(m_locationProvider);
+            std::wostringstream str;
+            str << L"location provider created\n";
+            AppendSensorsState(str);
+            str << L"\nairtap to configure sensors";
+            m_titleText = str.str();        }
+        break;
+        case DemoStep::ConfigureSensors:
+        {
+            SensorCapabilities sensors = m_locationProvider.Sensors();
+            sensors.GeoLocationEnabled(true);
+            sensors.WifiEnabled(true);
+            sensors.BluetoothEnabled(true);
+            std::wostringstream str;
+            str << L"sensors configured\n";
+            AppendSensorsState(str);
+            str << L"\nairtap to place an anchor";
+            m_titleText = str.str();
+        }
+        break;
+        case DemoStep::CreateForQuery:
+        {
+            m_enoughDataForSaving = false;
+            m_cloudSession = CloudSpatialAnchorSession();
+
+            auto configuration = m_cloudSession.Configuration();
+            configuration.AccountId(SpatialAnchorsAccountId);
+            configuration.AccountKey(SpatialAnchorsAccountKey);
+
+            m_locationProvider = PlatformLocationProvider();
+            m_locationProvider.Sensors().KnownBeaconProximityUuids(KnownBluetoothProximityUuids);
+            SensorCapabilities sensors = m_locationProvider.Sensors();
+            sensors.GeoLocationEnabled(true);
+            sensors.WifiEnabled(true);
+            sensors.BluetoothEnabled(true);
+            m_cloudSession.LocationProvider(m_locationProvider);
+
+            m_cloudSession.LogLevel(SessionLogLevel::All);
+            AddEventListeners();
+            std::wostringstream str;
+            str << L"session configured for querying, not active\n";
+            AppendSensorsState(str);
+            str << L"\nairtap to start session and start locating";
+            m_titleText = str.str();
+        }
+        break;
+        case DemoStep::StartForQueryAndCreateWatcher:
+        {
+            m_cloudSession.Start();
+            m_sessionStarted = true;
+
+            NearDeviceCriteria nearDevice = NearDeviceCriteria();
+            nearDevice.DistanceInMeters(8.0f);
+            nearDevice.MaxResultCount(25);
+
+            AnchorLocateCriteria criteria = AnchorLocateCriteria();
+            criteria.NearDevice(nearDevice);
+
+            m_watcher = m_cloudSession.CreateWatcher(criteria);
+            std::wostringstream str;
+            str << L"criteria created, locating ...\n";
+            AppendSensorsState(str);
+            m_titleText = str.str();
+            m_asyncOpInProgress = true;
+        }
+        break;
+        case DemoStep::StopWatcher:
+        {
+            m_watcher.Stop();
+            m_watcher = nullptr;
+            m_titleText = L"watcher stopped\nairtap to stop session";
         }
         break;
 #endif

@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/AzureSpatialAnchors.Examples/Scenes/AzureSpatialAnchorsLocalSharedDemo.unity
     guid: f540d2472b41fdb4bb6a7f47521b0bdd
+  - enabled: 1
+    path: Assets/AzureSpatialAnchors.Examples/Scenes/AzureSpatialAnchorsCoarseRelocDemo.unity
+    guid: 215a1784376860644a66e82f3d383b85
   m_configObjects: {}
