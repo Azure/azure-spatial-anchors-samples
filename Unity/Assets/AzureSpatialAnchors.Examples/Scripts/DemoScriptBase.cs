@@ -21,6 +21,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         protected CloudSpatialAnchorWatcher currentWatcher;
         protected GameObject spawnedObject = null;
         protected Material spawnedObjectMat = null;
+        protected bool enableAdvancingOnSelect = true;
         #endregion // Member Variables
 
         #region Unity Inspector Variables
@@ -127,12 +128,28 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             try
             {
-                await AdvanceDemoAsync();
+                advanceDemoTask = AdvanceDemoAsync();
+                await advanceDemoTask;
             }
             catch (Exception ex)
             {
                 Debug.LogError($"{nameof(DemoScriptBase)} - Error in {nameof(AdvanceDemo)}: {ex.Message} {ex.StackTrace}");
                 feedbackBox.text = $"Demo failed, check debugger output for more information";
+            }
+        }
+
+        public virtual Task EnumerateAllNearbyAnchorsAsync() { throw new NotImplementedException(); }
+
+        public async void EnumerateAllNearbyAnchors()
+        {
+            try
+            {
+                await EnumerateAllNearbyAnchorsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"{nameof(DemoScriptBase)} - Error in {nameof(EnumerateAllNearbyAnchors)}: === {ex.GetType().Name} === {ex.ToString()} === {ex.Source} === {ex.Message} {ex.StackTrace}");
+                feedbackBox.text = $"Enumeration failed, check debugger output for more information";
             }
         }
 
@@ -263,7 +280,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         protected virtual void MoveAnchoredObject(GameObject objectToMove, Vector3 worldPos, Quaternion worldRot, CloudSpatialAnchor cloudSpatialAnchor = null)
         {
             // Get the cloud-native anchor behavior
-            CloudNativeAnchor cna = spawnedObject.GetComponent<CloudNativeAnchor>();
+            CloudNativeAnchor cna = objectToMove.GetComponent<CloudNativeAnchor>();
 
             // Warn and exit if the behavior is missing
             if (cna == null)
@@ -370,8 +387,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         protected override void OnSelectInteraction()
         {
             #if WINDOWS_UWP || UNITY_WSA
-            // On HoloLens, we just advance the demo.
-            UnityDispatcher.InvokeOnAppThread(() => advanceDemoTask = AdvanceDemoAsync());
+            if(enableAdvancingOnSelect)
+            {
+                // On HoloLens, we just advance the demo.
+                UnityDispatcher.InvokeOnAppThread(() => advanceDemoTask = AdvanceDemoAsync());
+            }
             #endif
 
             base.OnSelectInteraction();

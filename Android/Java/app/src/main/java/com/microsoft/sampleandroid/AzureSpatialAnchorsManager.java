@@ -13,12 +13,14 @@ import com.microsoft.azure.spatialanchors.CloudSpatialAnchorSession;
 import com.microsoft.azure.spatialanchors.CloudSpatialAnchorWatcher;
 import com.microsoft.azure.spatialanchors.PlatformLocationProvider;
 import com.microsoft.azure.spatialanchors.LocateAnchorsCompletedListener;
+import com.microsoft.azure.spatialanchors.NearDeviceCriteria;
 import com.microsoft.azure.spatialanchors.OnLogDebugEvent;
 import com.microsoft.azure.spatialanchors.SessionErrorEvent;
 import com.microsoft.azure.spatialanchors.SessionLogLevel;
 import com.microsoft.azure.spatialanchors.SessionUpdatedListener;
 
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -86,6 +88,21 @@ class AzureSpatialAnchorsManager {
 
     public void setLocationProvider(PlatformLocationProvider locationProvider) {
         spatialAnchorsSession.setLocationProvider(locationProvider);
+    }
+
+    public CompletableFuture<List<CloudSpatialAnchor>> enumerateNearbyAnchors(NearDeviceCriteria criteria) {
+        return this.toCompletableFuture(
+                spatialAnchorsSession.getNearbyAnchorIdsAsync(criteria))
+                .thenApply(anchorIds -> {
+                    List<CloudSpatialAnchor> anchors = new Vector<>();
+
+                    for (String anchorId : anchorIds) {
+                        anchors.add(this.toCompletableFuture(
+                                spatialAnchorsSession.getAnchorPropertiesAsync(anchorId)).join());
+                    }
+
+                    return anchors;
+                });
     }
 
     public CompletableFuture<CloudSpatialAnchor> createAnchorAsync(CloudSpatialAnchor anchor) {

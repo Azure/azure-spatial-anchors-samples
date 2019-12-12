@@ -84,5 +84,18 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             return MobileAndEditorUXTree.GetComponentInChildren<Button>();
 #endif
         }
+
+        /// <summary>
+        /// Gets the buttons used in the demo.
+        /// </summary>
+        /// <returns>The buttons used in the demo.</returns>
+        public Button[] GetDemoButtons()
+        {
+#if UNITY_WSA
+            return HoloLensUXTree.GetComponentsInChildren<Button>(true);
+#else
+            return MobileAndEditorUXTree.GetComponentsInChildren<Button>(true);
+#endif
+        }
     }
 }
