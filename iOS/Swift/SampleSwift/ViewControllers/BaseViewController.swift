@@ -7,7 +7,7 @@ import SceneKit
 import UIKit
 
 // Colors for the local anchors to indicate status
-let readyColor = UIColor.blue.withAlphaComponent(0.3)           // light blue for a local anchor
+let readyColor = UIColor.blue.withAlphaComponent(0.6)           // light blue for a local anchor
 let savedColor = UIColor.green.withAlphaComponent(0.6)          // green when the cloud anchor was saved successfully
 let foundColor = UIColor.yellow.withAlphaComponent(0.6)         // yellow when we successfully located a cloud anchor
 let deletedColor = UIColor.black.withAlphaComponent(0.6)        // grey for a deleted cloud anchor

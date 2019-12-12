@@ -18,6 +18,8 @@
     <string name="locate_button_text">Locate</string>
     <string name="create_anchor">Create Anchor</string>
     <string name="start_watcher">Start Watcher</string>
+    <string name="delete_nearby_anchors">Delete All Nearby\nAnchors</string>
+    <string name="delete_nearby_anchors_in_progress">Enumeration in\nprogress..</string>
     <string name="add_anchor">Add Anchor</string>
     <string name="geolocation_status">GeoLocation:</string>
     <string name="wifi_status">Wi-Fi:</string>

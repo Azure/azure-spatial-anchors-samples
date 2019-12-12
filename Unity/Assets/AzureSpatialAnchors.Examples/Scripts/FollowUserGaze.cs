@@ -15,7 +15,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             if (gameObject.GetComponent<Collider>() == null)
             {
                 BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
-                boxCollider.size = new Vector3(4, 2, 1);
+                boxCollider.size = new Vector3(4, 2, 0.5f);
             }
         }
 

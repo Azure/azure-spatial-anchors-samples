@@ -73,12 +73,28 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     {
                         feedbackBox.text = stateParams[_currentAppState].StepMessage;
                     }
+                    EnableCorrectUIControls();
                 }
             }
         }
 
         private PlatformLocationProvider locationProvider;
         private List<GameObject> allDiscoveredAnchors = new List<GameObject>();
+        
+        private void EnableCorrectUIControls()
+        {
+            int buttonIndex = 2;
+
+            switch (currentAppState)
+            {
+                case AppState.DemoStepStopSessionForQuery:
+                    XRUXPicker.Instance.GetDemoButtons()[buttonIndex].gameObject.SetActive(true);
+                    break;
+                default:
+                    XRUXPicker.Instance.GetDemoButtons()[buttonIndex].gameObject.SetActive(false);
+                    break;
+            }
+        }
 
         public SensorStatus GeoLocationStatus
         {
@@ -169,6 +185,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             feedbackBox.text = stateParams[currentAppState].StepMessage;
 
             Debug.Log("Azure Spatial Anchors Demo script started");
+
+            enableAdvancingOnSelect = false;
+
+            EnableCorrectUIControls();
         }
 
         protected override void OnCloudAnchorLocated(AnchorLocatedEventArgs args)
@@ -195,21 +215,23 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             }
         }
 
+        public void OnApplicationFocus(bool focusStatus)
+        {
+#if UNITY_ANDROID
+            // We may get additional permissions at runtime. Enable the sensors once app is resumed
+            if (focusStatus && locationProvider != null)
+            {
+                ConfigureSensors();
+            }
+#endif
+        }
+
         /// <summary>
         /// Update is called every frame, if the MonoBehaviour is enabled.
         /// </summary>
         public override void Update()
         {
             base.Update();
-
-#if UNITY_ANDROID
-            // We may get additional permissions at runtime. Enable the sensors after
-            // permissions are granted.
-            if (locationProvider != null)
-            {
-                ConfigureSensors();
-            }
-#endif
 
             if (spawnedObjectMat != null)
             {
@@ -345,6 +367,32 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     Debug.Log("Shouldn't get here for app state " + currentAppState.ToString());
                     break;
             }
+        }
+
+        public async override Task EnumerateAllNearbyAnchorsAsync()
+        {
+            Debug.Log("Enumerating near-device spatial anchors in the cloud");
+
+            NearDeviceCriteria criteria = new NearDeviceCriteria();
+            criteria.DistanceInMeters = 5;
+            criteria.MaxResultCount = 20;
+
+            var cloudAnchorSession = CloudManager.Session;
+
+            var spatialAnchorIds = await cloudAnchorSession.GetNearbyAnchorIdsAsync(criteria);
+
+            Debug.LogFormat("Got ids for {0} anchors", spatialAnchorIds.Count);
+
+            List<CloudSpatialAnchor> spatialAnchors = new List<CloudSpatialAnchor>();
+
+            foreach (string anchorId in spatialAnchorIds)
+            {
+                var anchor = await cloudAnchorSession.GetAnchorPropertiesAsync(anchorId);
+                Debug.LogFormat("Received information about spatial anchor {0}", anchor.Identifier);
+                spatialAnchors.Add(anchor);
+            }
+
+            feedbackBox.text = $"Found {spatialAnchors.Count} anchors nearby";
         }
 
         protected override void CleanupSpawnedObjects()

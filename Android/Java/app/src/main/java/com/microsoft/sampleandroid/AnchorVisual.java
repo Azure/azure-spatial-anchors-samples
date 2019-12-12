@@ -75,7 +75,18 @@ class AnchorVisual {
     public synchronized void setColor(Context context, int rgb) {
         CompletableFuture<Material> loadMaterial =
                 solidColorMaterialCache.computeIfAbsent(rgb,
-                    color -> MaterialFactory.makeOpaqueWithColor(context, new Color(rgb)));
+                    color ->
+                    {
+                        CompletableFuture<Material> promise = new CompletableFuture<>();
+                        MainThreadContext.runOnUiThread(() -> {
+                            try {
+                                MaterialFactory.makeOpaqueWithColor(context, new Color(rgb)).thenAccept(material1 -> promise.complete(material1));
+                            } catch (Exception ex) {
+                                promise.completeExceptionally(ex);
+                            }
+                        });
+                        return promise;
+                    });
         loadMaterial.thenAccept(this::setMaterial);
     }
 

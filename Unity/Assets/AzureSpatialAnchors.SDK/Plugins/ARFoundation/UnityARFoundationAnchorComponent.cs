@@ -1,4 +1,4 @@
-﻿#if UNITY_ANDROID || UNITY_IOS
+#if UNITY_ANDROID || UNITY_IOS
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,6 +31,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         private void Awake()
         {
             this.WorldAnchor = AnchorHelpers.CreateWorldAnchor(this.gameObject.transform);
+            this.gameObject.transform.SetParent(WorldAnchor.transform, true);
         }
 
         /// <summary>
@@ -39,7 +40,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         /// </summary>
         private void OnDestroy()
         {
-            Destroy(this.WorldAnchor);
+            if (this.WorldAnchor != null)
+            {
+                SpatialAnchorManager.arReferencePointManager.RemoveReferencePoint(this.WorldAnchor);
+                this.WorldAnchor = null;
+            }
         }
     }
 }

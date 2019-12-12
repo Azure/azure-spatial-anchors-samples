@@ -137,7 +137,7 @@ namespace Microsoft.Azure.SpatialAnchors
                 return new string[0];
             }
 
-            byte[] bytes = new byte[result_length];
+            byte[] bytes = new byte[result_length - 1];
             System.Runtime.InteropServices.Marshal.Copy(result, bytes, 0, result_length - 1);
             System.Runtime.InteropServices.Marshal.FreeCoTaskMem(result);
             return System.Text.Encoding.UTF8.GetString(bytes).Split('\0');
@@ -3605,7 +3605,7 @@ namespace Microsoft.Azure.SpatialAnchors
                 return new string[0];
             }
 
-            byte[] bytes = new byte[result_length];
+            byte[] bytes = new byte[result_length - 1];
             System.Runtime.InteropServices.Marshal.Copy(result, bytes, 0, result_length - 1);
             System.Runtime.InteropServices.Marshal.FreeCoTaskMem(result);
             return System.Text.Encoding.UTF8.GetString(bytes).Split('\0');
@@ -7038,7 +7038,7 @@ namespace Microsoft.Azure.SpatialAnchors
                 return new string[0];
             }
 
-            byte[] bytes = new byte[result_length];
+            byte[] bytes = new byte[result_length - 1];
             System.Runtime.InteropServices.Marshal.Copy(result, bytes, 0, result_length - 1);
             System.Runtime.InteropServices.Marshal.FreeCoTaskMem(result);
             return System.Text.Encoding.UTF8.GetString(bytes).Split('\0');
@@ -10508,7 +10508,7 @@ namespace Microsoft.Azure.SpatialAnchors
                 return new string[0];
             }
 
-            byte[] bytes = new byte[result_length];
+            byte[] bytes = new byte[result_length - 1];
             System.Runtime.InteropServices.Marshal.Copy(result, bytes, 0, result_length - 1);
             System.Runtime.InteropServices.Marshal.FreeCoTaskMem(result);
             return System.Text.Encoding.UTF8.GetString(bytes).Split('\0');

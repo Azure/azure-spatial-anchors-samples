@@ -49,6 +49,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
             if (targeted != null)
             {
+                Debug.Log("Clicking >> " + targeted.gameObject.name);
                 targeted.onClick.Invoke();
             }
         }

@@ -17,11 +17,32 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/start_watcher"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onStartWatcherClicked"
-        android:text="@string/start_watcher" />
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/delete_nearby_anchors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onDeleteAllNearbyAnchors"
+            android:text="@string/delete_nearby_anchors" />
+
+        <Button
+            android:id="@+id/start_watcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onStartWatcherClicked"
+            android:text="@string/start_watcher" />
+
+    </LinearLayout>
 
 </LinearLayout>
