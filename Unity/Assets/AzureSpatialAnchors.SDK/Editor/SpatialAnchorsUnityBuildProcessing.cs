@@ -20,9 +20,75 @@ public class SpatialAnchorsUnityBuildProcessing : IPreprocessBuildWithReport, IP
 {
     private const string AzureSpatialAnchorsPackage = "Microsoft.Azure.SpatialAnchors.WinCPP";
     private const string AzureSpatialAnchorsRedistPackage = "Microsoft.Azure.SpatialAnchors.WinCPP.Redist";
-    private const string UnityRelativePodFilePath = "Assets/AzureSpatialAnchors.SDK/Plugins/iOS/Podfile";
-    private const string UnityRelativeNuGetConfigFilePath = @"Assets\\AzureSpatialAnchors.SDK\\Plugins\\HoloLens\\NuGet.Config";
-    private const string UnityRelativePackageVersionFilePath = @"Assets\\AzureSpatialAnchors.SDK\\Plugins\\HoloLens\\version.txt";
+
+    private const string defaultUnityRelativePodFilePath = "Assets/AzureSpatialAnchors.SDK/Plugins/iOS/Podfile";
+    private static string unityRelativePodFilePath = string.Empty;
+    private static string UnityRelativePodFilePath
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(unityRelativePodFilePath) &&
+                !TryFindAssetPath("Podfile", "AzureSpatialAnchors.SDK/Plugins/iOS", out unityRelativePodFilePath))
+            {
+                Debug.LogWarning($"{defaultUnityRelativePodFilePath} wasn't found in the Unity Project.");
+                return defaultUnityRelativePodFilePath;
+            }
+
+            return unityRelativePodFilePath;
+        }
+    }
+
+    private const string defaultUnityRelativeNuGetConfigFilePath = @"Assets\\AzureSpatialAnchors.SDK\\Plugins\\HoloLens\\NuGet.Config";
+    private static string unityRelativeNuGetConfigFilePath = string.Empty;
+    private static string UnityRelativeNuGetConfigFilePath
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(unityRelativeNuGetConfigFilePath) &&
+                !TryFindAssetPath("NuGet", "AzureSpatialAnchors.SDK/Plugins/HoloLens", out unityRelativeNuGetConfigFilePath))
+            {
+                Debug.LogWarning($"{defaultUnityRelativeNuGetConfigFilePath} wasn't found in the Unity Project.");
+                return defaultUnityRelativeNuGetConfigFilePath;
+            }
+
+            return unityRelativeNuGetConfigFilePath;
+        }
+    }
+
+    private const string defaultUnityRelativePackageVersionFilePath = @"Assets\\AzureSpatialAnchors.SDK\\Plugins\\HoloLens\\version.txt";
+    private static string unityRelativePackageVersionFilePath = string.Empty;
+    private static string UnityRelativePackageVersionFilePath
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(unityRelativePackageVersionFilePath) &&
+                !TryFindAssetPath("version", "AzureSpatialAnchors.SDK/Plugins/HoloLens", out unityRelativePackageVersionFilePath))
+            {
+                Debug.LogWarning($"{defaultUnityRelativePackageVersionFilePath} wasn't found in the Unity Project.");
+                return defaultUnityRelativePackageVersionFilePath;
+            }
+
+            return unityRelativePackageVersionFilePath;
+        }
+    }
+
+    private static bool TryFindAssetPath(string assetName, string assetPrefix, out string assetPath)
+    {
+        assetPath = string.Empty;
+        string[] assets = AssetDatabase.FindAssets(assetName);
+        foreach (var guid in assets)
+        {
+            string tempAssetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (tempAssetPath.Contains(assetPrefix))
+            {
+                assetPath = tempAssetPath;
+                return true;
+            }
+        }
+
+        Debug.LogWarning($"{assetPrefix}/*/{assetName} wasn't found in the Unity Project.");
+        return false;
+    }
 
     public int callbackOrder
     {
