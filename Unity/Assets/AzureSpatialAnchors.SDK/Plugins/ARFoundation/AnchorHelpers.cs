@@ -6,17 +6,36 @@ using System;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
 {
     internal static class AnchorHelpers
     {
+        private static ARAnchorManager ARAnchorManager
+        {
+            get
+            {
+                if (arAnchorManager == null)
+                {
+                    arAnchorManager = GameObject.FindObjectOfType<ARAnchorManager>();
+                    if (arAnchorManager == null)
+                    {
+                        Debug.LogError("ARAnchorManager wasn't found in the scene!");
+                    }
+                }
+
+                return arAnchorManager;
+            }
+        }
+        private static ARAnchorManager arAnchorManager;
+
         /// <summary>
         /// Creates a world anchor in the form of an ARReference point from the specified <see cref="Transform"/>.
         /// </summary>
         /// <param name="transform">The transform.</param>
         /// <returns>An ARFoundation <see cref="ARReferencePoint"/>.</returns>
-        public static ARReferencePoint CreateWorldAnchor(Transform transform)
+        public static ARAnchor CreateWorldAnchor(Transform transform)
         {
             return CreateReferencePoint(transform.position, transform.rotation);
         }
@@ -28,10 +47,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         /// <param name="rotation">The rotation.</param>
         /// <returns>An ARFoundation <see cref="ARReferencePoint"/>.</returns>
         /// <exception cref="InvalidOperationException">Unable to create an anchor.</exception>
-        public static ARReferencePoint CreateReferencePoint(Vector3 position, Quaternion rotation)
+        public static ARAnchor CreateReferencePoint(Vector3 position, Quaternion rotation)
         {
             Pose anchorPose = new Pose(position, rotation);
-            ARReferencePoint referencePoint = SpatialAnchorManager.arReferencePointManager.AddReferencePoint(anchorPose);
+            ARAnchor referencePoint = ARAnchorManager.AddAnchor(anchorPose);
             
             if (referencePoint == null)
             {
@@ -62,7 +81,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         /// </summary>
         /// <param name="referencePoint">The anchor.</param>
         /// <returns><see cref="Pose"/>.</returns>
-        public static Pose GetPose(ARReferencePoint referencePoint)
+        public static Pose GetPose(ARAnchor referencePoint)
         {
             return new Pose(referencePoint.transform.position, referencePoint.transform.rotation);
         }
@@ -80,7 +99,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
                 throw new InvalidOperationException("Invalid anchor pointer. Can't get the pose.");
             }
 
-            ARReferencePoint referencePoint = SpatialAnchorManager.ReferencePointFromPointer(anchorPointer);
+            ARAnchor referencePoint = SpatialAnchorManager.ReferencePointFromPointer(anchorPointer);
 
             if (referencePoint == null)
             {
