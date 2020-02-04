@@ -59,9 +59,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         //ARFoundation specific variables
 #if UNITY_ANDROID || UNITY_IOS
         private long lastFrameProcessedTimeStamp;
-        private static Dictionary<string, ARReferencePoint> pointerToReferencePoints = new Dictionary<string, ARReferencePoint>();
+        private static Dictionary<string, ARAnchor> pointerToReferencePoints = new Dictionary<string, ARAnchor>();
         private List<AnchorLocatedEventArgs> pendingEventArgs = new List<AnchorLocatedEventArgs>();
-        internal static ARReferencePointManager arReferencePointManager = null;
+        internal static ARAnchorManager ARAnchorManager = null;
         private ARCameraManager arCameraManager = null;
         private ARSession arSession = null;
         private Camera mainCamera;
@@ -188,7 +188,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         /// </summary>
         /// <param name="intPtr">An ARKit or ARcore anchor pointer</param>
         /// <returns>A reference point if found or null</returns>
-        internal static ARReferencePoint ReferencePointFromPointer(IntPtr intPtr)
+        internal static ARAnchor ReferencePointFromPointer(IntPtr intPtr)
         {
             string key = intPtr.GetPlatformKey();
             if (pointerToReferencePoints.ContainsKey(key))
@@ -378,9 +378,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 return false;
             }
 
-            if (arReferencePointManager == null || !arReferencePointManager.enabled)
+            if (ARAnchorManager == null || !ARAnchorManager.enabled)
             {
-                Debug.LogError("Need an enabled ARReferencePointManager in the scene");
+                Debug.LogError("Need an enabled ARAnchorManager in the scene");
                 return false;
             }
 #endif
@@ -562,30 +562,30 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
 #if UNITY_ANDROID || UNITY_IOS
         /// <summary>
-        /// Keeps track of when platform anchors (surfaced by ARFoundation as ARReferencePoints) are
+        /// Keeps track of when platform anchors (surfaced by ARFoundation as ARAnchors) are
         /// added/updated/removed by ARFoundation.  This is critical for mapping Azure Spatial Anchors CloudAnchors
         /// to Unity ARFoundation Reference Points.
         /// </summary>
         /// <param name="obj">Event args with information about what has changed.</param>
-        private void ARReferencePointManager_referencePointsChanged(ARReferencePointsChangedEventArgs obj)
+        private void ARAnchorManager_referencePointsChanged(ARAnchorsChangedEventArgs obj)
         {
             lock (pointerToReferencePoints)
             {
-                foreach (ARReferencePoint aRReferencePoint in obj.added)
+                foreach (ARAnchor ARAnchor in obj.added)
                 {
-                    string lookupkey = aRReferencePoint.nativePtr.GetPlatformPointer().GetPlatformKey();
+                    string lookupkey = ARAnchor.nativePtr.GetPlatformPointer().GetPlatformKey();
                     if (!pointerToReferencePoints.ContainsKey(lookupkey))
                     {
-                        pointerToReferencePoints.Add(lookupkey, aRReferencePoint);
+                        pointerToReferencePoints.Add(lookupkey, ARAnchor);
                     }
                 }
 
-                foreach (ARReferencePoint aRReferencePoint in obj.removed)
+                foreach (ARAnchor ARAnchor in obj.removed)
                 {
                     string toremove = null;
                     foreach (var kvp in pointerToReferencePoints)
                     {
-                        if (kvp.Value == aRReferencePoint)
+                        if (kvp.Value == ARAnchor)
                         {
                             toremove = kvp.Key;
                             break;
@@ -598,12 +598,12 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                     }
                 }
 
-                foreach (ARReferencePoint aRReferencePoint in obj.updated)
+                foreach (ARAnchor ARAnchor in obj.updated)
                 {
-                    string lookupKey = aRReferencePoint.nativePtr.GetPlatformPointer().GetPlatformKey();
+                    string lookupKey = ARAnchor.nativePtr.GetPlatformPointer().GetPlatformKey();
                     if (!pointerToReferencePoints.ContainsKey(lookupKey))
                     {
-                        pointerToReferencePoints.Add(lookupKey, aRReferencePoint);
+                        pointerToReferencePoints.Add(lookupKey, ARAnchor);
                     }
                 }
             }
@@ -647,14 +647,14 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             mainCamera = Camera.main;
             arCameraManager = FindObjectOfType<ARCameraManager>();
             arSession = FindObjectOfType<ARSession>();
-            arReferencePointManager = FindObjectOfType<ARReferencePointManager>();
+            ARAnchorManager = FindObjectOfType<ARAnchorManager>();
 #endif
 
             // Only allow the manager to start if it is properly configured.
             await EnsureValidConfiguration(disable: true, exception: false);
 
 #if UNITY_ANDROID || UNITY_IOS
-            arReferencePointManager.referencePointsChanged += ARReferencePointManager_referencePointsChanged;
+            ARAnchorManager.anchorsChanged += ARAnchorManager_referencePointsChanged;
 #endif
         }
 
