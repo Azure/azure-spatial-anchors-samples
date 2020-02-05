@@ -1,0 +1,10 @@
+{
+	"name": "com.unity.ui.runtime",
+	"displayName":"UIElements Runtime",
+	"version": "0.0.3-preview",
+	"unity": "2019.3",
+	"description": "UIElements is a retained-mode UI toolkit for developing user interfaces in Unity. UIElements is based on recognized web technologies and supports stylesheets, dynamic and contextual event handling, and data persistence.\nThis package provides GameObject components that enable UIElements to be used in games.",
+	"keywords": ["uielements", "ui"],
+	"dependencies": {
+	}
+}

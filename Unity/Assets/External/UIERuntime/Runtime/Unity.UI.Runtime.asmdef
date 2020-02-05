@@ -1,0 +1,14 @@
+{
+    "name": "Unity.UI.Runtime",
+    "references": [
+        "Unity.InternalAPIEngineBridge.006"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
