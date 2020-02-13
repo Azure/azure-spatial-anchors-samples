@@ -10367,8 +10367,8 @@ namespace Microsoft.Azure.SpatialAnchors
 
 }
 
-#elif UNITY_EDITOR
-// Making calls to Azure Spatial Anchors from the Unity editor is not currently supported.
+#elif UNITY_EDITOR || UNITY_STANDALONE
+// Making calls to Azure Spatial Anchors from the Unity editor or Unity Standalone is not currently supported.
 // These stubs are here to prevent the editor from reporting compilation errors.
 //
 // AzureSpatialAnchors
