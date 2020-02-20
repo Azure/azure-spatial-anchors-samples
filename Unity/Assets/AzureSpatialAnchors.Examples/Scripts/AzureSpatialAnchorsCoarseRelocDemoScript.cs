@@ -83,15 +83,28 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         
         private void EnableCorrectUIControls()
         {
-            int buttonIndex = 2;
+            int nextButtonIndex = 0;
+            int enumerateButtonIndex = 2;
 
             switch (currentAppState)
             {
+                case AppState.DemoStepCreateLocalAnchor:
+                case AppState.DemoStepSavingCloudAnchor:
+                case AppState.DemoStepLookingForAnchorsNearDevice:
+                #if WINDOWS_UWP || UNITY_WSA
+                    // Sample disables "Next step" button on Hololens, so it doesn't overlay with placing the anchor and async operations, 
+                    // which are not affected by user input.
+                    // This is also part of a workaround for placing anchor interaction, which doesn't receive callback when air tapping for placement
+                    // This is not applicable to Android/iOS versions.
+                    XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].gameObject.SetActive(false);
+                #endif
+                    break;
                 case AppState.DemoStepStopSessionForQuery:
-                    XRUXPicker.Instance.GetDemoButtons()[buttonIndex].gameObject.SetActive(true);
+                    XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].gameObject.SetActive(true);
                     break;
                 default:
-                    XRUXPicker.Instance.GetDemoButtons()[buttonIndex].gameObject.SetActive(false);
+                    XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].gameObject.SetActive(true);
+                    XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].gameObject.SetActive(false);
                     break;
             }
         }
@@ -309,12 +322,16 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     SensorPermissionHelper.RequestSensorPermissions();
                     ConfigureSensors();
                     currentAppState = AppState.DemoStepCreateLocalAnchor;
+                    // Enable advancing to next step on Air Tap, which is an easier interaction for placing the anchor.
+                    // (placing the anchor with Air tap automatically advances the demo).
+                    enableAdvancingOnSelect = true;
                     break;
                 case AppState.DemoStepCreateLocalAnchor:
                     if (spawnedObject != null)
                     {
                         currentAppState = AppState.DemoStepSaveCloudAnchor;
                     }
+                    enableAdvancingOnSelect = false;
                     break;
                 case AppState.DemoStepSaveCloudAnchor:
                     currentAppState = AppState.DemoStepSavingCloudAnchor;

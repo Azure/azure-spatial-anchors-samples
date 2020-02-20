@@ -161,9 +161,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             string infoPlistPath = Path.Combine(buildOutputPath, "Info.plist");
             var propertyList = new PlistDocument();
             propertyList.ReadFromFile(infoPlistPath);
-            propertyList.root.SetString(
-                "NSBluetoothAlwaysUsageDescription",
-                "This application uses bluetooth to find nearby beacons.");
+
+            // Set both NSBluetoothAlwaysUsageDescription and NSBluetoothPeripheralUsageDescription
+            // for compatibility with iOS versions earlier than 13.
+            const string bluetoothUsageDescription = "This application uses bluetooth to find nearby beacons.";
+            propertyList.root.SetString("NSBluetoothAlwaysUsageDescription", bluetoothUsageDescription);
+            propertyList.root.SetString("NSBluetoothPeripheralUsageDescription", bluetoothUsageDescription);
+
             propertyList.WriteToFile(infoPlistPath);
 #endif
         }

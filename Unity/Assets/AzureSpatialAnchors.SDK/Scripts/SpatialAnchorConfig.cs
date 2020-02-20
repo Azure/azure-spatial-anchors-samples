@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 using UnityEngine;
 
@@ -14,29 +14,29 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         [Header("Authentication")]
         [SerializeField]
         [Tooltip("The method to use for authentication.")]
-        private AuthenticationMode authenticationMode = AuthenticationMode.ApiKey;
+        protected AuthenticationMode authenticationMode = AuthenticationMode.ApiKey;
         public AuthenticationMode AuthenticationMode => authenticationMode;
 
         [Header("Credentials")]
         [SerializeField]
         [Tooltip("The Account ID provided by the Spatial Anchors service portal.")]
-        private string spatialAnchorsAccountId = "";
+        protected string spatialAnchorsAccountId = "";
         public string SpatialAnchorsAccountId => spatialAnchorsAccountId;
 
         [SerializeField]
         [Tooltip("The Account Key provided by the Spatial Anchors service portal.")]
-        private string spatialAnchorsAccountKey = "";
+        protected string spatialAnchorsAccountKey = "";
         public string SpatialAnchorsAccountKey => spatialAnchorsAccountKey;
 
         [Header("Credentials")]
         [SerializeField]
         [Tooltip("The Client ID to use when authenticating using Azure Active Directory.")]
-        private string clientId = "";
+        protected string clientId = "";
         public string ClientId => clientId;
 
         [SerializeField]
         [Tooltip("The Tenant ID to use when authenticating using Azure Active Directory.")]
-        private string tenantId = "";
+        protected string tenantId = "";
         public string TenantId => tenantId;
     }
 }
