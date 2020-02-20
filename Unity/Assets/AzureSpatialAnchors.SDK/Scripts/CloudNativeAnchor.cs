@@ -74,7 +74,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
             // Apply and store updated native anchor
             nativeAnchor = gameObject.ApplyCloudAnchor(cloudAnchor);
+            this.cloudAnchor = cloudAnchor;
         }
+
 
         /// <summary>
         /// Creates or updates the <see cref="CloudSpatialAnchor"/> returned by
