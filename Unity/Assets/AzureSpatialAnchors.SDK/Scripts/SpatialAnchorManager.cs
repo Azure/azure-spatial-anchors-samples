@@ -806,6 +806,8 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             // Reset session status as well
             sessionStatus = null;
 
+            // Notify
+            OnSessionDestroyed();
         }
 
         /// <summary>
