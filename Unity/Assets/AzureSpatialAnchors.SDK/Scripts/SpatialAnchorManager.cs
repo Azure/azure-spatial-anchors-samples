@@ -344,10 +344,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                     break;
 
                 case AuthenticationMode.AAD:
-                    if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(tenantId))
-                    {
-                        return false;
-                    }
                     break;
 
                 default:
