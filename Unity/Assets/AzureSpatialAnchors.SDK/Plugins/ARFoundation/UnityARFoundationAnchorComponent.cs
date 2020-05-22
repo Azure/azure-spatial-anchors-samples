@@ -13,7 +13,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         /// <summary>
         /// Gets the world anchor.
         /// </summary>
-        public ARReferencePoint WorldAnchor { get; private set; }
+        public ARAnchor WorldAnchor { get; private set; }
 
         /// <summary>
         /// Gets the world anchor handle.
@@ -31,7 +31,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         private void Awake()
         {
             this.WorldAnchor = AnchorHelpers.CreateWorldAnchor(this.gameObject.transform);
-            this.gameObject.transform.SetParent(WorldAnchor.transform, true);
+            this.gameObject.transform.SetParent(this.WorldAnchor.transform, true);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         {
             if (this.WorldAnchor != null)
             {
-                SpatialAnchorManager.arReferencePointManager.RemoveReferencePoint(this.WorldAnchor);
+                SpatialAnchorManager.arAnchorManager.RemoveAnchor(this.WorldAnchor);
                 this.WorldAnchor = null;
             }
         }
