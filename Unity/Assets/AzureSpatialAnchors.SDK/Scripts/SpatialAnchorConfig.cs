@@ -38,5 +38,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         [Tooltip("The Tenant ID to use when authenticating using Azure Active Directory.")]
         protected string tenantId = "";
         public string TenantId => tenantId;
+
+        [Space(10)]
+        [SerializeField]
+        [Tooltip("The Account Domain provided by the Spatial Anchors service portal.")]
+        protected string spatialAnchorsAccountDomain = "";
+        public string SpatialAnchorsAccountDomain => spatialAnchorsAccountDomain;
     }
 }

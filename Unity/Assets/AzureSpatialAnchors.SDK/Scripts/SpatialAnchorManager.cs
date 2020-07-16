@@ -84,6 +84,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         [Tooltip("The Account Key to use when authenticating using API Key. This is provided by the Spatial Anchors service portal.")]
         protected string spatialAnchorsAccountKey = "";
 
+        [SerializeField]
+        [Tooltip("The Account Domain to use when authenticating using API Key. This is provided by the Spatial Anchors service portal.")]
+        protected string spatialAnchorsAccountDomain = "";
+
         [Header("Credentials")]
         [SerializeField]
         [Tooltip("The Client ID to use when authenticating using Azure Active Directory.")]
@@ -303,6 +307,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 if (string.IsNullOrWhiteSpace(tenantId))
                 {
                     tenantId = config.TenantId;
+                }
+                if (string.IsNullOrWhiteSpace(spatialAnchorsAccountDomain))
+                {
+                    spatialAnchorsAccountDomain = config.SpatialAnchorsAccountDomain;
                 }
             }
         }
@@ -735,6 +743,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
             // Configure logging
             session.LogLevel = logLevel;
+
+            // Configure authentication - Account Domain
+            session.Configuration.AccountDomain = spatialAnchorsAccountDomain;
 
             // Configure authentication
             if (authenticationMode == AuthenticationMode.ApiKey)
