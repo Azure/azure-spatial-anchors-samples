@@ -278,6 +278,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             currentAppState = AppState.DemoStepStopSession;
 
             feedbackBox.text = $"Created anchor {anchorNumber}. Next: Stop cloud anchor session";
+
+            //Save the anchorNumber generated to load in the input box of Locate Mode
+            PlayerPrefs.SetString("anchorNumber", anchorNumber.ToString());
+            PlayerPrefs.Save();
         }
 
         protected override void OnSaveCloudAnchorFailed(Exception exception)
@@ -338,6 +342,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             if (currentAppState == AppState.DemoStepChooseFlow)
             {
+                //Load the lasted anchorNumber generated
+                XRUXPickerForSharedAnchorDemo.Instance.GetDemoInputField().text = PlayerPrefs.GetString("anchorNumber", "");
+
                 currentAppState = AppState.DemoStepInputAnchorNumber;
             }
             else if (currentAppState == AppState.DemoStepInputAnchorNumber)
