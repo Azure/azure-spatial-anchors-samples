@@ -23,6 +23,15 @@ namespace SampleXamarin
         public const string SpatialAnchorsAccountKey = "Set me";
 
         /// <summary>
+        /// The Azure Spatial Anchors account domain.
+        /// Set this to your account domain found in the Azure Portal.
+        /// </summary>
+        /// <remarks>
+        /// Set this to your account domain found in the Azure Portal.
+        /// </remarks>
+        public const string SpatialAnchorsAccountDomain = "Set me";
+
+        /// <summary>
         /// The full URL endpoint of the anchor sharing service.
         /// </summary>
         /// <remarks>

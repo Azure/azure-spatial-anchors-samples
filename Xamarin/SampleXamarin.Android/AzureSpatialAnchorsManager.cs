@@ -49,6 +49,7 @@ namespace SampleXamarin
             this.spatialAnchorsSession = new CloudSpatialAnchorSession();
             this.spatialAnchorsSession.Configuration.AccountKey = AccountDetails.SpatialAnchorsAccountKey;
             this.spatialAnchorsSession.Configuration.AccountId = AccountDetails.SpatialAnchorsAccountId;
+            this.spatialAnchorsSession.Configuration.AccountDomain = AccountDetails.SpatialAnchorsAccountDomain;
             this.spatialAnchorsSession.Session = arCoreSession;
             this.spatialAnchorsSession.LogDebug += this.SpatialCloudSession_LogDebug;
             this.spatialAnchorsSession.Error += this.SpatialAnchorsSession_Error;

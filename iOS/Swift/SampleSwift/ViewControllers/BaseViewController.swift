@@ -17,12 +17,15 @@ let failedColor = UIColor.red.withAlphaComponent(0.6)           // red when ther
 let unsavedAnchorId = "placeholder-id"
 
 class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAnchorSessionDelegate {
-    
-    // Set this to the account ID provided for the Azure Spatial Service resource.
+
+    // Set this string to the account ID provided for the Azure Spatial Anchors account resource.
     let spatialAnchorsAccountId = "Set me"
-    
-    // Set this to the account key provided for the Azure Spatial Service resource.
+
+    // Set this string to the account key provided for the Azure Spatial Anchors account resource.
     let spatialAnchorsAccountKey = "Set me"
+
+    // Set this string to the account domain provided for the Azure Spatial Anchors account resource.
+    let spatialAnchorsAccountDomain = "Set me"
 
     @IBOutlet var sceneView: ARSCNView!
 
@@ -98,10 +101,10 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
 
         layoutButtons()
         
-        if (spatialAnchorsAccountId == "Set me" || spatialAnchorsAccountKey == "Set me") {
+        if (spatialAnchorsAccountId == "Set me" || spatialAnchorsAccountKey == "Set me" || spatialAnchorsAccountDomain == "Set me") {
             mainButton.isHidden = true
             errorControl.isHidden = false
-            showLogMessage(text: "Set spatialAnchorsAccountId and spatialAnchorsAccountKey in BaseViewController.swift", here: errorControl)
+            showLogMessage(text: "Set spatialAnchorsAccountId, spatialAnchorsAccountKey and spatialAnchorsAccountDomain in BaseViewController.swift", here: errorControl)
         }
         else {
             // Start the demo
@@ -222,6 +225,7 @@ class BaseViewController: UIViewController, ARSCNViewDelegate, ASACloudSpatialAn
         cloudSession!.delegate = self
         cloudSession!.configuration.accountId = spatialAnchorsAccountId
         cloudSession!.configuration.accountKey = spatialAnchorsAccountKey
+        cloudSession!.configuration.accountDomain = spatialAnchorsAccountDomain
         cloudSession!.start()
         
         feedbackControl.isHidden = false

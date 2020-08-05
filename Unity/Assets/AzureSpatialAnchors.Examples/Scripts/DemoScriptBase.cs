@@ -60,7 +60,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
         public virtual bool SanityCheckAccessConfiguration()
         {
-            if (string.IsNullOrWhiteSpace(CloudManager.SpatialAnchorsAccountId) || string.IsNullOrWhiteSpace(CloudManager.SpatialAnchorsAccountKey))
+            if (string.IsNullOrWhiteSpace(CloudManager.SpatialAnchorsAccountId)
+                || string.IsNullOrWhiteSpace(CloudManager.SpatialAnchorsAccountKey)
+                || string.IsNullOrWhiteSpace(CloudManager.SpatialAnchorsAccountDomain))
             {
                 return false;
             }
@@ -91,7 +93,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
             if (!SanityCheckAccessConfiguration())
             {
-                feedbackBox.text = $"{nameof(SpatialAnchorManager.SpatialAnchorsAccountId)} and {nameof(SpatialAnchorManager.SpatialAnchorsAccountKey)} must be set on {nameof(SpatialAnchorManager)}";
+                feedbackBox.text = $"{nameof(SpatialAnchorManager.SpatialAnchorsAccountId)}, {nameof(SpatialAnchorManager.SpatialAnchorsAccountKey)} and {nameof(SpatialAnchorManager.SpatialAnchorsAccountDomain)} must be set on {nameof(SpatialAnchorManager)}";
             }
 
 

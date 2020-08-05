@@ -28,6 +28,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         protected string spatialAnchorsAccountKey = "";
         public string SpatialAnchorsAccountKey => spatialAnchorsAccountKey;
 
+        [SerializeField]
+        [Tooltip("The Account Domain to use when connecting to the Azure Spatial Anchors services.")]
+        protected string spatialAnchorsAccountDomain = "";
+        public string SpatialAnchorsAccountDomain => spatialAnchorsAccountDomain;
+
         [Header("Credentials")]
         [SerializeField]
         [Tooltip("The Client ID to use when authenticating using Azure Active Directory.")]

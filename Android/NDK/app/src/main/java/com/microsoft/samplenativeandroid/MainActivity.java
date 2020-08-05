@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
 
     private void CheckSpatialAnchorsAccount() {
         if (!JniInterface.isSpatialAnchorsAccountSet()) {
-            Toast.makeText(this, "Set SpatialAnchorsAccountId and SpatialAnchorsAccountKey in AzureSpatialAnchorsApplication.cpp", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Set SpatialAnchorsAccountId, SpatialAnchorsAccountKey and SpatialAnchorsAccountDomain in AzureSpatialAnchorsApplication.cpp", Toast.LENGTH_LONG)
                     .show();
 
             finish();

@@ -28,11 +28,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 class AzureSpatialAnchorsManager {
-    // Set this string to the account ID provided for the Azure Spatial Service resource.
+    // Set this string to the account ID provided for the Azure Spatial Anchors account resource.
     public static final String SpatialAnchorsAccountId = "Set me";
 
-    // Set this string to the account key provided for the Azure Spatial Service resource.
+    // Set this string to the account key provided for the Azure Spatial Anchors account resource.
     public static final String SpatialAnchorsAccountKey = "Set me";
+
+    // Set this string to the account domain provided for the Azure Spatial Anchors account resource.
+    public static final String SpatialAnchorsAccountDomain = "Set me";
 
     // Log message tag
     private static final String TAG = "ASACloud";
@@ -51,6 +54,7 @@ class AzureSpatialAnchorsManager {
         spatialAnchorsSession = new CloudSpatialAnchorSession();
         spatialAnchorsSession.getConfiguration().setAccountId(SpatialAnchorsAccountId);
         spatialAnchorsSession.getConfiguration().setAccountKey(SpatialAnchorsAccountKey);
+        spatialAnchorsSession.getConfiguration().setAccountDomain(SpatialAnchorsAccountDomain);
         spatialAnchorsSession.setSession(arCoreSession);
         spatialAnchorsSession.setLogLevel(SessionLogLevel.All);
 

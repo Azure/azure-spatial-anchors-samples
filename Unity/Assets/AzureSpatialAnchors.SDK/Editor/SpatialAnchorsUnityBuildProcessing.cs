@@ -102,9 +102,9 @@ public class SpatialAnchorsUnityBuildProcessing : IPreprocessBuildWithReport, IP
     public void OnPreprocessBuild(BuildReport report)
     {
         SpatialAnchorConfig config = Resources.Load<SpatialAnchorConfig>("SpatialAnchorConfig");
-        if (string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountId) || string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountKey))
+        if (string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountId) || string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountKey) || string.IsNullOrWhiteSpace(config.SpatialAnchorsAccountDomain))
         {
-            Debug.LogWarning(@"Missing security values in Resources\SpatialAnchorConfig");
+            Debug.LogWarning(@"Missing Account values in Resources\SpatialAnchorConfig");
         }
     }
 

@@ -9,16 +9,28 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR.ARSubsystems;
 using System.Runtime.InteropServices;
+
 #if UNITY_ANDROID || UNITY_IOS
 using UnityEngine.XR.ARFoundation;
 using System.IO;
+
+#if !UNITY_2019_3_OR_NEWER
+// Adapt AR Foundation 3 types to AR Foundation 2 types Unity 2019.2 and earlier.
+using ARAnchor = UnityEngine.XR.ARFoundation.ARReferencePoint;
+using ARAnchorManager = UnityEngine.XR.ARFoundation.ARReferencePointManager;
+using ARAnchorsChangedEventArgs = UnityEngine.XR.ARFoundation.ARReferencePointsChangedEventArgs;
 #endif
+
+#endif
+
 #if UNITY_IOS
 using Microsoft.Azure.SpatialAnchors.Unity.IOS;
 #endif
+
 #if UNITY_ANDROID
 using Microsoft.Azure.SpatialAnchors.Unity.Android;
 #endif
+
 #if UNITY_WSA || WINDOWS_UWP
 using UnityEngine.XR.WSA;
 #endif
@@ -59,12 +71,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         //ARFoundation specific variables
 #if UNITY_ANDROID || UNITY_IOS
         protected long lastFrameProcessedTimeStamp;
-        protected static Dictionary<string, ARReferencePoint> pointerToReferencePoints = new Dictionary<string, ARReferencePoint>();
+        protected static Dictionary<string, ARAnchor> pointerToAnchors = new Dictionary<string, ARAnchor>();
         protected List<AnchorLocatedEventArgs> pendingEventArgs = new List<AnchorLocatedEventArgs>();
-        internal static ARReferencePointManager arReferencePointManager = null;
+        internal static ARAnchorManager arAnchorManager = null;
         protected ARCameraManager arCameraManager = null;
         protected ARSession arSession = null;
         protected Camera mainCamera;
+        protected bool ARSessionInitialized = false;
 #endif // UNITY_ANDROID
 
         #endregion // Member Variables
@@ -83,6 +96,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         [SerializeField]
         [Tooltip("The Account Key to use when authenticating using API Key. This is provided by the Spatial Anchors service portal.")]
         protected string spatialAnchorsAccountKey = "";
+
+        [SerializeField]
+        [Tooltip("The Account Domain to use when connecting to the Azure Spatial Anchors services. This is provided by the Spatial Anchors service portal.")]
+        protected string spatialAnchorsAccountDomain = "";
 
         [Header("Credentials")]
         [SerializeField]
@@ -113,7 +130,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
 #if UNITY_ANDROID || UNITY_IOS
         /// <summary>
-        /// Sends the latest ARFoundation frame to Azure Spatial Anchors
+        /// Sends the latest AR Foundation frame to Azure Spatial Anchors.
         /// </summary>
         private void ProcessLatestFrame()
         {
@@ -147,24 +164,35 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         }
 
         /// <summary>
-        /// Tries to get an ARReference point from an ARkit or Arcore anchor pointer
+        /// Tries to get an anchor from an ARkit or Arcore anchor pointer.
         /// </summary>
-        /// <param name="intPtr">An ARKit or ARcore anchor pointer</param>
-        /// <returns>A reference point if found or null</returns>
-        internal static ARReferencePoint ReferencePointFromPointer(IntPtr intPtr)
+        /// <param name="intPtr">An ARKit or ARcore anchor pointer.</param>
+        /// <returns>An anchor if found; otherwise null.</returns>
+        [System.Obsolete("This method is obsolete. Use AnchorFromPointer instead.", false)]
+        internal static ARAnchor ReferencePointFromPointer(IntPtr intPtr)
+        {
+            return AnchorFromPointer(intPtr);
+        }
+
+        /// <summary>
+        /// Tries to get an anchor from an ARkit or Arcore anchor pointer.
+        /// </summary>
+        /// <param name="intPtr">An ARKit or ARcore anchor pointer.</param>
+        /// <returns>An anchor if found; otherwise null.</returns>
+        internal static ARAnchor AnchorFromPointer(IntPtr intPtr)
         {
             string key = intPtr.GetPlatformKey();
-            if (pointerToReferencePoints.ContainsKey(key))
+            if (pointerToAnchors.ContainsKey(key))
             {
-                return pointerToReferencePoints[key];
+                return pointerToAnchors[key];
             }
 
             return null;
         }
 
         /// <summary>
-        /// ARFoundation can discover platform anchors *after* ASA has provided the CloudSpatialAnchor to us
-        /// When ARFoundation finds the platform anchor (usually within a frame or two) we will call the
+        /// AR Foundation can discover platform anchors *after* ASA has provided the CloudSpatialAnchor to us
+        /// When AR Foundation finds the platform anchor (usually within a frame or two) we will call the
         /// anchor located event.
         /// </summary>
         private void ProcessPendingEventArgs()
@@ -178,7 +206,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                     {
                         string lookupValue = args.Anchor.LocalAnchor.GetPlatformKey();
 
-                        if (pointerToReferencePoints.ContainsKey(lookupValue))
+                        if (pointerToAnchors.ContainsKey(lookupValue))
                         {
                             readyList.Add(args);
                         }
@@ -287,7 +315,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 // Apply auth mode
                 authenticationMode = config.AuthenticationMode;
 
-                // Apply auth values
+                // Apply account values
                 if (string.IsNullOrWhiteSpace(spatialAnchorsAccountId))
                 {
                     spatialAnchorsAccountId = config.SpatialAnchorsAccountId;
@@ -295,6 +323,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 if (string.IsNullOrWhiteSpace(spatialAnchorsAccountKey))
                 {
                     spatialAnchorsAccountKey = config.SpatialAnchorsAccountKey;
+                }
+                if (string.IsNullOrWhiteSpace(spatialAnchorsAccountDomain))
+                {
+                    spatialAnchorsAccountDomain = config.SpatialAnchorsAccountDomain;
                 }
                 if (string.IsNullOrWhiteSpace(clientId))
                 {
@@ -319,7 +351,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 #pragma warning restore CS1998
         {
 #if !UNITY_EDITOR && (UNITY_WSA || WINDOWS_UWP)
-            // Ensure that the device is running a suported build with the spatialperception capability declared.
+            // Ensure that the device is running a supported build with the spatialperception capability declared.
             bool accessGranted = false;
             try
             {
@@ -333,6 +365,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 return false;
             }
 #endif
+
+            // An AccountDomain must be specified for the configuration to be valid.
+            if (string.IsNullOrWhiteSpace(spatialAnchorsAccountDomain))
+            {
+                return false;
+            }
+
             // Check based on auth mode
             switch (authenticationMode)
             {
@@ -351,7 +390,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             }
 
 #if UNITY_ANDROID || UNITY_IOS
-            // Check ARFoundation configuration
+            // Check AR Foundation configuration
             // On Android the ARCameraManager can take a few seconds to get going.
             int retries = 0;
             while (retries++ < 60)
@@ -375,9 +414,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 return false;
             }
 
-            if (arReferencePointManager == null || !arReferencePointManager.enabled)
+            if (arAnchorManager == null || !arAnchorManager.enabled)
             {
-                Debug.LogError("Need an enabled ARReferencePointManager in the scene");
+                Debug.LogError("Need an enabled ARAnchorManager in the scene");
                 return false;
             }
 #endif
@@ -401,7 +440,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                 return;
             }
 #if UNITY_ANDROID || UNITY_IOS
-            // if the anchor was located, wait for ARFoundation to notice the anchor we added
+            // if the anchor was located, wait for AR Foundation to notice the anchor we added
             // before firing the event
             if (args.Status == LocateAnchorStatus.Located)
             {
@@ -410,7 +449,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                     pendingEventArgs.Add(args);
                 }
             }
-            else // otherwise there is no anchor for ARFoundation to find, so just fire the event
+            else // otherwise there is no anchor for AR Foundation to find, so just fire the event
 #endif
             {
                 AnchorLocated?.Invoke(this, args);
@@ -559,30 +598,44 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
 #if UNITY_ANDROID || UNITY_IOS
         /// <summary>
-        /// Keeps track of when platform anchors (surfaced by ARFoundation as ARReferencePoints) are
-        /// added/updated/removed by ARFoundation.  This is critical for mapping Azure Spatial Anchors CloudAnchors
-        /// to Unity ARFoundation Reference Points.
+        /// Called when ARFoundation changes states.
+        /// We wait until the ARFoundation session is tracking to complete initialization
+        /// </summary>
+        /// <param name="obj">state change arguments</param>
+        private void ARSession_stateChanged(ARSessionStateChangedEventArgs obj)
+        {
+            Debug.Log($"ARSession state changed to {obj.state}");
+            if (obj.state == ARSessionState.SessionTracking && !ARSessionInitialized)
+            {
+                CompleteARFoundationInitialization();
+            }
+        }
+
+        /// <summary>
+        /// Keeps track of when platform anchors (surfaced by AR Foundation as ARAnchors) are
+        /// added/updated/removed by AR Foundation.  This is critical for mapping Azure Spatial Anchors CloudAnchors
+        /// to Unity AR Foundation anchors.
         /// </summary>
         /// <param name="obj">Event args with information about what has changed.</param>
-        private void ARReferencePointManager_referencePointsChanged(ARReferencePointsChangedEventArgs obj)
+        private void ARAnchorManager_anchorsChanged(ARAnchorsChangedEventArgs obj)
         {
-            lock (pointerToReferencePoints)
+            lock (pointerToAnchors)
             {
-                foreach (ARReferencePoint aRReferencePoint in obj.added)
+                foreach (ARAnchor addedAnchor in obj.added)
                 {
-                    string lookupkey = aRReferencePoint.nativePtr.GetPlatformPointer().GetPlatformKey();
-                    if (!pointerToReferencePoints.ContainsKey(lookupkey))
+                    string lookupkey = addedAnchor.nativePtr.GetPlatformPointer().GetPlatformKey();
+                    if (!pointerToAnchors.ContainsKey(lookupkey))
                     {
-                        pointerToReferencePoints.Add(lookupkey, aRReferencePoint);
+                        pointerToAnchors.Add(lookupkey, addedAnchor);
                     }
                 }
 
-                foreach (ARReferencePoint aRReferencePoint in obj.removed)
+                foreach (ARAnchor removedAnchor in obj.removed)
                 {
                     string toremove = null;
-                    foreach (var kvp in pointerToReferencePoints)
+                    foreach (var kvp in pointerToAnchors)
                     {
-                        if (kvp.Value == aRReferencePoint)
+                        if (kvp.Value == removedAnchor)
                         {
                             toremove = kvp.Key;
                             break;
@@ -591,25 +644,25 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
                     if (toremove != null)
                     {
-                        pointerToReferencePoints.Remove(toremove);
+                        pointerToAnchors.Remove(toremove);
                     }
                 }
 
-                foreach (ARReferencePoint aRReferencePoint in obj.updated)
+                foreach (ARAnchor updatedAnchor in obj.updated)
                 {
-                    string lookupKey = aRReferencePoint.nativePtr.GetPlatformPointer().GetPlatformKey();
-                    if (!pointerToReferencePoints.ContainsKey(lookupKey))
+                    string lookupKey = updatedAnchor.nativePtr.GetPlatformPointer().GetPlatformKey();
+                    if (!pointerToAnchors.ContainsKey(lookupKey))
                     {
-                        pointerToReferencePoints.Add(lookupKey, aRReferencePoint);
+                        pointerToAnchors.Add(lookupKey, updatedAnchor);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Called by ARFoundation to indicate that there is a new frame to process
+        /// Called by AR Foundation to indicate that there is a new frame to process.
         /// </summary>
-        /// <param name="obj">Information about the frame.  Not used.</param>
+        /// <param name="obj">Information about the frame. Not used.</param>
         private void ArCameraManager_frameReceived(ARCameraFrameEventArgs obj)
         {
             ProcessLatestFrame();
@@ -644,19 +697,23 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             mainCamera = Camera.main;
             arCameraManager = FindObjectOfType<ARCameraManager>();
             arSession = FindObjectOfType<ARSession>();
-            arReferencePointManager = FindObjectOfType<ARReferencePointManager>();
+            arAnchorManager = FindObjectOfType<ARAnchorManager>();
 #endif
 
             // Only allow the manager to start if it is properly configured.
             await EnsureValidConfiguration(disable: true, exception: false);
 
 #if UNITY_ANDROID || UNITY_IOS
-            arReferencePointManager.referencePointsChanged += ARReferencePointManager_referencePointsChanged;
+#if UNITY_2019_3_OR_NEWER
+            arAnchorManager.anchorsChanged += ARAnchorManager_anchorsChanged;
+#else
+            arAnchorManager.referencePointsChanged += ARAnchorManager_anchorsChanged;
+#endif
 #endif
         }
 
         /// <summary>
-        /// Update is called once per frame
+        /// Update is called once per frame.
         /// </summary>
         protected virtual void Update()
         {
@@ -732,6 +789,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             // Configure logging
             session.LogLevel = logLevel;
 
+            // Configure the account domain.
+            session.Configuration.AccountDomain = spatialAnchorsAccountDomain.Trim();
+
             // Configure authentication
             if (authenticationMode == AuthenticationMode.ApiKey)
             {
@@ -753,16 +813,39 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             session.Error += OnError;
 
 #if UNITY_ANDROID || UNITY_IOS
-            session.Session = arSession.subsystem.nativePtr.GetPlatformPointer();
+            ARSession.stateChanged += ARSession_stateChanged;
+
+            // Wait for a valid AR Session in case we are starting before ARFoundation is ready.
+            if (ARSession.state == ARSessionState.SessionTracking)
+            {
+                CompleteARFoundationInitialization();
+            }
+            else
+            {
+                Debug.Log($"ARSession not yet available ({ARSession.state}, will complete initialization when session is running");
+            }
 #elif UNITY_WSA || WINDOWS_UWP
-            // No need to set a native session pointer for HoloLens.
+            // No need to set a native session pointer for HoloLens.  We can just notify that the Azure Spatial Anchors session has been created
+            OnSessionCreated();
 #else
             throw new NotSupportedException("The platform is not supported.");
 #endif
+        }
 
-            // Notify
+#if UNITY_ANDROID || UNITY_IOS
+        /// <summary>
+        /// Called the first time ARFoundation indicates the session is tracking and
+        /// thus can be relied upon to be fully initialized.
+        /// </summary>
+        protected void CompleteARFoundationInitialization()
+        {
+            session.Session = arSession.subsystem.nativePtr.GetPlatformPointer();
+            // Ask for ar frames to process
+            arCameraManager.frameReceived += ArCameraManager_frameReceived;
+            ARSessionInitialized = true;
             OnSessionCreated();
         }
+#endif
 
         /// <summary>
         /// Destroys any existing session and unsubscribes from all events.
@@ -777,8 +860,8 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
             }
 
 #if UNITY_ANDROID || UNITY_IOS
-            // Forget about cached ARFoundation reference points
-            pointerToReferencePoints.Clear();
+            // Forget about cached AR Foundation anchors
+            pointerToAnchors.Clear();
 
             // Stop getting frames
             arCameraManager.frameReceived -= ArCameraManager_frameReceived;
@@ -1102,6 +1185,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         /// Gets or sets the Account Key to use when authenticating via API Key. This information is provided by the Spatial Anchors service portal.
         /// </summary>
         public string SpatialAnchorsAccountKey { get { return spatialAnchorsAccountKey; } set { spatialAnchorsAccountKey = value; } }
+
+        /// <summary>
+        /// Gets or sets the Account Domain to use when connecting to the Azure Spatial Anchors service.
+        /// </summary>
+        public string SpatialAnchorsAccountDomain { get { return spatialAnchorsAccountDomain; } set { spatialAnchorsAccountDomain = value; } }
 
         /// <summary>
         /// Gets or sets the Tenant ID to use when authenticating via Azure Active Directory.

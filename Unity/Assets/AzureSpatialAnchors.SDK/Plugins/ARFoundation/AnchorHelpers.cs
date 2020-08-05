@@ -7,39 +7,49 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+#if !UNITY_2019_3_OR_NEWER
+// Adapt AR Foundation 3 types to AR Foundation 2 types Unity 2019.2 and earlier.
+using ARAnchor = UnityEngine.XR.ARFoundation.ARReferencePoint;
+#endif
+
 namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
 {
     internal static class AnchorHelpers
     {
         /// <summary>
-        /// Creates a world anchor in the form of an ARReference point from the specified <see cref="Transform"/>.
+        /// Creates a world anchor in the form of an <see cref="ARAnchor"/> from the specified <see cref="Transform"/>.
         /// </summary>
         /// <param name="transform">The transform.</param>
-        /// <returns>An ARFoundation <see cref="ARReferencePoint"/>.</returns>
-        public static ARReferencePoint CreateWorldAnchor(Transform transform)
+        /// <returns>An AR Foundation <see cref="ARAnchor"/>.</returns>
+        public static ARAnchor CreateWorldAnchor(Transform transform)
         {
-            return CreateReferencePoint(transform.position, transform.rotation);
+            return CreateAnchor(transform.position, transform.rotation);
         }
 
         /// <summary>
-        /// Creates an ARReferencePoint from the specified <see cref="Transform"/>.
+        /// Creates an <see cref="ARAnchor"/> from the specified <see cref="Transform"/>.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
-        /// <returns>An ARFoundation <see cref="ARReferencePoint"/>.</returns>
+        /// <returns>An AR Foundation <see cref="ARAnchor"/>.</returns>
         /// <exception cref="InvalidOperationException">Unable to create an anchor.</exception>
-        public static ARReferencePoint CreateReferencePoint(Vector3 position, Quaternion rotation)
+        public static ARAnchor CreateAnchor(Vector3 position, Quaternion rotation)
         {
             Pose anchorPose = new Pose(position, rotation);
-            ARReferencePoint referencePoint = SpatialAnchorManager.arReferencePointManager.AddReferencePoint(anchorPose);
-            
-            if (referencePoint == null)
+
+#if UNITY_2019_3_OR_NEWER
+            ARAnchor anchor = SpatialAnchorManager.arAnchorManager.AddAnchor(anchorPose);
+#else
+            ARAnchor anchor = SpatialAnchorManager.arAnchorManager.AddReferencePoint(anchorPose);
+#endif
+
+            if (anchor == null)
             {
                 Debug.LogError("Unable to create an anchor.");
                 throw new InvalidOperationException("Unable to create an anchor.");
             }
 
-            return referencePoint;
+            return anchor;
         }
 
         /// <summary>
@@ -58,13 +68,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         }
 
         /// <summary>
-        /// Gets a <see cref="Pose"/> from the specified <see cref="ARReferencePoint"/>.
+        /// Gets a <see cref="Pose"/> from the specified <see cref="ARAnchor"/>.
         /// </summary>
-        /// <param name="referencePoint">The anchor.</param>
+        /// <param name="anchor">The anchor.</param>
         /// <returns><see cref="Pose"/>.</returns>
-        public static Pose GetPose(ARReferencePoint referencePoint)
+        public static Pose GetPose(ARAnchor anchor)
         {
-            return new Pose(referencePoint.transform.position, referencePoint.transform.rotation);
+            return new Pose(anchor.transform.position, anchor.transform.rotation);
         }
 
         /// <summary>
@@ -80,15 +90,15 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
                 throw new InvalidOperationException("Invalid anchor pointer. Can't get the pose.");
             }
 
-            ARReferencePoint referencePoint = SpatialAnchorManager.ReferencePointFromPointer(anchorPointer);
+            ARAnchor anchor = SpatialAnchorManager.AnchorFromPointer(anchorPointer);
 
-            if (referencePoint == null)
+            if (anchor == null)
             {
                 Debug.Log("Didn't find the anchor");
                 return Pose.identity;
             }
 
-            return new Pose(referencePoint.transform.position, referencePoint.transform.rotation);
+            return new Pose(anchor.transform.position, anchor.transform.rotation);
         }
     }
 }

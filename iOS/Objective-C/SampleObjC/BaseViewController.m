@@ -2,11 +2,14 @@
 // Licensed under the MIT license.
 #import "BaseViewController.h"
 
-// Set this to the account ID provided for the Azure Spatial Service resource.
+// Set this string to the account ID provided for the Azure Spatial Anchors account resource.
 NSString *const SpatialAnchorsAccountId = @"Set me";
 
-// Set this to the account key provided for the Azure Spatial Service resource.
+// Set this string to the account key provided for the Azure Spatial Anchors account resource.
 NSString *const SpatialAnchorsAccountKey = @"Set me";
+
+// Set this string to the account domain provided for the Azure Spatial Anchors account resource.
+NSString *const SpatialAnchorsAccountDomain = @"Set me";
 
 @implementation AnchorVisual
 @end
@@ -68,6 +71,7 @@ static NSString *MatrixToString(matrix_float4x4 value) {
     _cloudSession.delegate = self;
     _cloudSession.configuration.accountId = SpatialAnchorsAccountId;
     _cloudSession.configuration.accountKey = SpatialAnchorsAccountKey;
+    _cloudSession.configuration.accountDomain = SpatialAnchorsAccountDomain;
     [_cloudSession start];
     
     [_feedbackControl setHidden:NO];
@@ -408,10 +412,10 @@ static NSString *MatrixToString(matrix_float4x4 value) {
 
     [self layoutButtons];
     
-    if ([SpatialAnchorsAccountId isEqual: @"Set me"] || [SpatialAnchorsAccountKey isEqual: @"Set me"]) {
+    if ([SpatialAnchorsAccountId isEqual: @"Set me"] || [SpatialAnchorsAccountKey isEqual: @"Set me"] || [SpatialAnchorsAccountDomain isEqual: @"Set me"]) {
         [_button setHidden:YES];
         [_errorControl setHidden:NO];
-        [self showLogMessage:@"Set SpatialAnchorsAccountId and SpatialAnchorsAccountKey in BaseViewController.m" here:_errorControl];
+        [self showLogMessage:@"Set SpatialAnchorsAccountId, SpatialAnchorsAccountKey and SpatialAnchorsAccountDomain in BaseViewController.m" here:_errorControl];
     } else {
         // Move to DemoStepPrepare to start all demos
         _step = DemoStepPrepare;

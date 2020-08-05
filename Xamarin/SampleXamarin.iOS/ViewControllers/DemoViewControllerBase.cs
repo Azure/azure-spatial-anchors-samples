@@ -109,9 +109,10 @@ namespace SampleXamarin.iOS
             this.View.AddSubview(this.statusLabel);
 
             if (string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountId) || AccountDetails.SpatialAnchorsAccountId == "Set me"
-                    || string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountKey) || AccountDetails.SpatialAnchorsAccountKey == "Set me")
+                    || string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountKey) || AccountDetails.SpatialAnchorsAccountKey == "Set me"
+                    || string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountDomain) || AccountDetails.SpatialAnchorsAccountDomain == "Set me")
             {
-                this.ShowLogMessage($"Set {nameof(AccountDetails.SpatialAnchorsAccountId)} and {nameof(AccountDetails.SpatialAnchorsAccountKey)} in {nameof(AccountDetails)}.cs.", SubView.ErrorView);
+                this.ShowLogMessage($"Set {nameof(AccountDetails.SpatialAnchorsAccountId)}, {nameof(AccountDetails.SpatialAnchorsAccountKey)}, and {nameof(AccountDetails.SpatialAnchorsAccountDomain)} in {nameof(AccountDetails)}.cs.", SubView.ErrorView);
             }
         }
 
@@ -233,6 +234,7 @@ namespace SampleXamarin.iOS
             };
             this.cloudSession.Configuration.AccountId = AccountDetails.SpatialAnchorsAccountId;
             this.cloudSession.Configuration.AccountKey = AccountDetails.SpatialAnchorsAccountKey;
+            this.cloudSession.Configuration.AccountDomain = AccountDetails.SpatialAnchorsAccountDomain;
 
             //Delegate events hook here
             this.cloudSession.OnLogDebug += this.SpatialCloudSession_LogDebug;

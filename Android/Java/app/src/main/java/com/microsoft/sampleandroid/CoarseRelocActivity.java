@@ -91,8 +91,9 @@ public class CoarseRelocActivity extends FragmentActivity
         }
 
         if ((AzureSpatialAnchorsManager.SpatialAnchorsAccountId == null || AzureSpatialAnchorsManager.SpatialAnchorsAccountId.equals("Set me"))
-                || (AzureSpatialAnchorsManager.SpatialAnchorsAccountKey == null|| AzureSpatialAnchorsManager.SpatialAnchorsAccountKey.equals("Set me"))) {
-            Toast.makeText(this, "\"Set SpatialAnchorsAccountId and SpatialAnchorsAccountKey in AzureSpatialAnchorsManager.java\"", Toast.LENGTH_LONG)
+                || (AzureSpatialAnchorsManager.SpatialAnchorsAccountKey == null|| AzureSpatialAnchorsManager.SpatialAnchorsAccountKey.equals("Set me"))
+                || (AzureSpatialAnchorsManager.SpatialAnchorsAccountDomain == null|| AzureSpatialAnchorsManager.SpatialAnchorsAccountDomain.equals("Set me"))) {
+            Toast.makeText(this, "\"Set SpatialAnchorsAccountId, SpatialAnchorsAccountKey, and SpatialAnchorsAccountDomain in AzureSpatialAnchorsManager.java\"", Toast.LENGTH_LONG)
                     .show();
 
             finish();

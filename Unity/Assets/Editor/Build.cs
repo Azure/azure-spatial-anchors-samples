@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.using System.Linq;
+// Licensed under the MIT license.
 using UnityEditor;
 using System.Linq;
 

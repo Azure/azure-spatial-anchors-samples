@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 using Microsoft.Azure.SpatialAnchors;
 using System;
@@ -74,6 +74,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
 
             // Apply and store updated native anchor
             nativeAnchor = gameObject.ApplyCloudAnchor(cloudAnchor);
+            this.cloudAnchor = cloudAnchor;
         }
 
         /// <summary>

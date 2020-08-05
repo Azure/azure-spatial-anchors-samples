@@ -8,8 +8,14 @@
 
 namespace AzureSpatialAnchors {
 
+// Set this string to the account ID provided for the Azure Spatial Anchors account resource.
 const std::string SpatialAnchorsAccountId = "Set me";
+
+// Set this string to the account key provided for the Azure Spatial Anchors account resource.
 const std::string SpatialAnchorsAccountKey = "Set me";
+
+// Set this string to the account domain provided for the Azure Spatial Anchors account resource
+const std::string SpatialAnchorsAccountDomain = "Set me";
 
 /// Whitelist of Bluetooth-LE beacons used to find anchors and improve the locatability
 /// of existing anchors.
@@ -41,7 +47,7 @@ AzureSpatialAnchorsApplication::~AzureSpatialAnchorsApplication() {
 }
 
 bool AzureSpatialAnchorsApplication::IsSpatialAnchorsAccountSet() {
-    return SpatialAnchorsAccountId != "Set me" && SpatialAnchorsAccountKey != "Set me";
+    return SpatialAnchorsAccountId != "Set me" && SpatialAnchorsAccountKey != "Set me" && SpatialAnchorsAccountDomain != "Set me";
 }
 
 void AzureSpatialAnchorsApplication::OnPause() {
@@ -401,6 +407,7 @@ void AzureSpatialAnchorsApplication::StartCloudSession() {
     m_cloudSession->Session(m_arSession);
     m_cloudSession->Configuration()->AccountId(SpatialAnchorsAccountId);
     m_cloudSession->Configuration()->AccountKey(SpatialAnchorsAccountKey);
+    m_cloudSession->Configuration()->AccountDomain(SpatialAnchorsAccountDomain);
     m_cloudSession->LogLevel(SessionLogLevel::All);
 
     if (m_demoMode == DemoMode::CoarseReloc) {

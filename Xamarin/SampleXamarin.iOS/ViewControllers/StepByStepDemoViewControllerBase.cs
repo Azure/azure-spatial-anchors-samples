@@ -28,7 +28,7 @@ namespace SampleXamarin.iOS
             base.ViewDidLoad();
 
             this.mainButton.SetTitle("Tap to start Session", UIControlState.Normal);
-            this.mainButton.Frame = new CGRect(10, this.View.Frame.Height - 90, this.View.Frame.Width - 20, 44);
+            this.mainButton.Frame = new CGRect(10, this.View.Frame.Height*0.87, this.View.Frame.Width - 20, 44);
             this.mainButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
             this.mainButton.SetTitleColor(UIColor.White, UIControlState.Normal);
             this.mainButton.Hidden = this.mainButtonisHidden;

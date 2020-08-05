@@ -39,13 +39,13 @@ namespace SampleXamarin.iOS
             base.ViewDidLoad();
 
             this.createButton.SetTitle("Create", UIControlState.Normal);
-            this.createButton.Frame = new CGRect(10, this.View.Frame.Height - 90, (this.View.Frame.Width - 20) / 2, 44);
+            this.createButton.Frame = new CGRect(10, this.View.Frame.Height*0.87, (this.View.Frame.Width - 20) / 2, 44);
             this.createButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
             this.createButton.SetTitleColor(UIColor.White, UIControlState.Normal);
             this.createButton.TouchUpInside += (sender, e) => this.CreateButtonTap();
 
             this.locateButton.SetTitle("Locate", UIControlState.Normal);
-            this.locateButton.Frame = new CGRect((10 + this.View.Frame.Width / 2), this.View.Frame.Height - 90, (this.View.Frame.Width - 20) / 2 - 10, 44);
+            this.locateButton.Frame = new CGRect((10 + this.View.Frame.Width / 2), this.View.Frame.Height*0.87, (this.View.Frame.Width - 20) / 2 - 10, 44);
             this.locateButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
             this.locateButton.SetTitleColor(UIColor.White, UIControlState.Normal);
             this.locateButton.Hidden = false;

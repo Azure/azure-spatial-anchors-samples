@@ -108,9 +108,10 @@ namespace SampleXamarin
             }
 
             if (string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountId) || AccountDetails.SpatialAnchorsAccountId == "Set me"
-                    || string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountKey) || AccountDetails.SpatialAnchorsAccountKey == "Set me")
+                || string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountKey) || AccountDetails.SpatialAnchorsAccountKey == "Set me"
+                || string.IsNullOrWhiteSpace(AccountDetails.SpatialAnchorsAccountDomain) || AccountDetails.SpatialAnchorsAccountDomain == "Set me")
             {
-                Toast.MakeText(this, $"\"Set {AccountDetails.SpatialAnchorsAccountId} and {AccountDetails.SpatialAnchorsAccountKey} in {nameof(AccountDetails)}.cs\"", ToastLength.Long)
+                Toast.MakeText(this, $"\"Set {AccountDetails.SpatialAnchorsAccountId}, {AccountDetails.SpatialAnchorsAccountKey}, and {AccountDetails.SpatialAnchorsAccountDomain} in {nameof(AccountDetails)}.cs\"", ToastLength.Long)
                         .Show();
 
                 this.Finish();

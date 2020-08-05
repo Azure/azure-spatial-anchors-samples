@@ -4,7 +4,7 @@ use_frameworks!
 target 'SampleSwift' do
 
   # Pods for SampleSwift
-  pod 'AzureSpatialAnchors', '2.2.1'
+  pod 'AzureSpatialAnchors', '2.4.0'
 
   pod 'ADAL', :git => 'https://github.com/AzureAD/azure-activedirectory-library-for-objc', :tag => '2.7.7', :submodules => true
 end

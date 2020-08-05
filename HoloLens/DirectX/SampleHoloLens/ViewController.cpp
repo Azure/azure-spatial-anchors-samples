@@ -36,11 +36,14 @@ constexpr float4 c_SavedColor = { 0.f, 1.f, 0.f, 1.f };
 constexpr float4 c_FoundColor = { 1.f, 1.f, 0.f, 1.f };
 constexpr float4 c_FailedColor = { 1.f, 0.f, 0.f, 1.f };
 
-// Set this string to the Spatial Anchors account ID provided for the Azure Spatial Service resource.
+// Set this string to the account ID provided for the Azure Spatial Anchors account resource.
 const std::wstring SpatialAnchorsAccountId = L"Set me";
 
-// Set this string to the Spatial Anchors account key provided for the Azure Spatial Service resource.
+// Set this string to the account key provided for the Azure Spatial Anchors account resource.
 const std::wstring SpatialAnchorsAccountKey = L"Set me";
+
+// Set this string to the account domain provided for the Azure Spatial Anchors account resource.
+const std::wstring SpatialAnchorsAccountDomain = L"Set me";
 
 // Set this to the url for the service created in the 'SharingService' sample
 const std::wstring AnchorExchangeURL = L"Set me";
@@ -98,7 +101,7 @@ ViewController::ViewController()
 
     if (!SanityCheckAccessInformation())
     {
-        m_titleText = L"Set Azure Spatial Anchors access information in ViewController.cpp";
+        m_titleText = L"Set Azure Spatial Anchors account information in ViewController.cpp";
     }
 }
 
@@ -212,9 +215,9 @@ void ViewController::RemoveEventListeners()
 bool SampleHoloLens::ViewController::SanityCheckAccessInformation()
 {
 #ifdef USE_ANCHOR_EXCHANGE
-    return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me" || AnchorExchangeURL == L"Set me");
+    return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me" || SpatialAnchorsAccountDomain == L"Set me" || AnchorExchangeURL == L"Set me");
 #else
-    return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me");
+    return !(SpatialAnchorsAccountId == L"Set me" || SpatialAnchorsAccountKey == L"Set me" || SpatialAnchorsAccountDomain == L"Set me");
 #endif
 }
 
@@ -409,6 +412,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             auto configuration = m_cloudSession.Configuration();
             configuration.AccountId(SpatialAnchorsAccountId);
             configuration.AccountKey(SpatialAnchorsAccountKey);
+            configuration.AccountDomain(SpatialAnchorsAccountDomain);
 
             m_cloudSession.LogLevel(SessionLogLevel::All);
             AddEventListeners();
@@ -539,6 +543,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             auto configuration = m_cloudSession.Configuration();
             configuration.AccountId(SpatialAnchorsAccountId);
             configuration.AccountKey(SpatialAnchorsAccountKey);
+            configuration.AccountDomain(SpatialAnchorsAccountDomain);
 
             m_cloudSession.LogLevel(SessionLogLevel::All);
             AddEventListeners();
@@ -641,6 +646,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             auto configuration = m_cloudSession.Configuration();
             configuration.AccountId(SpatialAnchorsAccountId);
             configuration.AccountKey(SpatialAnchorsAccountKey);
+            configuration.AccountDomain(SpatialAnchorsAccountDomain);
 
             m_cloudSession.LogLevel(SessionLogLevel::All);
             AddEventListeners();
@@ -709,6 +715,7 @@ void ViewController::InputReceived(SpatialPointerPose const& pose)
             auto configuration = m_cloudSession.Configuration();
             configuration.AccountId(SpatialAnchorsAccountId);
             configuration.AccountKey(SpatialAnchorsAccountKey);
+            configuration.AccountDomain(SpatialAnchorsAccountDomain);
 
             m_locationProvider = PlatformLocationProvider();
             m_locationProvider.Sensors().KnownBeaconProximityUuids(KnownBluetoothProximityUuids);

@@ -6,6 +6,11 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
+#if !UNITY_2019_3_OR_NEWER
+// Adapt AR Foundation 3 types to AR Foundation 2 types Unity 2019.2 and earlier.
+using ARAnchor = UnityEngine.XR.ARFoundation.ARReferencePoint;
+#endif
+
 namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
 {
     public class UnityARFoundationAnchorComponent : MonoBehaviour
@@ -13,7 +18,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         /// <summary>
         /// Gets the world anchor.
         /// </summary>
-        public ARReferencePoint WorldAnchor { get; private set; }
+        public ARAnchor WorldAnchor { get; private set; }
 
         /// <summary>
         /// Gets the world anchor handle.
@@ -31,7 +36,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         private void Awake()
         {
             this.WorldAnchor = AnchorHelpers.CreateWorldAnchor(this.gameObject.transform);
-            this.gameObject.transform.SetParent(WorldAnchor.transform, true);
+            this.gameObject.transform.SetParent(this.WorldAnchor.transform, true);
         }
 
         /// <summary>
@@ -42,7 +47,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.ARFoundation
         {
             if (this.WorldAnchor != null)
             {
-                SpatialAnchorManager.arReferencePointManager.RemoveReferencePoint(this.WorldAnchor);
+#if UNITY_2019_3_OR_NEWER
+                SpatialAnchorManager.arAnchorManager.RemoveAnchor(this.WorldAnchor);
+#else
+                SpatialAnchorManager.arAnchorManager.RemoveReferencePoint(this.WorldAnchor);
+#endif
                 this.WorldAnchor = null;
             }
         }
