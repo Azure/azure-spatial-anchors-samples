@@ -1,5 +1,45 @@
 {
   "dependencies": {
+    "com.microsoft.azure.spatial-anchors-sdk.android": {
+      "version": "2.5.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.microsoft.azure.spatial-anchors-sdk.core": "2.5.0"
+      },
+      "url": "https://pkgs.dev.azure.com/microsoft/_packaging/Analog.SpatialServices/npm/registry"
+    },
+    "com.microsoft.azure.spatial-anchors-sdk.core": {
+      "version": "2.5.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.subsystemregistration": "1.0.6",
+        "com.unity.xr.arsubsystems": "3.1.3",
+        "com.unity.xr.arfoundation": "3.1.3",
+        "com.unity.xr.arcore": "3.1.3",
+        "com.unity.xr.arkit": "3.1.3"
+      },
+      "url": "https://pkgs.dev.azure.com/microsoft/_packaging/Analog.SpatialServices/npm/registry"
+    },
+    "com.microsoft.azure.spatial-anchors-sdk.ios": {
+      "version": "2.5.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.microsoft.azure.spatial-anchors-sdk.core": "2.5.0"
+      },
+      "url": "https://pkgs.dev.azure.com/microsoft/_packaging/Analog.SpatialServices/npm/registry"
+    },
+    "com.microsoft.azure.spatial-anchors-sdk.windows": {
+      "version": "2.5.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.microsoft.azure.spatial-anchors-sdk.core": "2.5.0"
+      },
+      "url": "https://pkgs.dev.azure.com/microsoft/_packaging/Analog.SpatialServices/npm/registry"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -156,7 +196,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.management": {
-      "version": "3.2.10",
+      "version": "3.2.13",
       "depth": 1,
       "source": "registry",
       "dependencies": {

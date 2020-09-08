@@ -1,34 +1,11 @@
 apply plugin: 'com.android.library'
 **APPLY_PLUGINS**
 
-repositories {
-}
-
-project(':launcher') {
-    repositories {
-    }
-}
-
-def azureSpatialAnchorsSdkVersion = '2.4.0'
-
-/*
-The ARCore aar library contains the native shared libraries.  These are
-extracted before building to a temporary directory.
- */
-def natives_libpath = "${buildDir}/natives"
-
-// Create a configuration to mark which aars to extract .so files from
-configurations { natives }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-**DEPS**
-    // Azure Spatial Anchors
-    implementation ("com.microsoft.azure.spatialanchors:spatialanchors_ndk:[${azureSpatialAnchorsSdkVersion}]") {
-        exclude group: 'com.google.ar'
-    }
-    natives "com.microsoft.azure.spatialanchors:spatialanchors_ndk:[${azureSpatialAnchorsSdkVersion}]"
-}
+    implementation('com.squareup.okhttp3:okhttp:[3.11.0]')
+    implementation('com.microsoft.appcenter:appcenter-analytics:[1.10.0]')
+**DEPS**}
 
 android {
     compileSdkVersion **APIVERSION**
@@ -48,15 +25,6 @@ android {
         versionCode **VERSIONCODE**
         versionName '**VERSIONNAME**'
         consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
-
-        externalNativeBuild {
-            cmake {
-                cppFlags "-std=c++14", "-Wall"
-                arguments "-DANDROID_STL=c++_static",
-                        "-DNATIVE_LIBPATH=${natives_libpath}/jni",
-                        "-DNATIVE_INCLUDE=${project.rootDir}/libraries/include"
-            }
-        }
     }
 
     lintOptions {
@@ -68,25 +36,3 @@ android {
     }**PACKAGING_OPTIONS**
 }**REPOSITORIES****SOURCE_BUILD_SETUP**
 **EXTERNAL_SOURCES**
-
-// Extracts the shared libraries from aars in the natives configuration.
-// This is done so that NDK builds can access these libraries.
-task extractNativeLibraries() {
-    // Always extract, this insures the native libs are updated if the version changes.
-    outputs.upToDateWhen { false }
-    doFirst {
-        configurations.natives.files.each { f ->
-            copy {
-                from zipTree(f)
-                into natives_libpath
-                include "jni/**/*"
-            }
-        }
-    }
-}
-
-tasks.whenTaskAdded {
-    task-> if (task.name.contains("external") && !task.name.contains("Clean")) {
-        task.dependsOn(extractNativeLibraries)
-    }
-}

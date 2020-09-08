@@ -118,37 +118,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 return;
             }
 
-            EnableAccessWifiInformationCapability(buildOutputPath);
             AddBluetoothUsageDescription(buildOutputPath);
-        }
-
-        /// <summary>
-        /// Enables the "Access Wi-Fi Information" capability for the Unity player target
-        /// </summary>
-        /// <param name="buildOutputPath">Build output path.</param>
-        private static void EnableAccessWifiInformationCapability(string buildOutputPath)
-        {
-#if UNITY_IOS
-            string xcodeProjectFolder = "Unity-iPhone.xcodeproj";
-            string pbxProjectPath = Path.Combine(buildOutputPath, xcodeProjectFolder, "project.pbxproj");
-            string entitlementsPath = Path.Combine(xcodeProjectFolder, "helloar.entitlements");
-            string unityPlayerTarget = "Unity-iPhone";
-            ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(pbxProjectPath, entitlementsPath, unityPlayerTarget);
-            capabilityManager.AddAccessWiFiInformation();
-            capabilityManager.WriteToFile();
-
-            string accessWifiInformationCapabilityName = "com.apple.AccessWiFi";
-            if (!accessWifiInformationCapabilityName.Equals(PBXCapabilityType.AccessWiFiInformation.id))
-            {
-                Debug.LogWarning($"Working around Unity bug: " +
-                    $"PBXCapabilityType.AccessWiFiInformation.id should be {accessWifiInformationCapabilityName} " +
-                    $"but is {PBXCapabilityType.AccessWiFiInformation.id} instead.");
-
-                string oldProject = File.ReadAllText(pbxProjectPath);
-                string newProject = oldProject.Replace(PBXCapabilityType.AccessWiFiInformation.id, accessWifiInformationCapabilityName);
-                File.WriteAllText(pbxProjectPath, newProject);
-            }
-#endif
         }
 
         /// <summary>

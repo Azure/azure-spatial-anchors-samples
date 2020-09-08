@@ -644,6 +644,7 @@ MonoBehaviour:
   authenticationMode: 0
   spatialAnchorsAccountId: 
   spatialAnchorsAccountKey: 
+  spatialAnchorsAccountDomain: 
   clientId: 
   tenantId: 
   logLevel: 2
