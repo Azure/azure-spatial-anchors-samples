@@ -89,7 +89,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             try
             {
                 HttpClient client = new HttpClient();
-                var response = await client.PostAsync(baseAddress, new StringContent(anchorKey));
+                var response = await client.PostAsync($"{baseAddress}/key?anchorKey={anchorKey}", new StringContent(string.Empty));
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();

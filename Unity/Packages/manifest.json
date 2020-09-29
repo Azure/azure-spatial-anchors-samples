@@ -9,9 +9,9 @@
     }
   ],
   "dependencies": {
-    "com.microsoft.azure.spatial-anchors-sdk.android": "2.5.0",
-    "com.microsoft.azure.spatial-anchors-sdk.ios": "2.5.0",
-    "com.microsoft.azure.spatial-anchors-sdk.windows": "2.5.0",
+    "com.microsoft.azure.spatial-anchors-sdk.android": "2.6.0",
+    "com.microsoft.azure.spatial-anchors-sdk.ios": "2.6.0",
+    "com.microsoft.azure.spatial-anchors-sdk.windows": "2.6.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "3.4.7",
