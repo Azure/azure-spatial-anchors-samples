@@ -1,4 +1,4 @@
-# Azure Spatial Anchors Samples
+# Azure Spatial Anchors Samples 
 
 Welcome to the Azure Spatial Anchors samples repository on GitHub. Azure Spatial Anchors is a managed cloud service and platform that enables multi-user, spatially aware mixed reality and augmented reality (MR/AR) apps for HoloLens, iOS devices with ARKit, and Android devices with ARCore. For more information, see [Azure Spatial Anchors documentation](https://docs.microsoft.com/azure/spatial-anchors/overview "Azure Spatial Anchors Documentation")
 
@@ -20,7 +20,7 @@ Welcome to the Azure Spatial Anchors samples repository on GitHub. Azure Spatial
 
 [Xamarin on iOS](https://docs.microsoft.com/azure/spatial-anchors/quickstarts/get-started-xamarin-ios "Xamarin iOS Quickstart")
 
-## Enable sharing in MR/AR across sessions and devices
+## Enable sharing in AR/VR (MR) across sessions and devices
 
 [MR/AR sharing across devices and sessions](https://docs.microsoft.com/azure/spatial-anchors/tutorials/tutorial-use-cosmos-db-to-store-anchors "Sharing across sessions")
 
