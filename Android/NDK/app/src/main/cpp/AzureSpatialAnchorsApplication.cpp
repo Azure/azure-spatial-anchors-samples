@@ -462,7 +462,8 @@ void AzureSpatialAnchorsApplication::AddEventListeners() {
                 m_anchorVisuals[foundVisual.identifier] = foundVisual;
 
                 if (m_demoMode == DemoMode::CoarseReloc) {
-                    m_status = std::to_string(m_numAnchorsFound++) + " anchor(s) found";
+                    m_numAnchorsFound++;
+                    m_status = std::to_string(m_numAnchorsFound) + " anchor(s) found";
                 }
             }
                 break;
