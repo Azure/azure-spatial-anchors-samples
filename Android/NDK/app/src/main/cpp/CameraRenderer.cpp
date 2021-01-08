@@ -61,6 +61,7 @@ void CameraRenderer::RenderQuad() {
     glUseProgram(m_program);
     glDepthMask(GL_FALSE);
 
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, m_textureId);
     glUniform1i(m_texture, 1);
     glActiveTexture(GL_TEXTURE1);
 
