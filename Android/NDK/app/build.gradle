@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-def azureSpatialAnchorsSdkVersion = '2.7.1'
+def azureSpatialAnchorsSdkVersion = '2.7.2'
 
 /*
 The arcore aar library contains the native shared libraries.  These are
