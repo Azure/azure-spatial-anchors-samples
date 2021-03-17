@@ -13,7 +13,7 @@ namespace SampleXamarin
         SavingAnchor,        // the session is in process of saving an anchor
         LocateAnchor,        // the session will look for an anchor
         LocateNearbyAnchors, // the session will look for nearby anchors
-        DeleteLocatedANchors,// the session will delete found anchors
+        DeleteLocatedAnchors,// the session will delete found anchors
         StopSession,         // the session will stop and be cleaned up
         StopWatcher,         // the watcher will stop looking for anchors
         EnterAnchorNumber,   // sharing: enter an anchor to find

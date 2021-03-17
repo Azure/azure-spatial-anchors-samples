@@ -39,43 +39,33 @@ namespace SampleXamarin.iOS
             base.ViewDidLoad();
 
             this.createButton.SetTitle("Create", UIControlState.Normal);
-            this.createButton.Frame = new CGRect(10, this.View.Frame.Height*0.87, (this.View.Frame.Width - 20) / 2, 44);
             this.createButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
             this.createButton.SetTitleColor(UIColor.White, UIControlState.Normal);
             this.createButton.TouchUpInside += (sender, e) => this.CreateButtonTap();
 
             this.locateButton.SetTitle("Locate", UIControlState.Normal);
-            this.locateButton.Frame = new CGRect((10 + this.View.Frame.Width / 2), this.View.Frame.Height*0.87, (this.View.Frame.Width - 20) / 2 - 10, 44);
             this.locateButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
             this.locateButton.SetTitleColor(UIColor.White, UIControlState.Normal);
             this.locateButton.Hidden = false;
             this.locateButton.TouchUpInside += (sender, e) => this.LocateButtonTapAsync();
 
-            this.statusLabel.Text = "....";
-            this.statusLabel.TextAlignment = UITextAlignment.Left;
-            this.statusLabel.TextColor = UIColor.White;
-            this.statusLabel.Frame = new CGRect(10, this.View.Frame.Height - 50, this.View.Frame.Width - 20, 44);
-            this.statusLabel.Hidden = this.statusLabelIsHidden;
-
-            this.mainLabel.Text = "Welcome to Azure Spatial Anchors Shard Anchors Demo \n Choose Create or Locate";
+            this.mainLabel.Text = "Welcome to Azure Spatial Anchors Shared Anchors Demo \n Choose Create or Locate";
             this.mainLabel.TextAlignment = UITextAlignment.Center;
             this.mainLabel.LineBreakMode = UILineBreakMode.WordWrap;
             this.mainLabel.Lines = 3;
             this.mainLabel.TextColor = UIColor.Yellow;
-            this.mainLabel.Frame = new CGRect(10, 150, this.View.Frame.Width - 20, 40);
 
             this.anchorIdLabel.Text = "Enter Anchor ID Value:";
             this.anchorIdLabel.BackgroundColor = UIColor.LightGray;
             this.anchorIdLabel.TextAlignment = UITextAlignment.Left;
             this.anchorIdLabel.TextColor = UIColor.White;
-            this.anchorIdLabel.Frame = new CGRect(10, 150, this.View.Frame.Width - 20, 40);
             this.anchorIdLabel.Hidden = true;
 
-            this.anchorIdEntry.Frame = new CGRect(10, 200, this.View.Frame.Width - 20, 44);
             this.anchorIdEntry.TextAlignment = UITextAlignment.Left;
             this.anchorIdEntry.MinimumFontSize = 17f;
             this.anchorIdEntry.AdjustsFontSizeToFitWidth = true;
             this.anchorIdEntry.ReturnKeyType = UIReturnKeyType.Done;
+            this.anchorIdEntry.TextColor = UIColor.Black;
             this.anchorIdEntry.BackgroundColor = UIColor.White;
             this.anchorIdEntry.KeyboardType = UIKeyboardType.NumberPad;
             this.anchorIdEntry.Hidden = true;
@@ -92,6 +82,21 @@ namespace SampleXamarin.iOS
             }
 
             this.ShowCreateOrLocateMenu();
+        }
+
+        public override void ViewDidLayoutSubviews()
+        {
+            base.ViewDidLayoutSubviews();
+
+            int buttonHeight = (int)(0.05f * Math.Max(this.View.Frame.Width, this.View.Frame.Height)); // 5% of larger screen dimension
+            int buttonYValue = (int)(this.View.Frame.Height) - borderSize - buttonHeight;
+            this.createButton.Frame = new CGRect(borderSize, buttonYValue, (this.View.Frame.Width - 2 * borderSize) / 2, buttonHeight);
+            this.locateButton.Frame = new CGRect(borderSize + (this.View.Frame.Width / 2), buttonYValue, (this.View.Frame.Width - 2 * borderSize) / 2 - borderSize, buttonHeight);
+
+            int anchorIdYValue = (int)(backButton.Frame.Y) + buttonHeight + 2 * labelHeight;
+            this.mainLabel.Frame = new CGRect(borderSize, anchorIdYValue - 2 * labelHeight, this.View.Frame.Width - 2 * borderSize, 2 * labelHeight);
+            this.anchorIdLabel.Frame = new CGRect(borderSize, anchorIdYValue, this.View.Frame.Width - 2 * borderSize, labelHeight);
+            this.anchorIdEntry.Frame = new CGRect(borderSize, anchorIdYValue + labelHeight, this.View.Frame.Width - 2 * borderSize, buttonHeight);
         }
 
         private void ShowCreateOrLocateMenu()

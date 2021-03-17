@@ -27,8 +27,11 @@ namespace SampleXamarin.iOS
         {
             base.ViewDidLoad();
 
+
+            int buttonHeight = (int)(0.05f * Math.Max(this.View.Frame.Width, this.View.Frame.Height)); // 5% of larger screen dimension
+            int mainButtonYValue = (int)(this.View.Frame.Height) - borderSize - buttonHeight;
             this.mainButton.SetTitle("Tap to start Session", UIControlState.Normal);
-            this.mainButton.Frame = new CGRect(10, this.View.Frame.Height*0.87, this.View.Frame.Width - 20, 44);
+            this.mainButton.Frame = new CGRect(borderSize, mainButtonYValue, this.View.Frame.Width - 2 * borderSize, buttonHeight);
             this.mainButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
             this.mainButton.SetTitleColor(UIColor.White, UIControlState.Normal);
             this.mainButton.Hidden = this.mainButtonisHidden;
@@ -38,6 +41,14 @@ namespace SampleXamarin.iOS
 
             // Start the demo
             this.MainButtonTap();
+        }
+
+        public override void ViewWillLayoutSubviews()
+        {
+            base.ViewWillLayoutSubviews();
+
+            int buttonHeight = (int)(this.mainButton.Frame.Height);
+            this.mainButton.Frame = new CGRect(borderSize, this.View.Frame.Height - borderSize - buttonHeight, this.View.Frame.Width - 2 * borderSize, buttonHeight);
         }
 
         public override void UpdateMainStatusTitle(string title)
@@ -120,8 +131,8 @@ namespace SampleXamarin.iOS
             this.InvokeOnMainThread(() =>
             {
                 this.mainButton.SetTitle("Deletion Failed", UIControlState.Normal);
-                this.errorLabelIsHidden = false;
-                this.errorLabelText = message;
+                this.errorLabel.Hidden = false;
+                this.errorLabel.Text = message;
             });
             this.localAnchorCube.FirstMaterial.Diffuse.Contents = this.failedColor;
         }

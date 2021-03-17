@@ -28,12 +28,11 @@ namespace SampleXamarin.iOS
 
         protected string unsavedAnchorId = "placeholder-id";
 
-        public string statusLabelText = string.Empty;
-        public string errorLabelText = string.Empty;
-        public bool errorLabelIsHidden = true;
-        public bool statusLabelIsHidden = true;
+        public int labelHeight = 25;
+        public int borderSize = 20;
         protected UILabel statusLabel = new UILabel();
         protected UILabel errorLabel = new UILabel();
+        protected UIButton backButton = new UIButton();
 
         public bool enoughDataForSaving;
         public bool currentlyPlacingAnchor;
@@ -79,26 +78,24 @@ namespace SampleXamarin.iOS
         {
             base.ViewDidLoad();
 
-            this.statusLabel.Text = "....";
-            this.statusLabel.TextAlignment = UITextAlignment.Left;
+            this.statusLabel.Text = "";
             this.statusLabel.TextColor = UIColor.White;
-            this.statusLabel.Frame = new CGRect(10, this.View.Frame.Height - 50, this.View.Frame.Width - 20, 44);
-            this.statusLabel.Hidden = this.statusLabelIsHidden;
+            this.statusLabel.LineBreakMode = UILineBreakMode.WordWrap;
+            this.statusLabel.Lines = 0;
+            this.statusLabel.Hidden = true;
 
-            this.errorLabel.Text = this.errorLabelText;
+            this.errorLabel.Text = "";
             this.errorLabel.TextColor = UIColor.White;
-            this.errorLabel.Frame = new CGRect(10, this.View.Frame.Height - 500, this.View.Frame.Width - 20, 200);
             this.errorLabel.LineBreakMode = UILineBreakMode.WordWrap;
-            this.errorLabel.Lines = 10;
-            this.errorLabel.Hidden = this.errorLabelIsHidden;
+            this.errorLabel.Lines = 0;
+            this.statusLabel.Hidden = true;
 
-            UIButton backButton = new UIButton
-            {
-                Frame = new CGRect(10, 20, 100, 44)
-            };
-            backButton.SetTitle("Exit Demo", UIControlState.Normal);
-            backButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
-            backButton.TouchUpInside += (sender, e) => MoveToMainMenu();
+            int buttonHeight = (int)(0.05f * Math.Max(this.View.Frame.Width, this.View.Frame.Height)); // 5% of larger screen dimension
+            this.backButton.SetTitle("Exit Demo", UIControlState.Normal);
+            this.backButton.Frame = new CGRect(borderSize, borderSize, 4 * labelHeight, buttonHeight);
+            this.backButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+            this.backButton.BackgroundColor = UIColor.LightGray.ColorWithAlpha((nfloat)0.6);
+            this.backButton.TouchUpInside += (sender, e) => MoveToMainMenu();
 
             this.sceneView.Delegate = new ARDelegate(this);
             this.sceneView.DebugOptions = ARSCNDebugOptions.ShowFeaturePoints;
@@ -114,6 +111,16 @@ namespace SampleXamarin.iOS
             {
                 this.ShowLogMessage($"Set {nameof(AccountDetails.SpatialAnchorsAccountId)}, {nameof(AccountDetails.SpatialAnchorsAccountKey)}, and {nameof(AccountDetails.SpatialAnchorsAccountDomain)} in {nameof(AccountDetails)}.cs.", SubView.ErrorView);
             }
+        }
+
+        public override void ViewWillLayoutSubviews()
+        {
+            base.ViewWillLayoutSubviews();
+
+            int buttonHeight = (int)(0.05f * Math.Max(this.View.Frame.Width, this.View.Frame.Height)); // 5% of larger screen dimension
+            int mainButtonYValue = (int)(this.View.Frame.Height) - borderSize - buttonHeight;
+            this.statusLabel.Frame = new CGRect(borderSize, mainButtonYValue - 2 * labelHeight, this.View.Frame.Width - 2 * borderSize, 2 * labelHeight);
+            this.errorLabel.Frame = new CGRect(borderSize, mainButtonYValue - 4 * labelHeight, this.View.Frame.Width - 2 * borderSize, 2 * labelHeight);
         }
 
         public void MoveToMainMenu()
@@ -244,8 +251,6 @@ namespace SampleXamarin.iOS
             this.cloudSession.SessionUpdated += this.SpatialAnchorsSession_SessionUpdated;
 
             this.cloudSession.Start();
-            this.statusLabelIsHidden = false;
-            this.errorLabelIsHidden = true;
             this.enoughDataForSaving = false;
         }
 
@@ -384,8 +389,7 @@ namespace SampleXamarin.iOS
             this.UpdateMainStatusTitle("Creation Failed");
             this.InvokeOnMainThread(() =>
             {
-                this.errorLabelIsHidden = false;
-                this.errorLabelText = message;
+                this.errorLabel.Text = message;
                 Console.WriteLine("Cloud save Failed : " + message);
             });
             this.localAnchorCube.FirstMaterial.Diffuse.Contents = this.failedColor;
@@ -507,7 +511,7 @@ namespace SampleXamarin.iOS
             SessionStatus status = e.Status;
             string message = this.StatusToString(status);
             this.enoughDataForSaving = status.RecommendedForCreateProgress >= 1.0;
-            if (this.step == DemoStep.DeleteLocatedANchors | this.step == DemoStep.LocateAnchor | this.step == DemoStep.LocateNearbyAnchors)
+            if (this.step == DemoStep.DeleteLocatedAnchors | this.step == DemoStep.LocateAnchor | this.step == DemoStep.LocateNearbyAnchors)
             {
                 this.HideStatusLabel(true);
             }

@@ -23,19 +23,19 @@ namespace SampleXamarin.iOS
 
             this.InvokeOnMainThread(() =>
             {
-                this.statusLabelIsHidden = true;
+                this.statusLabel.Hidden = true;
                 this.UpdateMainStatusTitle("Tap to start next Session & look for Anchor");
             });
         }
 
         public void MoveToNextStepAfterLocateAnchorsCompleted()
         {
-            this.step = DemoStep.DeleteLocatedANchors;
+            this.step = DemoStep.DeleteLocatedAnchors;
 
             this.InvokeOnMainThread(() =>
             {
                 this.ignoreMainButtonTaps = false;
-                this.statusLabelIsHidden = true;
+                this.statusLabel.Hidden = true;
                 this.UpdateMainStatusTitle("Anchor found! Tap to delete");
             });
         }
@@ -79,7 +79,7 @@ namespace SampleXamarin.iOS
                         this.LookForAnchor(this.targetId);
                         break;
                     }
-                case DemoStep.DeleteLocatedANchors:
+                case DemoStep.DeleteLocatedAnchors:
                     {
                         this.ignoreMainButtonTaps = true;
 

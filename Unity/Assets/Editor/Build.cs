@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 using UnityEditor;
 using System.Linq;
+using UnityEditor.Build.Reporting;
 
 namespace Microsoft.Azure.SpatialAnchors.Unity
 {
@@ -34,7 +35,14 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                          .ToArray(),
             };
 
-            BuildPipeline.BuildPlayer(buildPlayerOptions);
+            // checks for exceptions and returns proper error code
+            BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            BuildSummary summary = report.summary;
+            if (summary.result == BuildResult.Succeeded) {
+                EditorApplication.Exit(0);
+            } else {
+                EditorApplication.Exit(1);
+            }
         }
 
         /// <summary>
@@ -61,7 +69,14 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                          .ToArray(),
             };
 
-            BuildPipeline.BuildPlayer(buildPlayerOptions);
+            // checks for exceptions and returns proper error code
+            BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            BuildSummary summary = report.summary;
+            if (summary.result == BuildResult.Succeeded) {
+                EditorApplication.Exit(0);
+            } else {
+                EditorApplication.Exit(1);
+            }
         }
 
         /// <summary>
@@ -85,7 +100,14 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
                          .ToArray(),
             };
 
-            BuildPipeline.BuildPlayer(buildPlayerOptions);
+            // checks for exceptions and returns proper error code
+            BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            BuildSummary summary = report.summary;
+            if (summary.result == BuildResult.Succeeded) {
+                EditorApplication.Exit(0);
+            } else {
+                EditorApplication.Exit(1);
+            }
         }
     }
 }

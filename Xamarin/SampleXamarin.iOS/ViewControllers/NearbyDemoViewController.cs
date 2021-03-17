@@ -45,7 +45,7 @@ namespace SampleXamarin.iOS
             }
             else
             {
-                this.step = DemoStep.DeleteLocatedANchors;
+                this.step = DemoStep.DeleteLocatedAnchors;
                 this.UpdateMainStatusTitle("Anchors found! Tap to delete");
                 this.HideStatusLabel(true);
             }
@@ -105,7 +105,7 @@ namespace SampleXamarin.iOS
                         this.LookForNearbyAnchors();
                         break;
                     }
-                case DemoStep.DeleteLocatedANchors:
+                case DemoStep.DeleteLocatedAnchors:
                     {
                         this.ignoreMainButtonTaps = true;
 

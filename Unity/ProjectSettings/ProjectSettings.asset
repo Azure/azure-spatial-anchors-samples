@@ -124,7 +124,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 2.5.0
+  bundleVersion: 2.8.1
   preloadedAssets:
   - {fileID: 2160857106466737024, guid: 7df0b96c1aa1aad4d8170be2bd301ee3, type: 2}
   - {fileID: 4800000, guid: c9f956787b1d945e7b36e0516201fc76, type: 3}
@@ -173,7 +173,7 @@ PlayerSettings:
     Android: com.microsoft.azure.spatialanchors.examples.unity.helloar
     iPhone: com.microsoft.SpatialAnchorsUnityiOSSample-df
   buildNumber:
-    iPhone: 2.5.0
+    iPhone: 1
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 26
   AndroidTargetSdkVersion: 0
@@ -962,3 +962,4 @@ PlayerSettings:
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
   legacyClampBlendShapeWeights: 1
+

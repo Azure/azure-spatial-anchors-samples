@@ -205,6 +205,8 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 throw new ArgumentNullException(nameof(anchorIds));
             }
 
+            anchorLocateCriteria.NearAnchor = new NearAnchorCriteria();
+
             anchorIdsToLocate.Clear();
             anchorIdsToLocate.AddRange(anchorIds);
 

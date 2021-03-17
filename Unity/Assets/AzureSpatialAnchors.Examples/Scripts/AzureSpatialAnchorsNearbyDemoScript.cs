@@ -14,8 +14,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             Placing = 0,
             Saving,
-            ReadyToGraph,
-            Graphing,
             ReadyToSearch,
             Searching,
             ReadyToNeighborQuery,
@@ -29,8 +27,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             Color.white,
             Color.magenta,
             Color.magenta,
-            Color.yellow,
-            Color.magenta,
             Color.cyan,
             Color.magenta,
             Color.green,
@@ -41,8 +37,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             new Vector3(0,0,0),
             new Vector3(0,0,0),
-            new Vector3(0,0,0),
-            new Vector3(.1f,0,0),
             new Vector3(0,0,0),
             new Vector3(0,0,.1f),
             new Vector3(0,0,0),
@@ -121,12 +115,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             int timeLeft = (int)(dueDate - DateTime.Now).TotalSeconds;
             switch (currentAppState)
             {
-                case AppState.ReadyToGraph:
-                    feedbackBox.text = "Next: Tap to start a query for all anchors we just made.";
-                    break;
-                case AppState.Graphing:
-                    feedbackBox.text = $"Making sure we can find the anchors we just made. ({locatedCount}/{numToMake})";
-                    break;
                 case AppState.ReadyToSearch:
                     feedbackBox.text = "Next: Tap to start looking for just the first anchor we placed.";
                     break;
@@ -182,6 +170,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 {
                     locatedCount++;
                     currentCloudAnchor = args.Anchor;
+
                     Pose anchorPose = Pose.identity;
 
                     #if UNITY_ANDROID || UNITY_IOS
@@ -194,14 +183,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     spawnedObject.transform.localScale += scaleMods[(int)currentAppState];
                     spawnedObject = null;
 
-                    if (currentAppState == AppState.Graphing)
-                    {
-                        if (spawnedObjectsInCurrentAppState.Count == anchorIds.Count)
-                        {
-                            currentAppState = AppState.ReadyToSearch;
-                        }
-                    }
-                    else if (currentAppState == AppState.Searching)
+                    if (currentAppState == AppState.Searching)
                     {
                         currentAppState = AppState.ReadyToNeighborQuery;
                     }
@@ -259,14 +241,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                         await SaveCurrentObjectAnchorToCloudAsync();
                     }
                     break;
-                case AppState.ReadyToGraph:
-                    await DoGraphingPassAsync();
-                    break;
                 case AppState.ReadyToSearch:
                     await DoSearchingPassAsync();
                     break;
                 case AppState.ReadyToNeighborQuery:
-                    await DoNeighboringPassAsync();
+                    DoNeighboringPassAsync();
                     break;
                 case AppState.Done:
                     await CloudManager.ResetSessionAsync();
@@ -293,21 +272,17 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             #endif
             // HoloLens: The position will be set based on the unityARUserAnchor that was located.
 
-            SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
-
             spawnedObject = null;
             currentCloudAnchor = null;
             if (allSpawnedObjects.Count < numToMake)
             {
                 feedbackBox.text = $"Saved...Make another {allSpawnedObjects.Count}/{numToMake} ";
                 currentAppState = AppState.Placing;
-                CloudManager.StopSession();
             }
             else
             {
                 feedbackBox.text = "Saved... ready to start finding them.";
-                CloudManager.StopSession();
-                currentAppState = AppState.ReadyToGraph;
+                currentAppState = AppState.ReadyToSearch;
             }
         }
 
@@ -316,23 +291,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             base.OnSaveCloudAnchorFailed(exception);
         }
 
-        private async Task DoGraphingPassAsync()
-        {
-            SetGraphEnabled(false);
-            await CloudManager.ResetSessionAsync();
-            locatedCount = 0;
-            SetAnchorIdsToLocate(anchorIds);
-            SetNearbyAnchor(null, 10, numToMake);
-            await CloudManager.StartSessionAsync();
-            currentWatcher = CreateWatcher();
-            currentAppState = AppState.Graphing; //do the recall..
-        }
-
         private async Task DoSearchingPassAsync()
         {
             await CloudManager.ResetSessionAsync();
-            await CloudManager.StartSessionAsync();
-            SetGraphEnabled(false);
+            SetGraphEnabled(false); // set LocateStrategy to VisualInformation
             IEnumerable<string> anchorsToFind = new[] { anchorIds[0] };
             SetAnchorIdsToLocate(anchorsToFind);
             locatedCount = 0;
@@ -341,10 +303,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             currentAppState = AppState.Searching;
         }
 
-        private async Task DoNeighboringPassAsync()
+        private void DoNeighboringPassAsync()
         {
-            await CloudManager.StartSessionAsync();
-            SetGraphEnabled(true);
+            SetGraphEnabled(true, true); // set LocateStrategy to Relationship
             ResetAnchorIdsToLocate();
             SetNearbyAnchor(currentCloudAnchor, 10, numToMake);
             locatedCount = 0; 

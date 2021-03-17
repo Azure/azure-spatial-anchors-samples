@@ -13,7 +13,7 @@
         <!--Menu Screen View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" userLabel="Menu Screen View Controller" sceneMemberID="viewController">
+                <viewController id="BV1-FR-VrT" userLabel="Menu Screen View Controller" sceneMemberID="viewController" modalPresentationStyle="fullScreen">
                     <view key="view" contentMode="scaleToFill" id="MMe-9M-xUY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -98,7 +98,7 @@
         <!--Basic Demo View Controller-->
         <scene sceneID="3eC-aO-sUR">
             <objects>
-                <viewController id="GRt-kw-bC2" customClass="BasicDemoViewController" sceneMemberID="viewController">
+                <viewController id="GRt-kw-bC2" customClass="BasicDemoViewController" sceneMemberID="viewController" modalPresentationStyle="fullScreen">
                     <arscnView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="ang-sf-iGE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -115,7 +115,7 @@
         <!--Coarse Reloc Demo View Controller-->
         <scene sceneID="nTg-w9-oOQ">
             <objects>
-                <viewController id="rci-kW-rxJ" userLabel="Coarse Reloc Demo View Controller" customClass="CoarseRelocDemoViewController" sceneMemberID="viewController">
+                <viewController id="rci-kW-rxJ" userLabel="Coarse Reloc Demo View Controller" customClass="CoarseRelocDemoViewController" sceneMemberID="viewController" modalPresentationStyle="fullScreen">
                     <view key="view" contentMode="scaleToFill" id="OWK-IQ-y4A">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -150,7 +150,7 @@
         <!--Nearby Demo View Controller-->
         <scene sceneID="1QB-DC-YjG">
             <objects>
-                <viewController id="hAo-T4-9ux" customClass="NearbyDemoViewController" sceneMemberID="viewController">
+                <viewController id="hAo-T4-9ux" customClass="NearbyDemoViewController" sceneMemberID="viewController" modalPresentationStyle="fullScreen">
                     <arscnView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="dfq-Rk-Ylj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -167,7 +167,7 @@
         <!--Shared Demo View Controller-->
         <scene sceneID="bap-jV-S8R">
             <objects>
-                <viewController id="WKW-R5-bRH" customClass="SharedDemoViewController" sceneMemberID="viewController">
+                <viewController id="WKW-R5-bRH" customClass="SharedDemoViewController" sceneMemberID="viewController" modalPresentationStyle="fullScreen">
                     <arscnView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="CYO-C2-gEl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
