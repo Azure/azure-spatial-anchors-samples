@@ -1,8 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+#if WINDOWS_UWP || UNITY_WSA
+using UnityEngine.XR.WindowsMR;
+#endif
 
 #if UNITY_ANDROID || UNITY_IOS
 using UnityEngine.XR.ARFoundation;
@@ -16,6 +22,32 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         ARRaycastManager arRaycastManager;
 #endif
         /// <summary>
+        /// Start is called on the frame when a script is enabled just before any
+        /// of the Update methods are called the first time.
+        /// </summary>
+        public virtual void Start()
+        {
+#if UNITY_ANDROID || UNITY_IOS
+            arRaycastManager = FindObjectOfType<ARRaycastManager>();
+            if (arRaycastManager == null)
+            {
+                Debug.Log("Missing ARRaycastManager in scene");
+            }
+#endif
+#if WINDOWS_UWP || UNITY_WSA
+            WindowsMRGestures mrGestures = FindObjectOfType<WindowsMRGestures>();
+            if (mrGestures != null)
+            {
+                mrGestures.onTappedChanged += MrGesturesOnTappedChanged;
+            }
+            else
+            {
+                throw new InvalidOperationException("WindowsMRGestures not found");
+            }
+#endif
+        }
+
+        /// <summary>
         /// Destroying the attached Behaviour will result in the game or Scene
         /// receiving OnDestroy.
         /// </summary>
@@ -25,25 +57,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         public virtual void OnDestroy()
         {
 #if WINDOWS_UWP || UNITY_WSA
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourcePressed -= InteractionManager_InteractionSourcePressed;
-#endif
-        }
-
-        /// <summary>
-        /// Start is called on the frame when a script is enabled just before any
-        /// of the Update methods are called the first time.
-        /// </summary>
-        public virtual void Start()
-        {
-#if UNITY_ANDROID || UNITY_IOS
-             arRaycastManager = FindObjectOfType<ARRaycastManager>();
-            if (arRaycastManager == null)
+            WindowsMRGestures mrGestures = FindObjectOfType<WindowsMRGestures>();
+            if (mrGestures != null)
             {
-                Debug.Log("Missing ARRaycastManager in scene");
+                mrGestures.onTappedChanged -= MrGesturesOnTappedChanged;
             }
-#endif
-#if WINDOWS_UWP || UNITY_WSA
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
 #endif
         }
 
@@ -149,6 +167,17 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 #endif
         }
 
+#if WINDOWS_UWP || UNITY_WSA
+        /// <summary>
+        /// Called when a tap interaction occurs.
+        /// </summary>
+        /// <remarks>Currently only called for HoloLens.</remarks>
+        private void MrGesturesOnTappedChanged(WindowsMRTappedGestureEvent obj)
+        {
+            OnSelectInteraction();
+        }
+#endif
+
         /// <summary>
         /// Called when a touch object interaction occurs.
         /// </summary>
@@ -165,19 +194,5 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
             return Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out target);
         }
-
-#if WINDOWS_UWP || UNITY_WSA
-        /// <summary>
-        /// Handles the HoloLens interaction event.
-        /// </summary>
-        /// <param name="obj">The <see cref="UnityEngine.XR.WSA.Input.InteractionSourcePressedEventArgs"/> instance containing the event data.</param>
-        private void InteractionManager_InteractionSourcePressed(UnityEngine.XR.WSA.Input.InteractionSourcePressedEventArgs obj)
-        {
-            if (obj.pressType == UnityEngine.XR.WSA.Input.InteractionSourcePressType.Select)
-            {
-                OnSelectInteraction();
-            }
-        }
-#endif
     }
 }

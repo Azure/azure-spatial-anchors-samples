@@ -15,7 +15,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity
         {
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WSA, BuildTarget.WSAPlayer);
             EditorUserBuildSettings.SetPlatformSettings("WindowsStoreApps", "CopyReferences", "true");
-            EditorUserBuildSettings.SetPlatformSettings("WindowsStoreApps", "CopyPDBFiles", "false");
+            EditorUserBuildSettings.SetPlatformSettings("WindowsStoreApps", "CopyPDBFiles", "true");
 
             EditorUserBuildSettings.wsaUWPVisualStudioVersion = "Visual Studio 2017";
             EditorUserBuildSettings.wsaUWPSDK = "10.0.18362.0";

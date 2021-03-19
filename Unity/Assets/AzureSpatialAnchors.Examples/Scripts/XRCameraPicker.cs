@@ -12,13 +12,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
     public class XRCameraPicker : MonoBehaviour
     {
         /// <summary>
-        /// The parent of the HoloLens game objects.
-        /// </summary>
-        public GameObject HoloLensCameraTree;
-        /// <summary>
         /// The parent of the ARFoundation game objects.
         /// </summary>
         public GameObject ARFoundationCameraTree;
+
         /// <summary>
         /// The parent for the game objects to use in the editor.
         /// </summary>
@@ -26,15 +23,29 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
         void Awake()
         {
+            // We want to maintain a single instance of AR stack throughout the lifetime of the app
+
+            // Prevent Unity from creating another instance of this object
+            GameObject[] objs = GameObject.FindGameObjectsWithTag("CameraParent");
+            if (objs.Length > 1)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+
+            // Prevent Unity from destroying the shared stack when a scene is unloaded
+            DontDestroyOnLoad(this.gameObject);
+
+
             GameObject targetCamera = EditorCameraTree;
-#if UNITY_WSA
-            targetCamera = HoloLensCameraTree;
-#elif UNITY_ANDROID || UNITY_IOS
-           targetCamera = ARFoundationCameraTree;
+#if UNITY_ANDROID || UNITY_IOS || UNITY_WSA
+            targetCamera = ARFoundationCameraTree;
 #elif !UNITY_EDITOR
-             Debug.LogError("Unexpected platform for XRCameraPicker. Did you intend to include this script in your scene?");     
+            Debug.LogError("Unexpected platform for XRCameraPicker. Did you intend to include this script in your scene?");     
 #endif
-            Instantiate(targetCamera);
+            GameObject activeCamera = Instantiate(targetCamera);
+
+            DontDestroyOnLoad(activeCamera);
         }
     }
 }

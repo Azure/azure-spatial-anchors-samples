@@ -165,7 +165,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             if (advanceDemoTask != null) { await advanceDemoTask; }
 
             // Return to the launcher scene
-            SceneManager.LoadScene(0);
+            UnityDispatcher.InvokeOnAppThread(() =>
+            {
+                SceneManager.LoadScene(0);
+            });
         }
 
         /// <summary>
@@ -437,7 +440,10 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             CloudNativeAnchor cna = spawnedObject.GetComponent<CloudNativeAnchor>();
 
             // If the cloud portion of the anchor hasn't been created yet, create it
-            if (cna.CloudAnchor == null) { cna.NativeToCloud(); }
+            if (cna.CloudAnchor == null)
+            {
+                await cna.NativeToCloud();
+            }
 
             // Get the cloud portion of the anchor
             CloudSpatialAnchor cloudAnchor = cna.CloudAnchor;

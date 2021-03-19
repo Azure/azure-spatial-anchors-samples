@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR;
 #if UNITY_WSA
+using UnityEngine.XR.WindowsMR;
 using UnityEngine.XR.WSA.Input;
 #endif
 
@@ -26,27 +27,28 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         Destroy(this.gameObject);
         return;
 #else
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
-
-            // Since this script will be raising UX events on HoloLens, disable the built in input module to prevent
-            // events being raised twice.
-            StandaloneInputModule sim = FindObjectOfType<StandaloneInputModule>();
-            if (sim != null)
+            WindowsMRGestures mrGestures = FindObjectOfType<WindowsMRGestures>();
+            if (mrGestures != null)
             {
-                Destroy(sim);
+                mrGestures.onTappedChanged += OnTappedChangedEventHandler;
             }
 #endif
         }
 
-#if UNITY_WSA
-        private void InteractionManager_InteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
+        void OnDestroy()
         {
-            // On HoloLens 2 a grasp event is also raised that we don't want to pass along as a click.
-            if (obj.pressType == InteractionSourcePressType.Grasp)
+#if WINDOWS_UWP || UNITY_WSA
+            WindowsMRGestures mrGestures = FindObjectOfType<WindowsMRGestures>();
+            if (mrGestures != null)
             {
-                return;
+                mrGestures.onTappedChanged -= OnTappedChangedEventHandler;
             }
+#endif
+        }
 
+#if WINDOWS_UWP || UNITY_WSA
+        private void OnTappedChangedEventHandler(WindowsMRTappedGestureEvent obj)
+        {
             if (targeted != null)
             {
                 Debug.Log("Clicking >> " + targeted.gameObject.name);

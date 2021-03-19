@@ -108,10 +108,8 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 {
                     Pose anchorPose = Pose.identity;
 
-#if UNITY_ANDROID || UNITY_IOS
                     anchorPose = currentCloudAnchor.GetPose();
-#endif
-                    // HoloLens: The position will be set based on the unityARUserAnchor that was located.
+
                     SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
                     currentAppState = AppState.DemoStepDeleteFoundAnchor;
                 });
@@ -157,12 +155,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             currentAnchorId = currentCloudAnchor.Identifier;
 
             // Sanity check that the object is still where we expect
-            Pose anchorPose = Pose.identity;
-
-            #if UNITY_ANDROID || UNITY_IOS
-            anchorPose = currentCloudAnchor.GetPose();
-            #endif
-            // HoloLens: The position will be set based on the unityARUserAnchor that was located.
+            Pose anchorPose = currentCloudAnchor.GetPose();
 
             SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
 
