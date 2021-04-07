@@ -1,17 +1,6 @@
 {
-  "scopedRegistries": [
-    {
-      "name": "Azure Mixed Reality Services",
-      "url": "https://api.bintray.com/npm/microsoft/AzureMixedReality-NPM",
-      "scopes": [
-        "com.microsoft.azure.spatial-anchors-sdk"
-      ]
-    }
-  ],
+  "scopedRegistries": [],
   "dependencies": {
-    "com.microsoft.azure.spatial-anchors-sdk.android": "2.9.0",
-    "com.microsoft.azure.spatial-anchors-sdk.ios": "2.9.0",
-    "com.microsoft.azure.spatial-anchors-sdk.windows": "2.9.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "3.6.1",

@@ -1,8 +1,10 @@
 # Azure Spatial Anchors Samples
 
-Welcome to the Azure Spatial Anchors samples repository on GitHub. Azure Spatial Anchors is a managed cloud service and platform that enables multi-user, spatially aware mixed reality and augmented reality (MR/AR) apps for HoloLens, iOS devices with ARKit, and Android devices with ARCore. For more information, see [Azure Spatial Anchors documentation](https://docs.microsoft.com/azure/spatial-anchors/overview "Azure Spatial Anchors Documentation")
+Welcome to the Azure Spatial Anchors samples repository on GitHub. Azure Spatial Anchors is a managed cloud service and platform that enables multi-user, spatially aware mixed reality and augmented reality (MR/AR) apps for HoloLens, iOS devices with ARKit, and Android devices with ARCore. For more information, see [Azure Spatial Anchors documentation](https://docs.microsoft.com/azure/spatial-anchors/overview "Azure Spatial Anchors Documentation").
 
 ## Create your first app
+
+Follow the quickstart tutorials below to learn how to deploy the sample applications included in this repository. Note that both Git and [Git LFS](https://git-lfs.github.com/) are required to properly clone the repository.
 
 [Android Java](https://docs.microsoft.com/azure/spatial-anchors/quickstarts/get-started-android "Android Quickstart")
 
