@@ -192,7 +192,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             Camera mainCamera = Camera.main;
 
-            return Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out target);
+            // Only detect collisions on the spatial mapping layer. Prevents cube placement issues
+            // related to collisions with the UI that follows the user gaze.
+            const float maxDetectionDistance = 15.0f;
+            int layerMask = LayerMask.GetMask("Surfaces");
+            return Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out target, maxDetectionDistance, layerMask);
         }
     }
 }

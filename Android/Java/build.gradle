@@ -19,6 +19,12 @@ allprojects {
     repositories {
         // Use the local repository to override packages when testing new versions
         mavenLocal()
+
+        maven {
+            // Maven feed for Azure Spatial Anchors package versions >= 2.10
+            url 'https://pkgs.dev.azure.com/aipmr/MixedReality-Unity-Packages/_packaging/Maven-packages/maven/v1'
+            name 'Maven-packages'
+        }
         google()
         jcenter()
     }
