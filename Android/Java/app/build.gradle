@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-def azureSpatialAnchorsSdkVersion = '2.10.1'
+def azureSpatialAnchorsSdkVersion = '2.10.2'
 
 android {
     compileSdkVersion 27
