@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 {
@@ -26,6 +27,8 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             DemoStepLookForAnchorsNearDevice,
             DemoStepLookingForAnchorsNearDevice,
             DemoStepStopWatcher,
+            DemoStepDeleteAnchors,
+            DemoStepEnumerateAnchors,
             DemoStepStopSessionForQuery,
             DemoStepComplete
         }
@@ -45,7 +48,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             { AppState.DemoStepStartSessionForQuery,new DemoStepParams() { StepMessage = "Next: Start Azure Spatial Anchors Session for query", StepColor = Color.clear }},
             { AppState.DemoStepLookForAnchorsNearDevice,new DemoStepParams() { StepMessage = "Next: Look for Anchors near device", StepColor = Color.clear }},
             { AppState.DemoStepLookingForAnchorsNearDevice,new DemoStepParams() { StepMessage = "Looking for Anchors near device...", StepColor = Color.clear }},
-            { AppState.DemoStepStopWatcher,new DemoStepParams() { StepMessage = "Next: Stop Watcher", StepColor = Color.yellow }},
+            { AppState.DemoStepStopWatcher,new DemoStepParams() { StepMessage = "Next: Stop Watcher", StepColor = Color.green }},
+            { AppState.DemoStepDeleteAnchors,new DemoStepParams() { StepMessage = "Next: Delete Anchors", StepColor = Color.green }},
+            { AppState.DemoStepEnumerateAnchors,new DemoStepParams() { StepMessage = "Next: Enumerate Anchors", StepColor = Color.green }},
             { AppState.DemoStepStopSessionForQuery,new DemoStepParams() { StepMessage = "Next: Stop Azure Spatial Anchors Session for query", StepColor = Color.grey }},
             { AppState.DemoStepComplete,new DemoStepParams() { StepMessage = "Next: Restart demo", StepColor = Color.clear }}
         };
@@ -80,11 +85,14 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
         private PlatformLocationProvider locationProvider;
         private List<GameObject> allDiscoveredAnchors = new List<GameObject>();
-        
+
+        private int nextButtonIndex = 0;
+        private int enumerateButtonIndex = 2;
+        private int deleteNewAnchorButtonIndex = 3;
+        private int deleteAllAnchorsButtonIndex = 4;
+
         private void EnableCorrectUIControls()
         {
-            int nextButtonIndex = 0;
-            int enumerateButtonIndex = 2;
 
             switch (currentAppState)
             {
@@ -99,12 +107,24 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].gameObject.SetActive(false);
                 #endif
                     break;
-                case AppState.DemoStepStopSessionForQuery:
+                case AppState.DemoStepEnumerateAnchors:
+                    XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].interactable = true;
                     XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].gameObject.SetActive(true);
+                    XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].gameObject.SetActive(false);
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].gameObject.SetActive(false);
+                    break;
+                case AppState.DemoStepDeleteAnchors:
+                    XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable = true;
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable = true;
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].gameObject.SetActive(true);
+                    XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].gameObject.SetActive(true);
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].gameObject.SetActive(true);
                     break;
                 default:
                     XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].gameObject.SetActive(true);
                     XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].gameObject.SetActive(false);
+                    XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].gameObject.SetActive(false);
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].gameObject.SetActive(false);
                     break;
             }
         }
@@ -215,13 +235,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 UnityDispatcher.InvokeOnAppThread(() =>
                 {
                     currentAppState = AppState.DemoStepStopWatcher;
-                    Pose anchorPose = Pose.identity;
-
-#if UNITY_ANDROID || UNITY_IOS
-                    anchorPose = currentCloudAnchor.GetPose();
-#endif
-
-                    // HoloLens: The position will be set based on the unityARUserAnchor that was located.
+                    Pose anchorPose = cloudAnchor.GetPose();
                     GameObject spawnedObject = SpawnNewAnchoredObject(anchorPose.position, anchorPose.rotation, cloudAnchor);
                     allDiscoveredAnchors.Add(spawnedObject);
                 });
@@ -274,16 +288,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             await base.OnSaveCloudAnchorSuccessfulAsync();
 
             Debug.Log("Anchor created, yay!");
-
-            // Sanity check that the object is still where we expect
-            Pose anchorPose = Pose.identity;
-
-#if UNITY_ANDROID || UNITY_IOS
-            anchorPose = currentCloudAnchor.GetPose();
-#endif
-            // HoloLens: The position will be set based on the unityARUserAnchor that was located.
-
-            SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
 
             currentAppState = AppState.DemoStepStopSession;
         }
@@ -367,6 +371,12 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                         currentWatcher.Stop();
                         currentWatcher = null;
                     }
+                    currentAppState = AppState.DemoStepDeleteAnchors;
+                    break;
+                case AppState.DemoStepDeleteAnchors:
+                    currentAppState = AppState.DemoStepEnumerateAnchors;
+                    break;
+                case AppState.DemoStepEnumerateAnchors:
                     currentAppState = AppState.DemoStepStopSessionForQuery;
                     break;
                 case AppState.DemoStepStopSessionForQuery:
@@ -386,30 +396,134 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             }
         }
 
-        public async override Task EnumerateAllNearbyAnchorsAsync()
+        public void DeleteNewAnchor()
         {
-            Debug.Log("Enumerating near-device spatial anchors in the cloud");
+            feedbackBox.text = "Deleting the anchor that was just created...";
+            XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = false;
+            XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable = false;
+            bool deleteAllAnchorsButtonPreviousState = XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable;
+            XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable = false;
 
-            NearDeviceCriteria criteria = new NearDeviceCriteria();
-            criteria.DistanceInMeters = 5;
-            criteria.MaxResultCount = 20;
-
-            var cloudAnchorSession = CloudManager.Session;
-
-            var spatialAnchorIds = await cloudAnchorSession.GetNearbyAnchorIdsAsync(criteria);
-
-            Debug.LogFormat("Got ids for {0} anchors", spatialAnchorIds.Count);
-
-            List<CloudSpatialAnchor> spatialAnchors = new List<CloudSpatialAnchor>();
-
-            foreach (string anchorId in spatialAnchorIds)
+            UnityDispatcher.InvokeOnAppThread(async () =>
             {
-                var anchor = await cloudAnchorSession.GetAnchorPropertiesAsync(anchorId);
-                Debug.LogFormat("Received information about spatial anchor {0}", anchor.Identifier);
-                spatialAnchors.Add(anchor);
-            }
+                if (currentCloudAnchor == null)
+                {
+                    feedbackBox.text = "Could not obtain identifier for anchor that was just created";
+                    XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = true;
+                    XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable = true;
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable = deleteAllAnchorsButtonPreviousState;
+                    return;
+                }
 
-            feedbackBox.text = $"Found {spatialAnchors.Count} anchors nearby";
+                // Acquire the CloudSpatialAnchor
+                string newAnchorIdentifier = currentCloudAnchor.Identifier;
+                CloudSpatialAnchor newAnchor = await CloudManager.Session.GetAnchorPropertiesAsync(newAnchorIdentifier);
+                if (newAnchor == null)
+                {
+                    feedbackBox.text = $"Failed to acquire the CloudSpatialAnchor for identifier {newAnchorIdentifier}";
+                    XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = true;
+                    XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable = true;
+                    XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable = deleteAllAnchorsButtonPreviousState;
+                    return;
+                }
+
+                // Delete from the service
+                await CloudManager.DeleteAnchorAsync(newAnchor);
+
+                // Destroy the GameObject if it exists
+                GameObject newAnchorGameObject = allDiscoveredAnchors.Find(x => x.GetComponent<CloudNativeAnchor>().CloudAnchor.Identifier == newAnchorIdentifier);
+                if (newAnchorGameObject != null)
+                {
+                    allDiscoveredAnchors.Remove(newAnchorGameObject);
+                    Destroy(newAnchorGameObject);
+                }
+
+                feedbackBox.text = $"Deleted anchor that was just created";
+                XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = true;
+                XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable = deleteAllAnchorsButtonPreviousState;
+            });
+        }
+
+        public void DeleteAllFoundAnchors()
+        {
+            feedbackBox.text = "Deleting all found anchors...";
+            XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = false;
+            bool deleteNewAnchorButtonPreviousState = XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable;
+            XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable = false;
+            XRUXPicker.Instance.GetDemoButtons()[deleteAllAnchorsButtonIndex].interactable = false;
+
+            UnityDispatcher.InvokeOnAppThread(async () =>
+            {
+                int deletedCount = 0;
+                foreach (GameObject anchor in allDiscoveredAnchors)
+                {
+                    // Acquire the CloudSpatialAnchor
+                    CloudNativeAnchor cloudNativeAnchor = anchor.GetComponent<CloudNativeAnchor>();
+                    if (cloudNativeAnchor == null)
+                    {
+                        Debug.LogError("Found game object without CloudNativeAnchor");
+                        continue;
+                    }
+                    if (cloudNativeAnchor.CloudAnchor == null)
+                    {
+                        Debug.LogError("Found CloudNativeAnchor without CloudSpatialAnchor");
+                        continue;
+                    }
+
+                    // Delete from the service
+                    await CloudManager.DeleteAnchorAsync(cloudNativeAnchor.CloudAnchor);
+
+                    // Destroy the GameObject
+                    Destroy(anchor);
+
+                    // Check if this anchor was also the cuurentCloudAnchor
+                    if (currentCloudAnchor != null && cloudNativeAnchor.CloudAnchor.Identifier == currentCloudAnchor.Identifier)
+                    {
+                        // Cleanup to prevent app from calling DeleteNewAnchor() after this
+                        deleteNewAnchorButtonPreviousState = false;
+                        currentCloudAnchor = null;
+                    }
+
+                    ++deletedCount;
+                }
+
+                allDiscoveredAnchors.Clear();
+
+                feedbackBox.text = $"Deleted {deletedCount} anchors";
+                XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = true;
+                XRUXPicker.Instance.GetDemoButtons()[deleteNewAnchorButtonIndex].interactable = deleteNewAnchorButtonPreviousState;
+            });
+        }
+
+        public void EnumerateAllNearbyAnchors()
+        {
+            feedbackBox.text = "Enumerating nearby anchors...";
+            XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = false;
+            XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].interactable = false;
+
+            UnityDispatcher.InvokeOnAppThread(async () =>
+            {
+                NearDeviceCriteria criteria = new NearDeviceCriteria();
+                criteria.DistanceInMeters = 5;
+                criteria.MaxResultCount = 20;
+
+                IList<string> spatialAnchorIds = await CloudManager.Session.GetNearbyAnchorIdsAsync(criteria);
+
+                Debug.LogFormat("Got ids for {0} anchors", spatialAnchorIds.Count);
+
+                List<CloudSpatialAnchor> spatialAnchors = new List<CloudSpatialAnchor>();
+
+                foreach (string anchorId in spatialAnchorIds)
+                {
+                    CloudSpatialAnchor anchor = await CloudManager.Session.GetAnchorPropertiesAsync(anchorId);
+                    Debug.LogFormat("Received information about spatial anchor {0}", anchor.Identifier);
+                    spatialAnchors.Add(anchor);
+                }
+
+                feedbackBox.text = $"Found {spatialAnchors.Count} anchors nearby";
+                XRUXPicker.Instance.GetDemoButtons()[nextButtonIndex].interactable = true;
+                XRUXPicker.Instance.GetDemoButtons()[enumerateButtonIndex].interactable = true;
+            });
         }
 
         protected override void CleanupSpawnedObjects()

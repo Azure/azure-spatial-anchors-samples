@@ -140,21 +140,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             }
         }
 
-        public virtual Task EnumerateAllNearbyAnchorsAsync() { throw new NotImplementedException(); }
-
-        public async void EnumerateAllNearbyAnchors()
-        {
-            try
-            {
-                await EnumerateAllNearbyAnchorsAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"{nameof(DemoScriptBase)} - Error in {nameof(EnumerateAllNearbyAnchors)}: === {ex.GetType().Name} === {ex.ToString()} === {ex.Source} === {ex.Message} {ex.StackTrace}");
-                feedbackBox.text = $"Enumeration failed, check debugger output for more information";
-            }
-        }
-
         /// <summary>
         /// returns to the launcher scene.
         /// </summary>
@@ -458,8 +443,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 feedbackBox.text = $"Move your device to capture more environment data: {createProgress:0%}";
             }
 
-            bool success = false;
-
             feedbackBox.text = "Saving...";
 
             try
@@ -471,9 +454,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 currentCloudAnchor = cloudAnchor;
 
                 // Success?
-                success = currentCloudAnchor != null;
-
-                if (success && !isErrorActive)
+                if ((currentCloudAnchor != null) && !isErrorActive)
                 {
                     // Await override, which may perform additional tasks
                     // such as storing the key in the AnchorExchanger
@@ -565,7 +546,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
         private void CloudManager_AnchorLocated(object sender, AnchorLocatedEventArgs args)
         {
-            Debug.LogFormat("Anchor recognized as a possible anchor {0} {1}", args.Identifier, args.Status);
             if (args.Status == LocateAnchorStatus.Located)
             {
                 OnCloudAnchorLocated(args);

@@ -106,10 +106,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
                 UnityDispatcher.InvokeOnAppThread(() =>
                 {
-                    Pose anchorPose = Pose.identity;
-
-                    anchorPose = currentCloudAnchor.GetPose();
-
+                    Pose anchorPose = currentCloudAnchor.GetPose();
                     SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
                     currentAppState = AppState.DemoStepDeleteFoundAnchor;
                 });
@@ -153,11 +150,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             Debug.Log("Anchor created, yay!");
 
             currentAnchorId = currentCloudAnchor.Identifier;
-
-            // Sanity check that the object is still where we expect
-            Pose anchorPose = currentCloudAnchor.GetPose();
-
-            SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
 
             currentAppState = AppState.DemoStepStopSession;
         }

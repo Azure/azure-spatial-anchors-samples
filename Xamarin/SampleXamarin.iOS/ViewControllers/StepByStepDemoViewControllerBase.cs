@@ -66,7 +66,7 @@ namespace SampleXamarin.iOS
             AnchorLocateCriteria criteria = new AnchorLocateCriteria();
             NearAnchorCriteria nearCriteria = new NearAnchorCriteria
             {
-                DistanceInMeters = 5,
+                DistanceInMeters = 10,
                 SourceAnchor = this.anchorVisuals[this.targetId].cloudAnchor
             };
             criteria.NearAnchor = nearCriteria;

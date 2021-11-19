@@ -38,6 +38,6 @@ Follow the quickstart tutorials below to learn how to deploy the sample applicat
 
 ## Support
 
-Have an idea or suggestion? [Give us your feedback](https://feedback.azure.com/forums/919252-azure-spatial-anchors "Feedback")
+Have an idea or suggestion? [Give us your feedback](https://feedback.azure.com/d365community/forum/f47d9b25-0725-ec11-b6e6-000d3a4f07b8 "Feedback")
 
 Have an issue? [Ask the community on Stack Overflow](https://stackoverflow.com/questions/tagged/azure-spatial-anchors "Stack Overflow") OR [Open a support ticket](https://docs.microsoft.com/azure/spatial-anchors/spatial-anchor-support "Support Ticket")

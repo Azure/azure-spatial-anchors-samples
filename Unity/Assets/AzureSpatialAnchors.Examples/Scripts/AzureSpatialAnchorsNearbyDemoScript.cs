@@ -18,6 +18,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             Searching,
             ReadyToNeighborQuery,
             Neighboring,
+            Deleting,
             Done,
             ModeCount
         }
@@ -30,6 +31,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             Color.cyan,
             Color.magenta,
             Color.green,
+            Color.grey,
             Color.grey
         };
 
@@ -41,6 +43,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             new Vector3(0,0,.1f),
             new Vector3(0,0,0),
             new Vector3(0,.1f,0),
+            new Vector3(0,0,0),
             new Vector3(0,0,0)
         };
         private readonly int numToMake = 3;
@@ -124,7 +127,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     {
                         Debug.Log("Out of time");
                         // Restart the demo..
-                        feedbackBox.text = "Failed to find the first anchor.  Try again.";
+                        feedbackBox.text = "Failed to find the first anchor. Try again.";
                         currentAppState = AppState.Done;
                     }
                     break;
@@ -136,13 +139,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     feedbackBox.text = $"Looking for anchors nearby the first anchor. {locatedCount}/{numToMake - 1} {timeLeft}";
                     if (timeLeft < 0)
                     {
-                        feedbackBox.text = "Failed to find all the neighbors.  Try again.";
-                        currentAppState = AppState.Done;
+                        feedbackBox.text = "Failed to find all the neighbors. Tap to delete anchors.";
+                        currentAppState = AppState.Deleting;
                     }
                     if (locatedCount == numToMake - 1)
                     {
-                        feedbackBox.text = "Found them all!";
-                        currentAppState = AppState.Done;
+                        feedbackBox.text = "Found them all! Tap to delete anchors.";
+                        currentAppState = AppState.Deleting;
                     }
                     break;
             }
@@ -171,13 +174,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                     locatedCount++;
                     currentCloudAnchor = args.Anchor;
 
-                    Pose anchorPose = Pose.identity;
-
-                    #if UNITY_ANDROID || UNITY_IOS
-                    anchorPose = currentCloudAnchor.GetPose();
-                    #endif
-                    // HoloLens: The position will be set based on the unityARUserAnchor that was located.
-
+                    Pose anchorPose = currentCloudAnchor.GetPose();
                     SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
 
                     spawnedObject.transform.localScale += scaleMods[(int)currentAppState];
@@ -247,9 +244,23 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 case AppState.ReadyToNeighborQuery:
                     DoNeighboringPassAsync();
                     break;
+                case AppState.Deleting:
+                    foreach (var anchorIdentifier in anchorIds)
+                    {
+                        CloudSpatialAnchor anchorToBeDeleted = await CloudManager.Session.GetAnchorPropertiesAsync(anchorIdentifier);
+                        if (anchorToBeDeleted == null)
+                        {
+                            Debug.LogError("Failed to get properties for anchor: " + anchorIdentifier);
+                            continue;
+                        }
+                        await CloudManager.DeleteAnchorAsync(anchorToBeDeleted);
+                    }
+                    CleanupObjectsBetweenPasses();
+                    currentAppState = AppState.Done;
+                    feedbackBox.text = $"Finished deleting anchors. Tap to restart.";
+                    break;
                 case AppState.Done:
                     await CloudManager.ResetSessionAsync();
-                    CleanupObjectsBetweenPasses();
                     currentAppState = AppState.Placing;
                     feedbackBox.text = $"Place an object. {allSpawnedObjects.Count}/{numToMake} ";
                     break;
@@ -263,14 +274,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             Debug.Log("Anchor created, yay!");
 
             anchorIds.Add(currentCloudAnchor.Identifier);
-
-            // Sanity check that the object is still where we expect
-            Pose anchorPose = Pose.identity;
-
-            #if UNITY_ANDROID || UNITY_IOS
-            anchorPose = currentCloudAnchor.GetPose();
-            #endif
-            // HoloLens: The position will be set based on the unityARUserAnchor that was located.
 
             spawnedObject = null;
             currentCloudAnchor = null;

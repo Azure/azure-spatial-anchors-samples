@@ -67,7 +67,7 @@ public class WatcherFragment extends Fragment {
     public void onStop() {
         stopWatcherButton.setOnClickListener(null);
         stopWatcher();
-        cloudAnchorManager.removeLocateAnchorsCompletedListener(null);
+        cloudAnchorManager.removeLocateAnchorsCompletedListener(this::onLocateAnchorsCompleted);
         cloudAnchorManager.removeAnchorLocatedListener(this::onAnchorLocated);
 
         super.onStop();
