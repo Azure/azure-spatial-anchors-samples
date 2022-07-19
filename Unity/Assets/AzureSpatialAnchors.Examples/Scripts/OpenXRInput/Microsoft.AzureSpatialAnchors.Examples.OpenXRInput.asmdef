@@ -1,0 +1,31 @@
+{
+    "name": "Microsoft.AzureSpatialAnchors.Examples",
+    "rootNamespace": "",
+    "references": [
+        "Unity.XR.WindowsMixedReality",
+        "Unity.XR.ARFoundation",
+        "Unity.XR.Management",
+        "Microsoft.MixedReality.OpenXR",
+        "AzureSpatialAnchors.SDK.Core.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.microsoft.mixedreality.openxr",
+            "expression": "0.0.1",
+            "define": "MIXED_REALITY_OPENXR"
+        },
+        {
+            "name": "com.unity.xr.windowsmr",
+            "expression": "0.0.1",
+            "define": "MIXED_REALITY_WINDOWSMR"
+        }
+    ],
+    "noEngineReferences": false
+}

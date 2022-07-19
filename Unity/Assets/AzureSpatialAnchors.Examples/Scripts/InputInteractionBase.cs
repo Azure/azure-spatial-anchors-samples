@@ -7,7 +7,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 #if WINDOWS_UWP || UNITY_WSA
+#if MIXED_REALITY_OPENXR
+using Microsoft.Azure.SpatialAnchors.Unity.Examples.OpenXR;
+#else
 using UnityEngine.XR.WindowsMR;
+#endif
 #endif
 
 #if UNITY_ANDROID || UNITY_IOS
@@ -36,6 +40,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 #endif
 #if WINDOWS_UWP || UNITY_WSA
             WindowsMRGestures mrGestures = FindObjectOfType<WindowsMRGestures>();
+            if (mrGestures == null)
+            {
+                mrGestures = gameObject.AddComponent<WindowsMRGestures>();
+            }
+
             if (mrGestures != null)
             {
                 mrGestures.onTappedChanged += MrGesturesOnTappedChanged;

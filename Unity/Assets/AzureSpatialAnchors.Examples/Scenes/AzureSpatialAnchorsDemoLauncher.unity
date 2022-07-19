@@ -1511,6 +1511,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableNavigationGesture: 0
   enableManipulationGesture: 0
+--- !u!114 &1149850802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149850799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf5fbdff379af0499e7441e85cf0838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1235356328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2130,6 +2142,11 @@ PrefabInstance:
     - target: {fileID: 1330892717808448, guid: da02f5d9dfcce824b88f56189675924d, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114101810007077132, guid: da02f5d9dfcce824b88f56189675924d,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114112569197481904, guid: da02f5d9dfcce824b88f56189675924d,
         type: 3}

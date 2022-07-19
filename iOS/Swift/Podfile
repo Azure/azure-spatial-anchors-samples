@@ -16,7 +16,7 @@ end
 target 'SampleSwift' do
 
   # Pods for SampleSwift
-  pod 'AzureSpatialAnchors', '2.12.0'
+  pod 'AzureSpatialAnchors', '2.13.0'
 
   pod 'ADAL', :git => 'https://github.com/AzureAD/azure-activedirectory-library-for-objc', :tag => '2.7.7', :submodules => true
 end
