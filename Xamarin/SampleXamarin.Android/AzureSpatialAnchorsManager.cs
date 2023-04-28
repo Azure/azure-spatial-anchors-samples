@@ -16,9 +16,6 @@ namespace SampleXamarin
         private readonly CloudSpatialAnchorSession spatialAnchorsSession;
 
         private TrackingState lastTrackingState = TrackingState.Stopped;
-
-        private TrackingFailureReason lastTrackingFailureReason = TrackingFailureReason.None;
-
         public bool CanCreateAnchor => this.CreateScanningProgressValue >= 1;
 
         public float CreateScanningProgressValue { get; set; } = 0;
@@ -150,12 +147,10 @@ namespace SampleXamarin
 
         public void Update(Frame frame)
         {
-            if (frame.Camera.TrackingState != this.lastTrackingState
-                || frame.Camera.TrackingFailureReason != this.lastTrackingFailureReason)
+            if (frame.Camera.TrackingState != this.lastTrackingState)
             {
                 this.lastTrackingState = frame.Camera.TrackingState;
-                this.lastTrackingFailureReason = frame.Camera.TrackingFailureReason;
-                Debug.WriteLine($"Tracker state changed: {this.lastTrackingState}, {this.lastTrackingFailureReason}.");
+                Debug.WriteLine($"Tracker state changed: {this.lastTrackingState}.");
             }
 
             Task.Run(() => this.spatialAnchorsSession.ProcessFrame(frame));

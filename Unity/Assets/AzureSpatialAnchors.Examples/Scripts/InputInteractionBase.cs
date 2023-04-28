@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 #if WINDOWS_UWP || UNITY_WSA
 #if MIXED_REALITY_OPENXR
@@ -13,10 +15,8 @@ using Microsoft.Azure.SpatialAnchors.Unity.Examples.OpenXR;
 using UnityEngine.XR.WindowsMR;
 #endif
 #endif
-
-#if UNITY_ANDROID || UNITY_IOS
 using UnityEngine.XR.ARFoundation;
-#endif
+
 
 namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 {
@@ -24,6 +24,8 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
     {
 #if UNITY_ANDROID || UNITY_IOS
         ARRaycastManager arRaycastManager;
+        private InputAction clickAction;
+        
 #endif
         /// <summary>
         /// Start is called on the frame when a script is enabled just before any
@@ -37,6 +39,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             {
                 Debug.Log("Missing ARRaycastManager in scene");
             }
+            clickAction = new InputAction("Click");
+            clickAction.AddBinding("<Touchscreen>/touch*/position");
+            
+            clickAction.Enable();
+            clickAction.performed += ClickAction_performed;
 #endif
 #if WINDOWS_UWP || UNITY_WSA
             WindowsMRGestures mrGestures = FindObjectOfType<WindowsMRGestures>();
@@ -55,6 +62,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             }
 #endif
         }
+
+#if UNITY_ANDROID || UNITY_IOS
+        private void ClickAction_performed(InputAction.CallbackContext obj)
+        {
+            OnTouchInteractionEnded(clickAction.ReadValue<Vector2>());
+        }
+#endif
 
         /// <summary>
         /// Destroying the attached Behaviour will result in the game or Scene
@@ -85,18 +99,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         private void TriggerInteractions()
         {
             OnGazeInteraction();
-
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-
-                if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-                {
-                    return;
-                }
-
-                OnTouchInteraction(touch);
-            }
         }
 
         /// <summary>
@@ -130,26 +132,47 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         /// Called when a touch interaction occurs.
         /// </summary>
         /// <param name="touch">The touch.</param>
-        protected virtual void OnTouchInteraction(Touch touch)
+        protected virtual void OnTouchInteraction(Vector2 touchPosition)
         {
-            if (touch.phase == TouchPhase.Ended)
+            OnTouchInteractionEnded(touchPosition);
+        }
+
+        private bool IsTouchOverUIButton(Vector2 touchPosition)
+        {
+            PointerEventData ped = new PointerEventData(EventSystem.current);
+            ped.position = touchPosition;
+            List<RaycastResult> raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(ped, raycastResults);
+            
+            foreach(RaycastResult raycastResult in raycastResults)
             {
-                OnTouchInteractionEnded(touch);
+                if (raycastResult.gameObject.GetComponentInChildren<Button>())
+                {
+                    return true;
+                }
             }
+
+            return false;
         }
 
         /// <summary>
         /// Called when a touch interaction has ended.
         /// </summary>
         /// <param name="touch">The touch.</param>
-        protected virtual void OnTouchInteractionEnded(Touch touch)
+        protected virtual void OnTouchInteractionEnded(Vector2 touchPosition)
         {
 #if UNITY_ANDROID || UNITY_IOS
+            // check if the user is tapping a button
+            if (IsTouchOverUIButton(touchPosition))
+            {
+                return;
+            }
+
             List<ARRaycastHit> aRRaycastHits = new List<ARRaycastHit>();
-            if(arRaycastManager.Raycast(touch.position, aRRaycastHits) && aRRaycastHits.Count > 0)
+           
+            if(arRaycastManager.Raycast(touchPosition, aRRaycastHits) && aRRaycastHits.Count > 0)
             {
                 ARRaycastHit hit = aRRaycastHits[0];
-                
                 OnSelectObjectInteraction(hit.pose.position, hit);
             }
 #elif WINDOWS_UWP || UNITY_WSA

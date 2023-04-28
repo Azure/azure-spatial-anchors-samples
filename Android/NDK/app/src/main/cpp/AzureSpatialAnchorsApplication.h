@@ -122,6 +122,8 @@ namespace AzureSpatialAnchors {
         void QueryAnchor();
         void QueryNearbyAnchors(std::shared_ptr<CloudSpatialAnchor> const& sourceAnchor);
         void QueryAnchorsNearDevice();
+
+        void ModifyButtonTextOnException(std::string message, std::exception_ptr ex);
     };
 }
 

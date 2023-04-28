@@ -113,10 +113,7 @@ namespace SampleXamarin
             {
                 return false;
             }
-            if (!wifiManager.IsWifiEnabled)
-            {
-                wifiManager.SetWifiEnabled(true);
-            }
+
             return wifiManager.IsWifiEnabled;
         }
 

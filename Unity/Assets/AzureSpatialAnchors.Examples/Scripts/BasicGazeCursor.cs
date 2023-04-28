@@ -5,10 +5,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR;
-#if UNITY_WSA
+
+#if WINDOWS_UWP || UNITY_WSA
+#if MIXED_REALITY_OPENXR
+using Microsoft.Azure.SpatialAnchors.Unity.Examples.OpenXR;
+#else
 using UnityEngine.XR.WindowsMR;
+#endif // MIXED_REALITY_OPENXR
 using UnityEngine.XR.WSA.Input;
-#endif
+#endif // WINDOWS_UWP || UNITY_WSA
 
 namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 {
