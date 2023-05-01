@@ -46,6 +46,17 @@ AzureSpatialAnchorsApplication::~AzureSpatialAnchorsApplication() {
     }
 }
 
+void AzureSpatialAnchorsApplication::ModifyButtonTextOnException(std::string message, std::exception_ptr ex)
+{
+    try {
+        if (ex) {
+            std::rethrow_exception(ex);
+        }
+    } catch (const std::exception& e) {
+        m_buttonText = message + e.what();
+    }
+}
+
 bool AzureSpatialAnchorsApplication::IsSpatialAnchorsAccountSet() {
     return SpatialAnchorsAccountId != "Set me" && SpatialAnchorsAccountKey != "Set me" && SpatialAnchorsAccountDomain != "Set me";
 }
@@ -576,14 +587,7 @@ void AzureSpatialAnchorsApplication::CreateCloudAnchor() {
     const int64_t oneWeekFromNowUnixEpochTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(oneWeekFromNow.time_since_epoch()).count();
     visual.cloudAnchor->Expiration(oneWeekFromNowUnixEpochTimeMs);
 
-    m_cloudSession->CreateAnchorAsync(visual.cloudAnchor, [this](Status status) {
-        auto itr = m_anchorVisuals.find("");
-        auto &visual = itr->second;
-        if (status != Status::OK) {
-            visual.color = FailedColor;
-            m_buttonText = "Save Failed: " + std::to_string(static_cast<uint32_t>(status));
-            return;
-        }
+    m_cloudSession->CreateAnchorAsync(visual.cloudAnchor, [this, &visual]() {
         m_saveCount++;
         visual.identifier = visual.cloudAnchor->Identifier();
         visual.color = SavedColor;
@@ -601,6 +605,9 @@ void AzureSpatialAnchorsApplication::CreateCloudAnchor() {
             m_progressOnSavingData = true;
             m_buttonText = "Tap on screen to create next anchor";
         }
+    }, [this, &visual](std::exception_ptr ex) {
+        visual.color = FailedColor;
+        ModifyButtonTextOnException("Save Failed: ", ex);
     });
 }
 
@@ -610,15 +617,8 @@ void AzureSpatialAnchorsApplication::DeleteCloudAnchor() {
         std::string id = visual.identifier;
         visual.color = NoColor;
         m_cloudSession->DeleteAnchorAsync(visual.cloudAnchor,
-                [this, id](Status status) {
+                [this]() {
                     m_saveCount--;
-                    if (status != Status::OK) {
-                        m_buttonText = "Delete Failed: " + std::to_string(static_cast<uint32_t>(status));
-                        auto itr = m_anchorVisuals.find(id);
-                        if (itr != m_anchorVisuals.end()) {
-                            itr->second.color = FailedColor;
-                        }
-                    }
 
                     if (m_demoMode == DemoMode::Basic || m_saveCount == 0) {
                         DestroyCloudSession();
@@ -627,6 +627,12 @@ void AzureSpatialAnchorsApplication::DeleteCloudAnchor() {
                         m_demoStep = DemoStep::CreateCloudAnchor;
                         m_showAdvanceButton = false;
                     }
+        }, [this, id](std::exception_ptr ex) {
+            ModifyButtonTextOnException("Delete Failed: ", ex);
+            auto itr = m_anchorVisuals.find(id);
+            if (itr != m_anchorVisuals.end()) {
+                itr->second.color = FailedColor;
+            }
         });
 
     }

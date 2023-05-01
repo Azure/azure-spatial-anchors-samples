@@ -408,11 +408,11 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         /// Called when a touch interaction occurs.
         /// </summary>
         /// <param name="touch">The touch.</param>
-        protected override void OnTouchInteraction(Touch touch)
+        protected override void OnTouchInteraction(Vector2 touchPosition)
         {
             if (IsPlacingObject())
             {
-                base.OnTouchInteraction(touch);
+                base.OnTouchInteraction(touchPosition);
             }
         }
 

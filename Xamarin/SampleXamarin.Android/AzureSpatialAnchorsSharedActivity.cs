@@ -435,7 +435,7 @@ namespace SampleXamarin
 
         private void UpdateStatic()
         {
-            new Handler().PostDelayed(() =>
+            this.sceneView.Handler.PostDelayed(() =>
             {
                 switch (this.currentStep)
                 {

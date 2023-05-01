@@ -23,16 +23,25 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         const string androidBluetoothPermission = "android.permission.BLUETOOTH";
         const string androidBluetoothAdminPermission = "android.permission.BLUETOOTH_ADMIN";
 
+        static string[] androidRequiredPermissions =
+        {
+            Permission.FineLocation,
+            Permission.CoarseLocation,
+            androidWifiAccessPermission,
+            androidWifiChangePermission,
+            androidBluetoothPermission,
+            androidBluetoothAdminPermission,
+            "android.permission.BLUETOOTH_SCAN",
+            "android.permission.NEARBY_WIFI_DEVICES"
+        };
+        
         public static void RequestSensorPermissions()
         {
 #if UNITY_ANDROID
-            RequestPermissionIfNotGiven(Permission.FineLocation);
-            // Fine location implies coarse location
-
-            RequestPermissionIfNotGiven(androidWifiAccessPermission);
-            RequestPermissionIfNotGiven(androidWifiChangePermission);
-            RequestPermissionIfNotGiven(androidBluetoothAdminPermission);
-            RequestPermissionIfNotGiven(androidBluetoothPermission);
+            foreach(string permission in androidRequiredPermissions)
+            {
+                RequestPermissionIfNotGiven(permission);
+            }
 #endif
         }
 
